@@ -97,11 +97,11 @@ public class AI {
 
 
         String stats = "";
-        stats += totalCost + "\r\n";
-        stats += game.getMyInformation().getStrength() + "\r\n";
-        stats += cost + "\r\n";
+        stats += totalCost + System.lineSeparator();
+        stats += game.getMyInformation().getStrength() + System.lineSeparator();
+        stats += cost + System.lineSeparator();
 
-        System.out.println("Stats:\r\n" + stats);
+        System.out.println("Stats:"+System.lineSeparator() + stats);
 
         try {
             Files.write(Paths.get(geneFile + ".out"), stats.getBytes(), StandardOpenOption.CREATE);
@@ -171,7 +171,7 @@ public class AI {
                 if (game.getDefenceMap().getCell(i, j) instanceof GrassCell) {
                     if (((GrassCell)game.getDefenceMap().getCell(i, j)).getTower() != null)
                         continue;
-                    
+
                     if (HasTowerNeighbors(i, j, game))
                         continue;
 
