@@ -298,7 +298,7 @@ public class AI {
     void sendAttacker(World game) {
         System.out.println(game.getCurrentTurn());
 
-        int count = (rnd.nextInt() % 10 - 5);
+        int count = (rnd.nextInt() % 10 - 2);
         if (count <= 0)
             return;
 
