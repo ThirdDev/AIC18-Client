@@ -64,12 +64,12 @@ public class Controller {
     /**
      * Starts a client by connecting to the server and sending a token.
      */
-    public void start() {
+    public void start(String mode, String geneFile) {
         try {
             network = new Network(this::handleMessage);
             sender=network::send;
             game = new Game(sender);
-            ai = new AI();
+            ai = new AI(mode, geneFile);
             network.setConnectionData(host, port, token);
             while (!network.isConnected()) {
                 network.connect();

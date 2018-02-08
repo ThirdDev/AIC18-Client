@@ -5,7 +5,7 @@ package client.model;
  */
 public class Unit extends Entity {
 
-    private int health;
+    public int health;
     private int level;
 
     private Path path;
