@@ -97,11 +97,11 @@ public class AI {
 
 
         String stats = "";
-        stats += totalCost + "\n";
-        stats += game.getMyInformation().getStrength() + "\n";
-        stats += cost + "\n";
+        stats += totalCost + "\r\n";
+        stats += game.getMyInformation().getStrength() + "\r\n";
+        stats += cost + "\r\n";
 
-        System.out.println("Stats:\n" + stats);
+        System.out.println("Stats:\r\n" + stats);
 
         try {
             Files.write(Paths.get(geneFile + ".out"), stats.getBytes(), StandardOpenOption.CREATE);
