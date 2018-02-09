@@ -16,10 +16,9 @@ public class Main {
     private static final boolean GLOBAL_VERBOSE_FLAG = false;
 
     private static final String[] argNames = {"AICHostIP", "AICHostPort", "AICToken", "AICRetryDelay", "ClientMode", "GeneFile"};
-    private static final String[] argDefaults = {"localhost", "7099", "00000000000000000000000000000000", "1000", "attack", "damn.txt"};
+    private static final String[] argDefaults = {"localhost", "8002", "00000000000000000000000000000000", "1000", "defend", "damn.txt"};
 
     public static void main(String[] args) {
-
         try {
             run(getArgs(args));
 
@@ -29,11 +28,6 @@ public class Main {
     }
 
     private static void run(String[] args) throws FileNotFoundException {
-        Scanner scanner = new Scanner(System.in);
-        String type = scanner.nextLine();
-
-        args[args.length - 2] = type;
-
         if(GLOBAL_VERBOSE_FLAG || Arrays.asList(args).contains("--verbose")) {
             Log.DEV_MODE = true;
             Log.LOG_LEVEL = Log.VERBOSE;

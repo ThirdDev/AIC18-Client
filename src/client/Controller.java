@@ -200,6 +200,8 @@ public class Controller {
      * @param msg shutdown message
      */
     private void handleShutdownMessage(Message msg) {
+        ai.saveStats(game);
+
         network.terminate();
         System.exit(0);
     }

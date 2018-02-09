@@ -27,7 +27,7 @@ import static common.network.JsonSocket.TAG;
  */
 public class AI {
 
-    final double thresholdCoeff = 1.5;
+    final double thresholdCoeff = 2.5;
     final double maximumEstimatedCost = 5000.0;
 
     Random rnd = new Random();
@@ -79,19 +79,15 @@ public class AI {
 //        }
     }
 
-    void turn(World game) {
+    private void turn(World game) {
         if (mode.equals("attack"))
             sendAttacker(game);
         else if (mode.equals("defend")) {
             processGene(game);
-
-            if (game.getCurrentTurn() % 10 == 9)
-                saveStats(game);
         }
-
     }
 
-    private void saveStats(World game) {
+    public void saveStats(World game) {
 
         double cost = ((1 - totalCost / maximumEstimatedCost) * 100) - 20 * (Game.INITIAL_HEALTH - game.getMyInformation().getStrength());
 
@@ -101,7 +97,7 @@ public class AI {
         stats += game.getMyInformation().getStrength() + System.lineSeparator();
         stats += cost + System.lineSeparator();
 
-        System.out.println("Stats:"+System.lineSeparator() + stats);
+        System.out.println("Stats:" + System.lineSeparator() + stats);
 
         try {
             Files.write(Paths.get(geneFile + ".out"), stats.getBytes(), StandardOpenOption.CREATE);
@@ -143,9 +139,10 @@ public class AI {
             //if (d != 0)
             //    System.out.println("Adjabbbb" + i + " : " + d + " , " + delta);
             if (d >= thresholdCoeff * delta) {
-                if ((max == -1) || (weights[max] < weights[i])) {
-                    max = i;
-                }
+                //if ((max == -1) || (weights[max] < weights[i])) {
+                //    max = i;
+                //}
+                createTowerNear(game, path.getRoad().get(i).getPoint());
             }
         }
 
@@ -175,13 +172,20 @@ public class AI {
                     if (HasTowerNeighbors(i, j, game))
                         continue;
 
-                    System.out.println("Creating a tower near " + point.getX() + ", " + point.getY() + " at " + i + ", " + j);
-                    game.createCannonTower(2, i, j);
+                    double potentialCost = CannonTower.INITIAL_PRICE;
+
+                    if (hasMoneyAmount(game, potentialCost)) {
+                        System.out.println("Creating a tower near " + point.getX() + ", " + point.getY() + " at " + i + ", " + j);
+
+                        totalCost += potentialCost;
+                        game.createCannonTower(2, i, j);
+                    }
                     return;
                 }
             }
         }
 
+        int minimumLevel = Integer.MAX_VALUE;
 
         for (int i = point.getX() - 1; i <= point.getX() + 1; i++) {
             for (int j = point.getY() - 1; j <= point.getY() + 1; j++) {
@@ -196,15 +200,46 @@ public class AI {
 
                     Tower t = ((GrassCell) game.getDefenceMap().getCell(i, j)).getTower();
 
-                    System.out.println("Upgrading tower (near " + point.getX() + ", " + point.getY() + ") at " + i + ", " + j);
-                    game.upgradeTower(t.getId());
-                    return;
+                    if (t.getLevel() < minimumLevel)
+                        minimumLevel = t.getLevel();
+                }
+            }
+        }
+
+        for (int i = point.getX() - 1; i <= point.getX() + 1; i++) {
+            for (int j = point.getY() - 1; j <= point.getY() + 1; j++) {
+
+                //TODO: Check this shit
+                if (IsOutOfBounds(game, i, j))
+                    continue;
+
+                if (game.getDefenceMap().getCell(i, j) instanceof GrassCell) {
+                    if (((GrassCell) game.getDefenceMap().getCell(i, j)).isEmpty())
+                        continue;
+
+                    Tower t = ((GrassCell) game.getDefenceMap().getCell(i, j)).getTower();
+
+                    if (t.getLevel() > minimumLevel)
+                        continue;
+
+                    double potentialCost = t.getPrice(t.getLevel() + 1) - t.getPrice();
+
+                    if (hasMoneyAmount(game, potentialCost)) {
+                        System.out.println("Upgrading tower (near " + point.getX() + ", " + point.getY() + ") at " + i + ", " + j);
+
+                        totalCost += potentialCost;
+                        game.upgradeTower(t.getId());
+                    }
                 }
             }
         }
 
 
-        System.out.println("Couldn't create or upgrade tower anywhere near " + point.getX() + ", " + point.getY() + "!");
+        //System.out.println("Couldn't create or upgrade tower anywhere near " + point.getX() + ", " + point.getY() + "!");
+    }
+
+    private boolean hasMoneyAmount(World game, double potentialCost) {
+        return (game.getMyInformation().getMoney() >= potentialCost);
     }
 
     private boolean IsOutOfBounds(World game, int i, int j) {
