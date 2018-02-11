@@ -50,7 +50,7 @@ public class AI {
 
     RoadInfo[] roadInfos;
 
-    int attackState = 0;
+    int attackState = 2;
 
     public AI(String mode, String geneFile) {
         this.mode = mode;
@@ -190,6 +190,7 @@ public class AI {
     private ArrayList<Double> generateState(World game, Path path) {
         ArrayList<Double> state = new ArrayList<>();
 
+        state.add(1.0);
         FillJoon(path, state);
         FillDamages(game, path, state);
         FillConstructionCosts(game, path, state);
@@ -442,13 +443,13 @@ public class AI {
     void sendAttacker(World game) {
         int turn = game.getCurrentTurn();
         System.out.println(turn);
-/*
-        int period = 50;
+/**/
+        int period = 20;
 
         if (turn % period == 0) {
-            attackState = rnd.nextInt() % 2;
+            //attackState = rnd.nextInt() % 2;
 
-            System.out.println("attackState = " + attackState);
+            //System.out.println("attackState = " + attackState);
         }
 
         if (attackState == 1) {
@@ -457,7 +458,10 @@ public class AI {
                     game.createLightUnit(0);
             }
         }
-        else {*/
+        else if (attackState == 2) {
+            game.createLightUnit(0);
+        }
+        else {/**/
             int count = (rnd.nextInt() % 10 - 5);
             if (count <= 0)
                 return;
@@ -467,6 +471,6 @@ public class AI {
                     game.createLightUnit(0);
                 else
                     game.createHeavyUnit(0);
-        //}
+        }
     }
 }
