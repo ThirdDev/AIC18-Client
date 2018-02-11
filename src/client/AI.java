@@ -34,7 +34,12 @@ public class AI {
     final double damageNormalizeFactor = 1.0 / 50.0;
     final double initialWeight = 50.0;
     final double constructionCostFactor = 1.0 / 300.0;
-    //final double threshold = 75000.0;
+
+    final double scoreCostCoeff = 100.0;
+    final double scoreHealthCoeff = -20.0;
+    final double scoreHeatMapCoeff = -20.0;
+
+    final int learningMode = 0;
 
     Random rnd = new Random();
     String mode, geneFile;
@@ -102,7 +107,9 @@ public class AI {
 
     public void saveStats(World game) {
         double heatMapScore = roadInfos == null ? 0 : roadInfos[0].getHeatMapScore();
-        double cost = ((1 - totalCost / maximumEstimatedCost) * 100) - 50 * (Game.INITIAL_HEALTH - game.getMyInformation().getStrength()) - 0 * heatMapScore;
+        double cost = scoreCostCoeff * (1 - totalCost / maximumEstimatedCost) +
+                      scoreHealthCoeff * (Game.INITIAL_HEALTH - game.getMyInformation().getStrength()) +
+                      scoreHeatMapCoeff * heatMapScore;
 
         String stats = "";
         stats += totalCost + System.lineSeparator();
@@ -275,7 +282,10 @@ public class AI {
                         System.out.println("Creating a tower near " + point.getX() + ", " + point.getY() + " at " + i + ", " + j);
 
                         totalCost += potentialCost;
-                        game.createCannonTower(2, i, j);
+                        if (learningMode == 0)
+                            game.createCannonTower(1, i, j);
+                        else
+                            game.createArcherTower(1, i, j);
                         moneySpent(potentialCost);
                     }
                     return;
@@ -448,12 +458,15 @@ public class AI {
             }
         }
         else {*/
-            int count = (rnd.nextInt() % 10 - 2);
+            int count = (rnd.nextInt() % 10 - 5);
             if (count <= 0)
                 return;
 
             for (int i = 0; i < count; i++)
-                game.createLightUnit(0);
+                if (learningMode == 0)
+                    game.createLightUnit(0);
+                else
+                    game.createHeavyUnit(0);
         //}
     }
 }
