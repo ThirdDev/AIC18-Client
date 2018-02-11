@@ -33,6 +33,7 @@ public class AI {
     final double soldierNormalizeFactor = 1.0 / 300.0;
     final double damageNormalizeFactor = 1.0 / 50.0;
     final double initialWeight = 50.0;
+    final double constructionCostFactor = 1.0 / 300.0;
     //final double threshold = 75000.0;
 
     Random rnd = new Random();
@@ -101,7 +102,7 @@ public class AI {
 
     public void saveStats(World game) {
         double heatMapScore = roadInfos == null ? 0 : roadInfos[0].getHeatMapScore();
-        double cost = ((1 - totalCost / maximumEstimatedCost) * 100) - 50 * (Game.INITIAL_HEALTH - game.getMyInformation().getStrength()) - 300 * heatMapScore;
+        double cost = ((1 - totalCost / maximumEstimatedCost) * 100) - 50 * (Game.INITIAL_HEALTH - game.getMyInformation().getStrength()) - 0 * heatMapScore;
 
         String stats = "";
         stats += totalCost + System.lineSeparator();
@@ -130,11 +131,7 @@ public class AI {
         else
             roadInfos[0].update(path);
 
-        ArrayList<Double> state = new ArrayList<>();
-
-        FillJoon(path, state);
-        FillDamages(game, path, state);
-        FillConstructioCosts(game, path, state);
+        ArrayList<Double> state = generateState(game, path);
 
         double[] weights = new double[path.getRoad().size()];
         for (int i = 0; i < weights.length; i++) {
@@ -183,9 +180,77 @@ public class AI {
         }
     }
 
-    private double getCostForConstructionNear(World game, Point point) {
+    private ArrayList<Double> generateState(World game, Path path) {
+        ArrayList<Double> state = new ArrayList<>();
 
-       return 0;
+        FillJoon(path, state);
+        FillDamages(game, path, state);
+        FillConstructionCosts(game, path, state);
+
+        return state;
+    }
+
+    private double getCostForConstructionNear(World game, Point point) {
+        for (int i = point.getX() - 1; i <= point.getX() + 1; i++) {
+            for (int j = point.getY() - 1; j <= point.getY() + 1; j++) {
+                if (IsOutOfBounds(game, i, j))
+                    continue;
+                if (game.getDefenceMap().getCell(i, j) instanceof GrassCell) {
+                    if (((GrassCell)game.getDefenceMap().getCell(i, j)).getTower() != null)
+                        continue;
+
+                    if (HasTowerNeighbors(i, j, game))
+                        continue;
+
+                    return CannonTower.INITIAL_PRICE;
+                }
+            }
+        }
+
+        int minimumLevel = getMinimumTowerLevelNear(game, point);
+
+        for (int i = point.getX() - 1; i <= point.getX() + 1; i++) {
+            for (int j = point.getY() - 1; j <= point.getY() + 1; j++) {
+                if (IsOutOfBounds(game, i, j))
+                    continue;
+
+                if (game.getDefenceMap().getCell(i, j) instanceof GrassCell) {
+                    if (((GrassCell) game.getDefenceMap().getCell(i, j)).isEmpty())
+                        continue;
+
+                    Tower t = ((GrassCell) game.getDefenceMap().getCell(i, j)).getTower();
+
+                    if (t.getLevel() > minimumLevel)
+                        continue;
+
+                    return (t.getPrice(t.getLevel() + 1) - t.getPrice());
+                }
+            }
+        }
+
+
+        return 0;
+    }
+
+    private int getMinimumTowerLevelNear(World game, Point point) {
+        int minimumLevel = Integer.MAX_VALUE;
+
+        for (int i = point.getX() - 1; i <= point.getX() + 1; i++) {
+            for (int j = point.getY() - 1; j <= point.getY() + 1; j++) {
+                if (IsOutOfBounds(game, i, j))
+                    continue;
+                if (game.getDefenceMap().getCell(i, j) instanceof GrassCell) {
+                    if (((GrassCell) game.getDefenceMap().getCell(i, j)).isEmpty())
+                        continue;
+
+                    Tower t = ((GrassCell) game.getDefenceMap().getCell(i, j)).getTower();
+
+                    if (t.getLevel() < minimumLevel)
+                        minimumLevel = t.getLevel();
+                }
+            }
+        }
+        return minimumLevel;
     }
 
 
@@ -218,26 +283,7 @@ public class AI {
             }
         }
 
-        int minimumLevel = Integer.MAX_VALUE;
-
-        for (int i = point.getX() - 1; i <= point.getX() + 1; i++) {
-            for (int j = point.getY() - 1; j <= point.getY() + 1; j++) {
-
-                //TODO: Check this shit
-                if (IsOutOfBounds(game, i, j))
-                    continue;
-
-                if (game.getDefenceMap().getCell(i, j) instanceof GrassCell) {
-                    if (((GrassCell) game.getDefenceMap().getCell(i, j)).isEmpty())
-                        continue;
-
-                    Tower t = ((GrassCell) game.getDefenceMap().getCell(i, j)).getTower();
-
-                    if (t.getLevel() < minimumLevel)
-                        minimumLevel = t.getLevel();
-                }
-            }
-        }
+        int minimumLevel = getMinimumTowerLevelNear(game, point);
 
         for (int i = point.getX() - 1; i <= point.getX() + 1; i++) {
             for (int j = point.getY() - 1; j <= point.getY() + 1; j++) {
@@ -310,13 +356,12 @@ public class AI {
     }
 
 
-    private void FillConstructioCosts(World game, Path path, ArrayList<Double> state) {
+    private void FillConstructionCosts(World game, Path path, ArrayList<Double> state) {
         for (RoadCell cell : path.getRoad()) {
-            double cost;
+            double cost = getCostForConstructionNear(game, cell.getPoint());
+            double costNormalized = cost * constructionCostFactor;
 
-
-
-            state.add()
+            state.add(costNormalized);
         }
     }
 
