@@ -263,6 +263,8 @@ public class AI {
                         totalCost += potentialCost;
                         game.upgradeTower(t.getId());
                         moneySpent(potentialCost);
+
+                        return;
                     }
                 }
             }
