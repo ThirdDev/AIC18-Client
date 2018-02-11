@@ -119,10 +119,10 @@ public class AI {
 
         String stats = "";
         stats += score + System.lineSeparator();
-        stats += totalCost + System.lineSeparator();
-        stats += game.getMyInformation().getStrength() + System.lineSeparator();
-        stats += heatMapScore + System.lineSeparator();
-        stats += game.getCurrentTurn() + System.lineSeparator();
+        stats += "Total cost: " + totalCost + System.lineSeparator();
+        stats += "Strength: " + game.getMyInformation().getStrength() + System.lineSeparator();
+        stats += "HeatMap score: " + heatMapScore + System.lineSeparator();
+        stats += "Turn number: " + game.getCurrentTurn() + System.lineSeparator();
 
         System.out.println("Stats:" + System.lineSeparator() + stats);
 
