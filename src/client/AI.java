@@ -1,5 +1,6 @@
 package client;
 
+import client.classes.RoadInfo;
 import client.model.*;
 import common.util.Log;
 import javafx.scene.effect.Light;
@@ -27,14 +28,23 @@ import static common.network.JsonSocket.TAG;
  */
 public class AI {
 
-    final double thresholdCoeff = 2.5;
+    final double thresholdCoeff = 8;
     final double maximumEstimatedCost = 5000.0;
+    final double soldierNormalizeFactor = 1.0 / 300.0;
+    final double damageNormalizeFactor = 1.0 / 50.0;
+    final double initialWeight = 50.0;
+    //final double threshold = 75000.0;
 
     Random rnd = new Random();
     String mode, geneFile;
     double[] gene;
 
     int totalCost;
+    double spendingMoney;
+
+    RoadInfo[] roadInfos;
+
+    int attackState = 0;
 
     public AI(String mode, String geneFile) {
         this.mode = mode;
@@ -80,6 +90,8 @@ public class AI {
     }
 
     private void turn(World game) {
+        spendingMoney = 0.0;
+
         if (mode.equals("attack"))
             sendAttacker(game);
         else if (mode.equals("defend")) {
@@ -88,14 +100,14 @@ public class AI {
     }
 
     public void saveStats(World game) {
-
-        double cost = ((1 - totalCost / maximumEstimatedCost) * 100) - 20 * (Game.INITIAL_HEALTH - game.getMyInformation().getStrength());
-
+        double heatMapScore = roadInfos == null ? 0 : roadInfos[0].getHeatMapScore();
+        double cost = ((1 - totalCost / maximumEstimatedCost) * 100) - 50 * (Game.INITIAL_HEALTH - game.getMyInformation().getStrength()) - 300 * heatMapScore;
 
         String stats = "";
         stats += totalCost + System.lineSeparator();
         stats += game.getMyInformation().getStrength() + System.lineSeparator();
         stats += cost + System.lineSeparator();
+        stats += heatMapScore + System.lineSeparator();
 
         System.out.println("Stats:" + System.lineSeparator() + stats);
 
@@ -108,17 +120,25 @@ public class AI {
     }
 
     private void processGene(World game) {
-
+        if (roadInfos == null)
+            roadInfos = new RoadInfo[1];
 
         Path path = game.getDefenceMapPaths().get(0);
+
+        if (roadInfos[0] == null)
+            roadInfos[0] = new RoadInfo(path);
+        else
+            roadInfos[0].update(path);
+
         ArrayList<Double> state = new ArrayList<>();
 
         FillJoon(path, state);
         FillDamages(game, path, state);
+        FillConstructioCosts(game, path, state);
 
         double[] weights = new double[path.getRoad().size()];
         for (int i = 0; i < weights.length; i++) {
-            weights[i] = 0;
+            weights[i] = initialWeight;
             for (int j = 0; j < state.size(); j++) {
                 //System.out.println(i + " * " + state.size() + " + " + j);
                 weights[i] += gene[i * state.size() + j] * state.get(j);
@@ -134,17 +154,24 @@ public class AI {
         //    System.out.println("Adjab");
 
         int max = -1;
+
+        System.out.print("Calculated weights are: ");
         for (int i = 0; i < weights.length; i++) {
             double d = weights[i] - weightsSorted[weights.length / 2];
             //if (d != 0)
-            //    System.out.println("Adjabbbb" + i + " : " + d + " , " + delta);
-            if (d >= thresholdCoeff * delta) {
+            //System.out.println("Adjabbbb" + i + " : " + d + " , " + delta);
+            if (d > thresholdCoeff * delta) {
                 //if ((max == -1) || (weights[max] < weights[i])) {
                 //    max = i;
                 //}
                 createTowerNear(game, path.getRoad().get(i).getPoint());
             }
+            System.out.print(weights[i] + ", ");
+            //if (weights[i] >= threshold) {
+            //    createTowerNear(game, path.getRoad().get(i).getPoint());
+            //}
         }
+        System.out.println();
 
         System.out.println("----" + game.getCurrentTurn() + " : " + game.getMyTowers().size() + " , " + game.getMyInformation().getMoney());
 
@@ -154,8 +181,13 @@ public class AI {
         else {
             createTowerNear(game, path.getRoad().get(max).getPoint());
         }
-
     }
+
+    private double getCostForConstructionNear(World game, Point point) {
+
+       return 0;
+    }
+
 
     private void createTowerNear(World game, Point point) {
         for (int i = point.getX() - 1; i <= point.getX() + 1; i++) {
@@ -179,6 +211,7 @@ public class AI {
 
                         totalCost += potentialCost;
                         game.createCannonTower(2, i, j);
+                        moneySpent(potentialCost);
                     }
                     return;
                 }
@@ -229,6 +262,7 @@ public class AI {
 
                         totalCost += potentialCost;
                         game.upgradeTower(t.getId());
+                        moneySpent(potentialCost);
                     }
                 }
             }
@@ -239,7 +273,11 @@ public class AI {
     }
 
     private boolean hasMoneyAmount(World game, double potentialCost) {
-        return (game.getMyInformation().getMoney() >= potentialCost);
+        return ((game.getMyInformation().getMoney() - spendingMoney) >= potentialCost);
+    }
+
+    public void moneySpent(double amount) {
+        spendingMoney += amount;
     }
 
     private boolean IsOutOfBounds(World game, int i, int j) {
@@ -269,6 +307,17 @@ public class AI {
         return !((GrassCell) game.getDefenceMap().getCell(i, j)).isEmpty();
     }
 
+
+    private void FillConstructioCosts(World game, Path path, ArrayList<Double> state) {
+        for (RoadCell cell : path.getRoad()) {
+            double cost;
+
+
+
+            state.add()
+        }
+    }
+
     private void FillDamages(World game, Path path, ArrayList<Double> state) {
         for (RoadCell cell : path.getRoad()) {
 
@@ -285,8 +334,11 @@ public class AI {
                 }
             }
 
-            state.add((double)totalDamage);
+            System.out.print(totalDamage * damageNormalizeFactor + ", ");
+            state.add(totalDamage * damageNormalizeFactor);
         }
+
+        System.out.println("*********************");
     }
 
     private int GetManhatanDistance(Point point, Point towerPoint) {
@@ -303,10 +355,10 @@ public class AI {
                     joon += ((HeavyUnit)u).getMaximumHealth();
             }
 
-            state.add((double)joon);
-            System.out.print(joon + ", ");
+            state.add(joon * soldierNormalizeFactor);
+            System.out.print(joon * soldierNormalizeFactor + ", ");
         }
-        System.out.println("");
+        //System.out.println("");
     }
 
     private double[] GetGene() {
@@ -331,13 +383,30 @@ public class AI {
     }
 
     void sendAttacker(World game) {
-        System.out.println(game.getCurrentTurn());
+        int turn = game.getCurrentTurn();
+        System.out.println(turn);
+/*
+        int period = 50;
 
-        int count = (rnd.nextInt() % 10 - 2);
-        if (count <= 0)
-            return;
+        if (turn % period == 0) {
+            attackState = rnd.nextInt() % 2;
 
-        for (int i = 0; i < count; i++)
-            game.createLightUnit(0);
+            System.out.println("attackState = " + attackState);
+        }
+
+        if (attackState == 1) {
+            if (turn % period == (period - 1)) {
+                for (int i = 0; i < 20; i++)
+                    game.createLightUnit(0);
+            }
+        }
+        else {*/
+            int count = (rnd.nextInt() % 10 - 2);
+            if (count <= 0)
+                return;
+
+            for (int i = 0; i < count; i++)
+                game.createLightUnit(0);
+        //}
     }
 }
