@@ -40,6 +40,8 @@ public class AI {
     final double scoreHeatMapCoeff = -20.0;
 
     final double defenceBudgetCoeff = 0.5;
+    final double avoidSpendingTooMuchMoneyTooSoonCoeff = 1.0;
+    final int totalTurns = 500;
 
     final int learningMode = 0;
 
@@ -284,12 +286,11 @@ public class AI {
                     if (hasMoneyAmount(game, potentialCost)) {
                         System.out.println("Creating a tower near " + point.getX() + ", " + point.getY() + " at " + i + ", " + j);
 
-                        totalCost += potentialCost;
                         if (learningMode == 0)
                             game.createCannonTower(1, i, j);
                         else
                             game.createArcherTower(1, i, j);
-                        moneySpent(potentialCost);
+                        moneySpent(game, potentialCost);
                     }
                     return;
                 }
@@ -319,9 +320,8 @@ public class AI {
                     if (hasMoneyAmount(game, potentialCost)) {
                         System.out.println("Upgrading tower (near " + point.getX() + ", " + point.getY() + ") at " + i + ", " + j);
 
-                        totalCost += potentialCost;
                         game.upgradeTower(t.getId());
-                        moneySpent(potentialCost);
+                        moneySpent(game, potentialCost);
 
                         return;
                     }
@@ -337,8 +337,11 @@ public class AI {
         return ((game.getMyInformation().getMoney() * defenceBudgetCoeff - spendingMoney) >= potentialCost);
     }
 
-    public void moneySpent(double amount) {
+    public void moneySpent(World game, double amount) {
         spendingMoney += amount;
+
+
+        totalCost += amount * (1 + avoidSpendingTooMuchMoneyTooSoonCoeff * ((totalTurns - game.getCurrentTurn()) / totalTurns));
     }
 
     private boolean IsOutOfBounds(World game, int i, int j) {
