@@ -118,10 +118,11 @@ public class AI {
                       scoreSurvivedTurnsCoeff * (totalTurns - game.getCurrentTurn());
 
         String stats = "";
+        stats += score + System.lineSeparator();
         stats += totalCost + System.lineSeparator();
         stats += game.getMyInformation().getStrength() + System.lineSeparator();
-        stats += cost + System.lineSeparator();
         stats += heatMapScore + System.lineSeparator();
+        stats += game.getCurrentTurn() + System.lineSeparator();
 
         System.out.println("Stats:" + System.lineSeparator() + stats);
 
