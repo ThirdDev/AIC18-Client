@@ -38,7 +38,7 @@ public class AI {
     final double scoreCostCoeff = 100.0;
     final double scoreHealthCoeff = -20.0;
     final double scoreHeatMapCoeff = -20.0;
-    final double scoreSurvivedTurnsCoeff = 1.0;
+    final double scoreSurvivedTurnsCoeff = -2.0;
 
     final double defenceBudgetCoeff = 0.5;
     final double avoidSpendingTooMuchMoneyTooSoonCoeff = 1.0;
