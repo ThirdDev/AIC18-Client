@@ -38,6 +38,7 @@ public class AI {
     final double scoreCostCoeff = 100.0;
     final double scoreHealthCoeff = -20.0;
     final double scoreHeatMapCoeff = -20.0;
+    final double scoreSurvivedTurnsCoeff = 1.0;
 
     final double defenceBudgetCoeff = 0.5;
     final double avoidSpendingTooMuchMoneyTooSoonCoeff = 1.0;
@@ -111,9 +112,10 @@ public class AI {
 
     public void saveStats(World game) {
         double heatMapScore = roadInfos == null ? 0 : roadInfos[0].getHeatMapScore();
-        double cost = scoreCostCoeff * (1 - totalCost / maximumEstimatedCost) +
+        double score = scoreCostCoeff * (1 - totalCost / maximumEstimatedCost) +
                       scoreHealthCoeff * (Game.INITIAL_HEALTH - game.getMyInformation().getStrength()) +
-                      scoreHeatMapCoeff * heatMapScore;
+                      scoreHeatMapCoeff * heatMapScore +
+                      scoreSurvivedTurnsCoeff * (totalTurns - game.getCurrentTurn());
 
         String stats = "";
         stats += totalCost + System.lineSeparator();
