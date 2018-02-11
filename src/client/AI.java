@@ -39,6 +39,8 @@ public class AI {
     final double scoreHealthCoeff = -20.0;
     final double scoreHeatMapCoeff = -20.0;
 
+    final double defenceBudgetCoeff = 0.5;
+
     final int learningMode = 0;
 
     Random rnd = new Random();
@@ -332,7 +334,7 @@ public class AI {
     }
 
     private boolean hasMoneyAmount(World game, double potentialCost) {
-        return ((game.getMyInformation().getMoney() - spendingMoney) >= potentialCost);
+        return ((game.getMyInformation().getMoney() * defenceBudgetCoeff - spendingMoney) >= potentialCost);
     }
 
     public void moneySpent(double amount) {
