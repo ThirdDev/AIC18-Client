@@ -28,20 +28,20 @@ import static common.network.JsonSocket.TAG;
  */
 public class AI {
 
-    final double thresholdCoeff = 8;
+    final double thresholdCoeff = 3.5;
     final double maximumEstimatedCost = 5000.0;
     final double soldierNormalizeFactor = 1.0 / 300.0;
     final double damageNormalizeFactor = 1.0 / 50.0;
     final double initialWeight = 50.0;
     final double constructionCostFactor = 1.0 / 300.0;
 
-    final double scoreCostCoeff = 100.0;
-    final double scoreHealthCoeff = -20.0;
-    final double scoreHeatMapCoeff = -20.0;
-    final double scoreSurvivedTurnsCoeff = -2.0;
+    final double scoreCostCoeff = 200.0;
+    final double scoreHealthCoeff = -25.0;
+    final double scoreHeatMapCoeff = -0.0;
+    final double scoreSurvivedTurnsCoeff = -0.4;
 
-    final double defenceBudgetCoeff = 0.5;
-    final double avoidSpendingTooMuchMoneyTooSoonCoeff = 1.0;
+    final double defenceBudgetCoeff = 1.0;
+    final double avoidSpendingTooMuchMoneyTooSoonCoeff = 0.3;
     final int totalTurns = 500;
 
     final int learningMode = 0;
