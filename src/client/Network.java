@@ -22,7 +22,7 @@ public class Network {
     private static final String TAG = "Network";
 
     // Maximum number of exceptions could occur during connection. After that client will be closed.
-    public static final int MAX_NUM_EXCEPTIONS = 20;
+    public static final int MAX_NUM_EXCEPTIONS = 5;
 
     // Handles incoming messages
     private Consumer<Message> messageHandler;
@@ -170,6 +170,7 @@ public class Network {
         } catch (IOException e) {
             Log.e(TAG, "Can not terminate the client.");
         }
+        System.exit(-1);
     }
 
     public boolean isConnected() {
