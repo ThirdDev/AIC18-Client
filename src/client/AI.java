@@ -22,6 +22,7 @@ public class AI {
     Random rnd=new Random();
 
     void simpleTurn(World game) {
+        commonTurnFunctions(game);
 
         /*
         Log.d(TAG,"lightTurn Called"+" Turn:"+game.getCurrentTurn());
@@ -40,6 +41,7 @@ public class AI {
     }
 
     void complexTurn(World game) {
+        commonTurnFunctions(game);
 
         /*
         Log.d(TAG,"HeavyTurn Called"+" Turn:"+game.getCurrentTurn());
@@ -55,5 +57,10 @@ public class AI {
 
         }
         */
+    }
+
+    //This function will be called on both simple and complex turns
+    private void commonTurnFunctions(World game) {
+        BankController.handleMoney(game.getMyInformation());
     }
 }
