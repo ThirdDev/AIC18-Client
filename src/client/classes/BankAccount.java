@@ -25,6 +25,10 @@ public class BankAccount {
         percent = value;
     }
 
+    public boolean canSpend(int amount) {
+        return ((balance - amount) >= 0);
+    }
+
     public void retrieveMoney(int amount) throws NotEnoughMoneyException {
         if (balance - amount < 0)
             throw new NotEnoughMoneyException();
