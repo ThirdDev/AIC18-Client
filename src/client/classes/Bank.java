@@ -23,6 +23,7 @@ public class Bank {
 
         BankAccount ba = new BankAccount(nickname, percent);
         accounts.put(nickname, ba);
+        totalPercentage += percent;
         return ba;
     }
 
