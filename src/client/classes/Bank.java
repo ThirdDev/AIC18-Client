@@ -52,6 +52,15 @@ public class Bank {
         accountToDecrease.setPercent(accountToDecreaseNewPercentage);
     }
 
+    public static boolean IsInitialized() {
+        return (totalPercentage == 1.0);
+    }
+
+    public static void TransferMoney(BankAccount sender, BankAccount receiver, int amount) throws NotEnoughMoneyException {
+        sender.retrieveMoney(amount);
+        receiver.increaseBalance(amount);
+    }
+
     public static void income(int amount) {
         floatingMoney += amount;
         distribute();
