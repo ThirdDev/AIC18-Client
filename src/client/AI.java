@@ -23,6 +23,7 @@ public class AI {
 
     void simpleTurn(World game) {
 
+        /*
         Log.d(TAG,"lightTurn Called"+" Turn:"+game.getCurrentTurn());
 
         int t=rnd.nextInt();
@@ -35,10 +36,12 @@ public class AI {
         }else if(t%3==0){
             game.createLightUnit(rnd.nextInt(game.getAttackMapPaths().size()));
         }
+        */
     }
 
     void complexTurn(World game) {
 
+        /*
         Log.d(TAG,"HeavyTurn Called"+" Turn:"+game.getCurrentTurn());
 
         int t=rnd.nextInt();
@@ -51,5 +54,6 @@ public class AI {
             game.createCannonTower(rnd.nextInt(4),rnd.nextInt(game.getDefenceMap().getWidth()),rnd.nextInt(game.getDefenceMap().getHeight()));
 
         }
+        */
     }
 }
