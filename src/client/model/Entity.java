@@ -17,7 +17,7 @@ public class Entity {
 
     }
 
-    public Point getPoint() {
+    public Point getLocation() {
         return location;
     }
 

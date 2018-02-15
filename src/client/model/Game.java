@@ -21,7 +21,7 @@ public class Game implements World {
 
     public static int MAX_TURNS_IN_GAME;
     public static int STORM_RANGE;
-    public static int INITIAL_HEALTH;
+    public static int INITIAL_STRENGTH;
     public static int INITIAL_MONEY;
     public static int INITIAL_BEANS_COUNT;
     public static int INITIAL_STORMS_COUNT;
@@ -152,7 +152,7 @@ public class Game implements World {
         int storms = paramsArray.get(4).getAsInt();
         int stormRange = paramsArray.get(5).getAsInt();
 
-        INITIAL_HEALTH = initHealth;
+        INITIAL_STRENGTH = initHealth;
         INITIAL_MONEY = initMoney;
         INITIAL_BEANS_COUNT = beans;
         INITIAL_STORMS_COUNT = storms;
@@ -204,7 +204,6 @@ public class Game implements World {
         ArcherTower.DAMAGE_COEFF = archerDetails.get(4).getAsDouble();
         ArcherTower.ATTACK_SPEED = archerDetails.get(5).getAsInt();
         ArcherTower.ATTACK_RANGE = archerDetails.get(6).getAsInt();
-        ArcherTower.ATTACK_RANGE_SUM = canonDetails.get(7).getAsInt();
 
         CannonTower.INITIAL_PRICE = canonDetails.get(0).getAsInt();
         CannonTower.INITIAL_LEVEL_UP_PRICE = canonDetails.get(1).getAsInt();
@@ -213,7 +212,6 @@ public class Game implements World {
         CannonTower.DAMAGE_COEFF = canonDetails.get(4).getAsDouble();
         CannonTower.ATTACK_SPEED = canonDetails.get(5).getAsInt();
         CannonTower.ATTACK_RANGE = canonDetails.get(6).getAsInt();
-        CannonTower.ATTACK_RANGE_SUM = canonDetails.get(7).getAsInt();
 
     }
 
@@ -448,10 +446,10 @@ public class Game implements World {
 
             Log.d(TAG, "Bean planted At x:" + x + ",y:" + y + " -> " + "isMyMap:" + isMymap);
             if (!isMymap) {
-                beansInThisCycle.add(new BeanEvent(Owner.ENEMY, new Point(x, y)));
+                beansInThisCycle.add(new BeanEvent(Owner.ME, new Point(x, y)));
                 getAttackMap().getCellsGrid()[y][x] = new BlockCell(x, y);
             } else {
-                beansInThisCycle.add(new BeanEvent(Owner.ME, new Point(x, y)));
+                beansInThisCycle.add(new BeanEvent(Owner.ENEMY, new Point(x, y)));
                 getDefenceMap().getCellsGrid()[y][x] = new BlockCell(x, y);
             }
         }
@@ -511,6 +509,10 @@ public class Game implements World {
         sender.accept(new Message(Event.EVENT, event));
 
         Log.d(TAG, "Request: upgrade tower with TowerId:" + tid);
+    }
+
+    public void upgradeTower(Tower tower) {
+        upgradeTower(tower.getId());
     }
 
     public void plantBean(int x, int y) {
@@ -647,8 +649,8 @@ public class Game implements World {
 
             else {
 
-                int x = cell.getPoint().getX();
-                int y = cell.getPoint().getY();
+                int x = cell.getLocation().getX();
+                int y = cell.getLocation().getY();
 
                 ArrayList<Cell> adjnct = new ArrayList<>();
 

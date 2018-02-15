@@ -29,10 +29,6 @@ public class Tower extends Entity {
 
     public int getPrice(){return 0;}
 
-    public int getAttackRange(int level){
-        return 0;
-    }
-
     public int getAttackRange(){return 0;}
 
     public int getAttackSpeed(){

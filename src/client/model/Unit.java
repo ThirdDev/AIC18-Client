@@ -45,11 +45,15 @@ public class Unit extends Entity {
         return this.level;
     }
 
+    public int getHealth() {
+        return this.health;
+    }
+
     public Path getPath(){
         return this.path;
     }
 
-    public int getIncome(){
+    public int getAddedIncome(){
         return 0;
     }
 
@@ -58,6 +62,6 @@ public class Unit extends Entity {
     public String toString() {
         return "Unit:: "+"health:"+health+" price:"+getPrice()+" damage:"+getDamage()
                 +" moveSpeed:"+ getMoveSpeed()+" visionRange:"+ getVisionRange()
-                +" Income:"+getIncome()+" bounty:"+getBounty()+super.toString();
+                +" Income:"+getAddedIncome()+" bounty:"+getBounty()+super.toString();
     }
 }

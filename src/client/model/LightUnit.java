@@ -49,7 +49,7 @@ public class LightUnit extends Unit {
         return VISION_RANGE;
     }
 
-    public int getIncome() {
+    public int getAddedIncome() {
         return ADDED_INCOME;
     }
 

@@ -37,6 +37,8 @@ public interface World {
 
     void upgradeTower(int tid);
 
+    void upgradeTower(Tower tower);
+
     void plantBean(int x, int y);
 
     void createStorm(int x, int y);
