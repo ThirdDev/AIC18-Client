@@ -50,14 +50,6 @@ public class GeneCollection {
         }
     }
 
-    public byte[] getCreeps(String key) {
-        return data.get(key)[0];
-    }
-
-    public byte[] getHeros(String key) {
-        return data.get(key)[1];
-    }
-
     public Collection<byte[][]> getAllValues() {
         return data.values();
     }
