@@ -17,8 +17,8 @@ public class LightUnit extends Unit {
     public static int LEVEL_UP_THRESHOLD;
     public static int ADDED_INCOME;
 
-    public LightUnit(int x, int y, Owner owner, int level, int id,int health,Path path) {
-        super(x, y, owner, level, id,health,path);
+    public LightUnit(int x, int y, Owner owner, int level, int id, int health, Path path) {
+        super(x, y, owner, level, id, health, path);
     }
 
     public int getMoveSpeed() {

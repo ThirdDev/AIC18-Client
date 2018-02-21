@@ -11,6 +11,7 @@ public class Cell {
         location = new Point(x, y);
 
     }
+
     public Point getLocation() {
         return location;
     }

@@ -1,5 +1,6 @@
 package client;
 
+import client.classes.genes.GeneCollections;
 import client.model.*;
 import common.util.Log;
 
@@ -19,7 +20,11 @@ import static common.network.JsonSocket.TAG;
  */
 public class AI {
 
-    Random rnd=new Random();
+    Random rnd = new Random();
+
+    public AI() {
+        GeneCollections.getCollections();
+    }
 
     void simpleTurn(World game) {
         commonTurnFunctions(game);
