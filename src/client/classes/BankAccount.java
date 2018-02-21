@@ -13,9 +13,17 @@ public class BankAccount {
         balance = 0;
     }
 
-    public String getNickname() { return nickname; }
-    public double getPercent() { return percent; }
-    public int getBalance() { return balance; }
+    public String getNickname() {
+        return nickname;
+    }
+
+    public double getPercent() {
+        return percent;
+    }
+
+    public int getBalance() {
+        return balance;
+    }
 
     protected void increaseBalance(int amount) {
         balance += amount;

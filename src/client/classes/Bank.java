@@ -1,6 +1,7 @@
 package client.classes;
 
 import client.classes.exceptions.*;
+
 import java.util.*;
 
 public class Bank {
@@ -15,7 +16,8 @@ public class Bank {
         floatingMoney = 0;
     }
 
-    private Bank() {} //Static class
+    private Bank() {
+    } //Static class
 
     public static BankAccount registerAccount(String nickname, double percent) throws TotalPercentageExceededException {
         if ((totalPercentage + percent) > 1.0)
@@ -68,9 +70,9 @@ public class Bank {
 
     private static void distribute() {
         for (BankAccount ba : accounts.values()) {
-           int amount = (int)Math.floor(ba.getPercent() * floatingMoney);
-           ba.increaseBalance(amount);
-           floatingMoney -= amount;
+            int amount = (int) Math.floor(ba.getPercent() * floatingMoney);
+            ba.increaseBalance(amount);
+            floatingMoney -= amount;
         }
     }
 }

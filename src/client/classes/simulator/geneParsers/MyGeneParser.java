@@ -29,8 +29,7 @@ public class MyGeneParser implements GeneParser {
 
     }
 
-    public static int geneToTroopCount(double a)
-    {
-        return (int)Math.max(7, a) - 7;
+    public static int geneToTroopCount(double a) {
+        return (int) Math.max(7, a) - 7;
     }
 }

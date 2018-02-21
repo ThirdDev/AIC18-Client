@@ -11,7 +11,8 @@ public class BankController {
 
     private static int lastTurnMoney = 0;
 
-    private BankController() { } //Static class
+    private BankController() {
+    } //Static class
 
     public static void handleMoney(Player player) {
         if (!Bank.IsInitialized())
@@ -27,8 +28,7 @@ public class BankController {
             System.out.println("Initializing bank...");
             Bank.registerAccount(BANK_ACCOUNT_ATTACK, 0.5);
             Bank.registerAccount(BANK_ACCOUNT_DEFENCE, 0.5);
-        }
-        catch (TotalPercentageExceededException e) {
+        } catch (TotalPercentageExceededException e) {
             System.out.println("Something went terribly wrong in bank initialization !!!");
         }
     }

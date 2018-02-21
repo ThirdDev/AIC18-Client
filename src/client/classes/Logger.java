@@ -3,7 +3,8 @@ package client.classes;
 public class Logger {
 
     //Singleton class
-    private Logger() { }
+    private Logger() {
+    }
 
     public static void print(String s) {
         System.out.print(s);

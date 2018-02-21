@@ -67,7 +67,7 @@ public class Controller {
     public void start() {
         try {
             network = new Network(this::handleMessage);
-            sender=network::send;
+            sender = network::send;
             game = new Game(sender);
             ai = new AI();
             network.setConnectionData(host, port, token);
@@ -129,30 +129,30 @@ public class Controller {
     private void handleTurnMessage(Message msg) {
 
         game.setCurrentTurn(game.getCurrentTurn() + 1);
-        event=new Event("end", new Object[]{game.getCurrentTurn()});
+        event = new Event("end", new Object[]{game.getCurrentTurn()});
         game.handleTurnMessage(msg);
 
-        Log.d(TAG, "----------------------LOG-START:"+game.getCurrentTurn()+"-------------------");
-        Log.d(TAG,"MyUnits");
+        Log.d(TAG, "----------------------LOG-START:" + game.getCurrentTurn() + "-------------------");
+        Log.d(TAG, "MyUnits");
         for (int i = 0; i < game.getMyUnits().size(); i++) {
-            Log.d(TAG,"Alive:"+game.getMyUnits().get(i));
+            Log.d(TAG, "Alive:" + game.getMyUnits().get(i));
         }
-        Log.d(TAG,"");
-        Log.d(TAG,"EnemyUnits");
+        Log.d(TAG, "");
+        Log.d(TAG, "EnemyUnits");
         for (int i = 0; i < game.getEnemyUnits().size(); i++) {
-            Log.d(TAG,"Alive:"+game.getEnemyUnits().get(i));
+            Log.d(TAG, "Alive:" + game.getEnemyUnits().get(i));
         }
-        Log.d(TAG,"");
-        Log.d(TAG,"MyTowers");
+        Log.d(TAG, "");
+        Log.d(TAG, "MyTowers");
         for (int i = 0; i < game.getMyTowers().size(); i++) {
-            Log.d(TAG,"Working:"+game.getMyTowers().get(i));
+            Log.d(TAG, "Working:" + game.getMyTowers().get(i));
         }
-        Log.d(TAG,"");
-        Log.d(TAG,"EnemyTowers");
+        Log.d(TAG, "");
+        Log.d(TAG, "EnemyTowers");
         for (int i = 0; i < game.getVisibleEnemyTowers().size(); i++) {
-            Log.d(TAG,"Working:"+game.getVisibleEnemyTowers().get(i));
+            Log.d(TAG, "Working:" + game.getVisibleEnemyTowers().get(i));
         }
-        Log.d(TAG,"");
+        Log.d(TAG, "");
         Log.d(TAG, "DeadUnits---------");
         for (int i = 0; i < game.getDeadUnitsInThisTurn().size(); i++) {
             Log.d(TAG, "Died:" + game.getDeadUnitsInThisTurn().get(i));
@@ -177,17 +177,14 @@ public class Controller {
         for (int i = 0; i < game.getStormsInThisTurn().size(); i++) {
             Log.d(TAG, "Bean:" + game.getStormsInThisTurn().get(i));
         }
-        Log.d(TAG, "----------------------LOG-END:"+game.getCurrentTurn()+"--------------------");
+        Log.d(TAG, "----------------------LOG-END:" + game.getCurrentTurn() + "--------------------");
 
 
-        if ((game.getCurrentTurn() % 10) != 0){
-            Log.d(TAG,"Simple Turn Called in turn:"+game.getCurrentTurn());
+        if ((game.getCurrentTurn() % 10) != 0) {
+            Log.d(TAG, "Simple Turn Called in turn:" + game.getCurrentTurn());
             lightTurn();
-        }
-
-
-        else if (game.getCurrentTurn() % 10 == 0){
-            Log.d(TAG,"Complex Turn Called in turn:"+game.getCurrentTurn());
+        } else if (game.getCurrentTurn() % 10 == 0) {
+            Log.d(TAG, "Complex Turn Called in turn:" + game.getCurrentTurn());
             heavyTurn();
         }
 
@@ -231,7 +228,7 @@ public class Controller {
         }.start();
     }
 
-    private void sendEndMsg(Event event){
+    private void sendEndMsg(Event event) {
         sender.accept(new Message(Event.EVENT, event));
     }
 

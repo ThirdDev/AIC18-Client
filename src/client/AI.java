@@ -19,7 +19,7 @@ import static common.network.JsonSocket.TAG;
  */
 public class AI {
 
-    Random rnd=new Random();
+    Random rnd = new Random();
 
     void simpleTurn(World game) {
         commonTurnFunctions(game);

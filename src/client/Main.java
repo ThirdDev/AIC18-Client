@@ -26,7 +26,7 @@ public class Main {
     }
 
     private static void run(String[] args) throws FileNotFoundException {
-        if(GLOBAL_VERBOSE_FLAG || Arrays.asList(args).contains("--verbose")) {
+        if (GLOBAL_VERBOSE_FLAG || Arrays.asList(args).contains("--verbose")) {
             Log.DEV_MODE = true;
             Log.LOG_LEVEL = Log.VERBOSE;
 

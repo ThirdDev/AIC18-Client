@@ -21,7 +21,9 @@ public class CannonTower extends Tower {
         return (int) (INITIAL_DAMAGE * Math.pow(DAMAGE_COEFF, level - 1));
     }
 
-    public int getDamage(){return this.getDamage(this.getLevel());}
+    public int getDamage() {
+        return this.getDamage(this.getLevel());
+    }
 
     public int getPrice(int level) {
         int result = INITIAL_PRICE;
@@ -30,7 +32,7 @@ public class CannonTower extends Tower {
         return result;
     }
 
-    public int getPrice(){
+    public int getPrice() {
         return this.getPrice(this.getLevel());
     }
 

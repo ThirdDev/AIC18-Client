@@ -9,7 +9,7 @@ public class GrassCell extends Cell {
 
     public GrassCell(int x, int y, Tower tower) {
         super(x, y);
-        this.tower=tower;
+        this.tower = tower;
     }
 
     public boolean isEmpty() {

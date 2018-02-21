@@ -14,19 +14,19 @@ public class Map {
     public Map(int width, int height, Cell[][] cells) {
         this.width = width;
         this.height = height;
-        this.cells=cells;
+        this.cells = cells;
     }
 
     public Cell[][] getCellsGrid() {
         return cells;
     }
 
-    public Cell getCell(int x,int y){
+    public Cell getCell(int x, int y) {
         return this.cells[y][x];
     }
 
-    public ArrayList<Cell> getCellsList(){
-        ArrayList<Cell> cellsList=new ArrayList<>();
+    public ArrayList<Cell> getCellsList() {
+        ArrayList<Cell> cellsList = new ArrayList<>();
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
@@ -53,7 +53,7 @@ public class Map {
                         ((RoadCell) tmpCell).getUnits().remove(k);
                     }
                 else if (tmpCell instanceof GrassCell)
-                    cells[i][j]=new GrassCell(j,i,null);
+                    cells[i][j] = new GrassCell(j, i, null);
             }
         }
     }

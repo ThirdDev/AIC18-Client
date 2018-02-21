@@ -5,17 +5,16 @@ import client.classes.simulator.judges.*;
 import client.classes.simulator.towers.*;
 import client.classes.simulator.units.*;
 import client.classes.simulator.geneParsers.*;
+
 import java.util.*;
 
-public class Simulator
-{
+public class Simulator {
     int pathLength;
     private int maximumTurns;
     Cannon[] cannons;
     Archer[] archers;
 
-    public Simulator(int pathLength, int maximumTurns, Cannon[] cannons, Archer[] archers)
-    {
+    public Simulator(int pathLength, int maximumTurns, Cannon[] cannons, Archer[] archers) {
         this.pathLength = pathLength;
         this.maximumTurns = maximumTurns;
 
@@ -47,8 +46,7 @@ public class Simulator
         return bestGene;
     }
 
-    public SimulationResult simulate(GeneParser parser)
-    {
+    public SimulationResult simulate(GeneParser parser) {
         List<Unit> units = new ArrayList<>();
         List<Unit> deadUnits = new ArrayList<>();
         List<Unit> survivorUnits = new ArrayList<>();
@@ -60,8 +58,7 @@ public class Simulator
         for (Archer item : archers)
             item.reset();
 
-        for (int i = 0; i < maximumTurns; i++)
-        {
+        for (int i = 0; i < maximumTurns; i++) {
             processTowers(units);
             deadUnits.addAll(processDeadUnits(units));
 
@@ -112,8 +109,7 @@ public class Simulator
         return sr;
     }
 
-    private List<Unit> processSurvivedUnits(List<Unit> units)
-    {
+    private List<Unit> processSurvivedUnits(List<Unit> units) {
         List<Unit> survivedUnits = new ArrayList<>();
 
         for (Unit u : units)
@@ -126,8 +122,7 @@ public class Simulator
         return survivedUnits;
     }
 
-    private List<Unit> processDeadUnits(List<Unit> units)
-    {
+    private List<Unit> processDeadUnits(List<Unit> units) {
         List<Unit> deadUnits = new ArrayList<>();
 
         for (Unit u : units)
@@ -140,32 +135,27 @@ public class Simulator
         return deadUnits;
     }
 
-    private void processTowers(List<Unit> units)
-    {
-        for (Tower item : cannons)
-        {
+    private void processTowers(List<Unit> units) {
+        for (Tower item : cannons) {
             if (!item.canAttack())
                 continue;
 
             Unit[] probablyAffectedUnits = units.stream().filter(x -> item.isInRange(x.position)).sorted((x1, x2) -> Integer.compare(x2.position, x1.position)).toArray(Unit[]::new);
             Unit[] affectedUnits = Arrays.stream(probablyAffectedUnits).filter(x -> x.position == probablyAffectedUnits[0].position).toArray(Unit[]::new);
 
-            if (affectedUnits.length > 0)
-            {
+            if (affectedUnits.length > 0) {
                 item.attack();
                 Arrays.stream(affectedUnits).forEach(x -> x.getAttackedByCannon());
             }
         }
 
-        for (Tower item : archers)
-        {
+        for (Tower item : archers) {
             if (!item.canAttack())
                 continue;
 
             Unit affectedUnit = units.stream().filter(x -> item.isInRange(x.position)).sorted((x1, x2) -> Integer.compare(x2.position, x1.position)).findFirst().orElse(null);
 
-            if (affectedUnit != null)
-            {
+            if (affectedUnit != null) {
                 item.attack();
                 affectedUnit.getAttackedByArcher();
             }
