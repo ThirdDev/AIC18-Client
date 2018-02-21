@@ -1,11 +1,13 @@
 package client.classes.simulator;
 
+import client.classes.Logger;
+import client.classes.simulator.judges.*;
 import client.classes.simulator.towers.*;
 import client.classes.simulator.units.*;
 import client.classes.simulator.geneParsers.*;
 import java.util.*;
 
-public  class Simulator
+public class Simulator
 {
     int pathLength;
     private int maximumTurns;
@@ -21,7 +23,31 @@ public  class Simulator
         this.archers = archers;
     }
 
-    public SimulationResult Simulate(GeneParser parser)
+    public static double[] findBestGene(List<double[]> genes, Simulator simulator, Judge judge, int pathLength, long maximumTimeMilliseconds) {
+        long startTime = System.currentTimeMillis();
+
+        double[] bestGene = null;
+        double score = Double.MIN_VALUE;
+
+        for (double[] gene : genes) {
+            SimulationResult result = simulator.simulate(new MyGeneParser(gene, pathLength));
+            double currentScore = judge.calculateScore(result);
+
+            if (currentScore > score) {
+                bestGene = gene;
+            }
+
+            long tDelta = System.currentTimeMillis() - startTime;
+            if (tDelta > maximumTimeMilliseconds) {
+                Logger.println("Simulator.findBestGene: maximum allowed time exceeded. Will report the best from examined candidates.");
+                break;
+            }
+        }
+
+        return bestGene;
+    }
+
+    public SimulationResult simulate(GeneParser parser)
     {
         List<Unit> units = new ArrayList<>();
         List<Unit> deadUnits = new ArrayList<>();
@@ -36,11 +62,11 @@ public  class Simulator
 
         for (int i = 0; i < maximumTurns; i++)
         {
-            ProcessTowers(units);
-            deadUnits.addAll(ProcessDeadUnits(units));
+            processTowers(units);
+            deadUnits.addAll(processDeadUnits(units));
 
             units.forEach(x -> x.goForward());
-            survivorUnits.addAll(ProcessSurvivedUnits(units));
+            survivorUnits.addAll(processSurvivedUnits(units));
 
             AttackAction action = parser.parse(i);
             for (int j = 0; j < action.getCountOfCreeps(); j++)
@@ -86,7 +112,7 @@ public  class Simulator
         return sr;
     }
 
-    private List<Unit> ProcessSurvivedUnits(List<Unit> units)
+    private List<Unit> processSurvivedUnits(List<Unit> units)
     {
         List<Unit> survivedUnits = new ArrayList<>();
 
@@ -100,7 +126,7 @@ public  class Simulator
         return survivedUnits;
     }
 
-    private List<Unit> ProcessDeadUnits(List<Unit> units)
+    private List<Unit> processDeadUnits(List<Unit> units)
     {
         List<Unit> deadUnits = new ArrayList<>();
 
@@ -114,7 +140,7 @@ public  class Simulator
         return deadUnits;
     }
 
-    private void ProcessTowers(List<Unit> units)
+    private void processTowers(List<Unit> units)
     {
         for (Tower item : cannons)
         {
