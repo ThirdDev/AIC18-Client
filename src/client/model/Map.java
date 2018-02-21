@@ -49,9 +49,7 @@ public class Map {
             for (int j = 0; j < width; j++) {
                 Cell tmpCell = cells[i][j];
                 if (tmpCell instanceof RoadCell)
-                    for (int k = 0; k < ((RoadCell) tmpCell).getUnits().size(); k++) {
-                        ((RoadCell) tmpCell).getUnits().remove(k);
-                    }
+                    ((RoadCell) tmpCell).getUnits().clear();
                 else if (tmpCell instanceof GrassCell)
                     cells[i][j] = new GrassCell(j, i, null);
             }

@@ -179,16 +179,15 @@ public class Controller {
         }
         Log.d(TAG, "----------------------LOG-END:" + game.getCurrentTurn() + "--------------------");
 
-
-        if ((game.getCurrentTurn() % 10) != 0) {
-            Log.d(TAG, "Simple Turn Called in turn:" + game.getCurrentTurn());
+        if ((game.getCurrentTurn() % 10) != 0){
+            Log.d(TAG,"Simple Turn Called in turn:"+game.getCurrentTurn());
             lightTurn();
-        } else if (game.getCurrentTurn() % 10 == 0) {
-            Log.d(TAG, "Complex Turn Called in turn:" + game.getCurrentTurn());
-            heavyTurn();
         }
 
-
+        else if (game.getCurrentTurn() % 10 == 0){
+            Log.d(TAG,"Complex Turn Called in turn:"+game.getCurrentTurn());
+            heavyTurn();
+        }
     }
 
     /**
