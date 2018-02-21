@@ -32,4 +32,22 @@ public class BankController {
             System.out.println("Something went terribly wrong in bank initialization !!!");
         }
     }
+
+    @SuppressWarnings("Duplicates")
+    public static void setAttackPercentage(double percentage) throws AccountNotFoundException, InvalidArgumentException {
+        BankAccount attackAccout = Bank.getAccount(BANK_ACCOUNT_ATTACK);
+        BankAccount defendAccount = Bank.getAccount(BANK_ACCOUNT_DEFENCE);
+        double previousAttackPercentage = attackAccout.getPercent();
+        double delta = percentage - previousAttackPercentage;
+        Bank.changeDistributionPercentage(attackAccout, defendAccount, delta);
+    }
+
+    @SuppressWarnings("Duplicates")
+    public static void setDefendPercentage(double percentage) throws AccountNotFoundException, InvalidArgumentException {
+        BankAccount attackAccout = Bank.getAccount(BANK_ACCOUNT_ATTACK);
+        BankAccount defendAccount = Bank.getAccount(BANK_ACCOUNT_DEFENCE);
+        double previousDefendPercentage = defendAccount.getPercent();
+        double delta = percentage - previousDefendPercentage;
+        Bank.changeDistributionPercentage(defendAccount, attackAccout, delta);
+    }
 }
