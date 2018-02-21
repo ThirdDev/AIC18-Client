@@ -1,5 +1,7 @@
 package client.model;
 
+import javafx.geometry.Side;
+
 import java.util.ArrayList;
 
 /**
@@ -8,6 +10,7 @@ import java.util.ArrayList;
 public class Path {
 
     private ArrayList<RoadCell> road;
+    private ArrayList<SideWayCell> sideWayCells;
 
     public Path(ArrayList<RoadCell> road) {
         this.road = road;
@@ -15,6 +18,15 @@ public class Path {
 
     public ArrayList<RoadCell> getRoad() {
         return road;
+    }
+
+    public ArrayList<SideWayCell> getSideWayCells(){
+
+        if(sideWayCells == null){
+
+
+        }
+        return sideWayCells;
     }
 
     @Override
@@ -26,4 +38,6 @@ public class Path {
         }
         return result;
     }
+
+
 }
