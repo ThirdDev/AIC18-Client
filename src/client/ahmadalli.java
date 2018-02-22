@@ -30,11 +30,20 @@ public class ahmadalli {
                 .flatMap(x -> x.getRoad().stream())
                 .flatMap(x -> Util.radiusCells(x, 2, world.getDefenceMap()).stream())
                 .filter(x -> x instanceof GrassCell)
+                .map(x -> (GrassCell) x)
+                .filter(x -> x.getTower() == null)
                 .distinct()
                 .sorted(compareByTroopAndRoadCellCount(world))
                 .toArray(GrassCell[]::new);
 
-        GrassCell randomSideWayCell = sidewayCells[rnd.nextInt(sidewayCells.length)];
+
+        GrassCell cellToBuild = null;
+
+        // GrassCell randomSideWayCell = sidewayCells[rnd.nextInt(sidewayCells.length)];
+        // cellToBuild = randomSideWayCell;
+
+        cellToBuild = sidewayCells[sidewayCells.length - 1];
+
         BankAccount defendAccount = null;
         try {
             defendAccount = Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE);
@@ -47,14 +56,14 @@ public class ahmadalli {
         if (towerType == 0 && defendAccount.canSpend(ArcherTower.INITIAL_PRICE)) {
             try {
                 defendAccount.retrieveMoney(ArcherTower.INITIAL_PRICE);
-                world.createArcherTower(level, randomSideWayCell.getLocation().getX(), randomSideWayCell.getLocation().getX());
+                world.createArcherTower(level, cellToBuild.getLocation().getX(), cellToBuild.getLocation().getX());
             } catch (Exception ex) {
             }
         }
         if (towerType == 1 && defendAccount.canSpend(CannonTower.INITIAL_PRICE)) {
             try {
                 defendAccount.retrieveMoney(CannonTower.INITIAL_PRICE);
-                world.createCannonTower(level, randomSideWayCell.getLocation().getX(), randomSideWayCell.getLocation().getX());
+                world.createCannonTower(level, cellToBuild.getLocation().getX(), cellToBuild.getLocation().getX());
             } catch (Exception ex) {
             }
         }
