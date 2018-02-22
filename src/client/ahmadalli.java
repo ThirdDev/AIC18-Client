@@ -2,12 +2,9 @@ package client;
 
 import client.classes.Bank;
 import client.classes.BankAccount;
-import client.classes.exceptions.AccountNotFoundException;
 import client.model.*;
 
-import java.util.ArrayList;
 import java.util.Random;
-import java.util.stream.Stream;
 
 public class ahmadalli {
     public static void plantRandomTowerInASidewayCell(World world) {
@@ -28,10 +25,18 @@ public class ahmadalli {
         int towerType = rnd.nextInt() % 2;
         int level = 1;
         if (towerType == 0 && defendAccount.canSpend(ArcherTower.INITIAL_PRICE)) {
-            world.createArcherTower(level, randomSideWayCell.getLocation().getX(), randomSideWayCell.getLocation().getX());
+            try {
+                defendAccount.retrieveMoney(ArcherTower.INITIAL_PRICE);
+                world.createArcherTower(level, randomSideWayCell.getLocation().getX(), randomSideWayCell.getLocation().getX());
+            } catch (Exception ex) {
+            }
         }
         if (towerType == 1 && defendAccount.canSpend(CannonTower.INITIAL_PRICE)) {
-            world.createCannonTower(level, randomSideWayCell.getLocation().getX(), randomSideWayCell.getLocation().getX());
+            try {
+                defendAccount.retrieveMoney(CannonTower.INITIAL_PRICE);
+                world.createCannonTower(level, randomSideWayCell.getLocation().getX(), randomSideWayCell.getLocation().getX());
+            } catch (Exception ex) {
+            }
         }
     }
 
