@@ -11,8 +11,11 @@ import java.util.Set;
 
 public class FullStateGeneCollection extends GeneCollection {
 
+    String resourceName;
+
     public FullStateGeneCollection(String resourceName) {
         super(resourceName);
+        this.resourceName = resourceName;
     }
 
     @Override
@@ -23,8 +26,10 @@ public class FullStateGeneCollection extends GeneCollection {
         String key = String.join("-", Arrays.stream(cannons).sorted().mapToObj(String::valueOf).toArray(String[]::new))
                 + "," + String.join("-", Arrays.stream(archers).sorted().mapToObj(String::valueOf).toArray(String[]::new));
 
-        if (!data.containsKey(key))
+        if (!data.containsKey(key)) {
+            Logger.error("Can't find key " + key + " in CountStateGeneCollection of " + resourceName);
             return null;
+        }
 
         byte[][] item = data.get(key);
 

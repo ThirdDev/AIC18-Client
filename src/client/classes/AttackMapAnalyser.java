@@ -61,7 +61,10 @@ public class AttackMapAnalyser {
         updateNewTowers(game);
         removeDestroyedTowers(game);
 
-        return pathToTowers.get(path);
+        if (pathToTowers.containsKey(path))
+            return pathToTowers.get(path);
+        else
+            return new HashSet<>();
     }
 
     private static void removeDestroyedTowers(World game) {
