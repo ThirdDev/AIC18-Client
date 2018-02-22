@@ -1,6 +1,13 @@
 package client.classes.genes;
 
+import client.classes.Logger;
+import client.model.*;
+
+import javax.rmi.CORBA.Util;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 public class FullStateGeneCollection extends GeneCollection {
 
@@ -8,11 +15,12 @@ public class FullStateGeneCollection extends GeneCollection {
         super(resourceName);
     }
 
-    public Recipe getRecipe(int[] creeps, int[] archers) {
-        Arrays.sort(creeps);
+    @Override
+    public Recipe getRecipe(int[] cannons, int[] archers) {
+        Arrays.sort(cannons);
         Arrays.sort(archers);
 
-        String key = String.join("-", Arrays.stream(creeps).sorted().mapToObj(String::valueOf).toArray(String[]::new))
+        String key = String.join("-", Arrays.stream(cannons).sorted().mapToObj(String::valueOf).toArray(String[]::new))
                 + "," + String.join("-", Arrays.stream(archers).sorted().mapToObj(String::valueOf).toArray(String[]::new));
 
         if (!data.containsKey(key))

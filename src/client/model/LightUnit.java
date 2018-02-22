@@ -57,4 +57,27 @@ public class LightUnit extends Unit {
     public String toString() {
         return "Light" + super.toString();
     }
+
+
+    static int createdUnits = 0;
+
+    public static int getCurrentPrice() {
+        return INITIAL_PRICE + PRICE_INCREASE * (createdUnits % 60);
+    }
+
+    public static int getCurrentPrice(int count) {
+        int totalPrice = 0;
+        int createdUnitsTemp = createdUnits;
+
+        for (int i = 0; i < count; i++) {
+            totalPrice += INITIAL_PRICE + PRICE_INCREASE * (createdUnitsTemp % 60);
+            createdUnitsTemp++;
+        }
+
+        return totalPrice;
+    }
+
+    public static void createdUnit() {
+        createdUnits++;
+    }
 }

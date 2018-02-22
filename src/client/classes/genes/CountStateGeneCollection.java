@@ -1,6 +1,11 @@
 package client.classes.genes;
 
+import client.model.ArcherTower;
+import client.model.CannonTower;
+import client.model.Tower;
+
 import java.util.Arrays;
+import java.util.List;
 
 public class CountStateGeneCollection extends GeneCollection {
 
@@ -8,8 +13,13 @@ public class CountStateGeneCollection extends GeneCollection {
         super(resourceName);
     }
 
-    public Recipe getRecipe(int creepsCount, int archersCount) {
-        String key = creepsCount + "," + archersCount;
+    @Override
+    public Recipe getRecipe(int[] cannons, int[] archers) {
+        return getRecipe(cannons.length, archers.length);
+    }
+
+    private Recipe getRecipe(int cannonsCount, int archersCount) {
+        String key = cannonsCount + "," + archersCount;
 
         if (!data.containsKey(key))
             return null;

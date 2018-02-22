@@ -58,4 +58,28 @@ public class HeavyUnit extends Unit {
     public String toString() {
         return "Heavy" + super.toString();
     }
+
+
+
+    static int createdUnits = 0;
+
+    public static int getCurrentPrice() {
+        return INITIAL_PRICE + PRICE_INCREASE * (createdUnits % 15);
+    }
+
+    public static int getCurrentPrice(int count) {
+        int totalPrice = 0;
+        int createdUnitsTemp = createdUnits;
+
+        for (int i = 0; i < count; i++) {
+            totalPrice += INITIAL_PRICE + PRICE_INCREASE * (createdUnitsTemp % 15);
+            createdUnitsTemp++;
+        }
+
+        return totalPrice;
+    }
+
+    public static void createdUnit() {
+        createdUnits++;
+    }
 }
