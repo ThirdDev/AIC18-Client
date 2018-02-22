@@ -90,6 +90,8 @@ public class AI {
     private void commonTurnFunctions(World game) {
         BankController.handleMoney(game.getMyInformation());
 
+        ahmadalli.plantRandomTowerInASidewayCell(game);
+
         Attack(game);
     }
 
