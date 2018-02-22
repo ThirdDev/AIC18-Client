@@ -11,13 +11,13 @@ import java.util.stream.Stream;
 
 public class ahmadalli {
     public static void plantRandomTowerInASidewayCell(World world) {
-        SideWayCell[] sidewayCells = world.getDefenceMapPaths().stream()
+        GrassCell[] sidewayCells = world.getDefenceMapPaths().stream()
                 .flatMap(x -> x.getRoad().stream())
                 .flatMap(x -> Util.radiusCells(x, 1, world.getDefenceMap()).stream())
                 .filter(x -> x instanceof GrassCell)
-                .toArray(SideWayCell[]::new);
+                .toArray(GrassCell[]::new);
 
-        SideWayCell randomSideWayCell = sidewayCells[rnd.nextInt(sidewayCells.length)];
+        GrassCell randomSideWayCell = sidewayCells[rnd.nextInt(sidewayCells.length)];
         BankAccount defendAccount = null;
         try {
             defendAccount = Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE);
