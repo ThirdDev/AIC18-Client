@@ -14,6 +14,7 @@ public class ahmadalli {
         SideWayCell[] sidewayCells = world.getDefenceMapPaths().stream()
                 .flatMap(x -> x.getRoad().stream())
                 .flatMap(x -> Util.radiusCells(x, 1, world.getDefenceMap()).stream())
+                .filter(x -> x instanceof GrassCell)
                 .toArray(SideWayCell[]::new);
 
         SideWayCell randomSideWayCell = sidewayCells[rnd.nextInt(sidewayCells.length)];
