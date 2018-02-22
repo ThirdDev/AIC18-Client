@@ -12,6 +12,7 @@ public class ahmadalli {
                 .flatMap(x -> x.getRoad().stream())
                 .flatMap(x -> Util.radiusCells(x, 1, world.getDefenceMap()).stream())
                 .filter(x -> x instanceof GrassCell)
+                .distinct()
                 .toArray(GrassCell[]::new);
 
         GrassCell randomSideWayCell = sidewayCells[rnd.nextInt(sidewayCells.length)];
