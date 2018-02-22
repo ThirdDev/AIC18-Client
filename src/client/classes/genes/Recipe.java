@@ -1,18 +1,18 @@
 package client.classes.genes;
 
 public class Recipe {
-    byte[] creeps, archers;
+    byte[] creeps, heros;
 
-    public Recipe(byte[] creeps, byte[] archers) {
+    public Recipe(byte[] creeps, byte[] heros) {
         this.creeps = creeps;
-        this.archers = archers;
+        this.heros = heros;
     }
 
     public byte[] getCreeps() {
         return creeps;
     }
 
-    public byte[] getArchers() {
-        return archers;
+    public byte[] getHeros() {
+        return heros;
     }
 }

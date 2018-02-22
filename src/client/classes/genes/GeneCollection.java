@@ -1,13 +1,16 @@
 package client.classes.genes;
 
 import client.classes.Logger;
+import client.model.Path;
+import client.model.TowerDetails;
 
 import java.io.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
-public class GeneCollection {
+public abstract class GeneCollection {
 
     HashMap<String, byte[][]> data;
 	
@@ -53,4 +56,6 @@ public class GeneCollection {
     public Collection<byte[][]> getAllValues() {
         return data.values();
     }
+
+    public abstract Recipe getRecipe(int[] cannons, int[] archers);
 }

@@ -1,12 +1,16 @@
 package client;
 
+import client.classes.AttackMapAnalyser;
+import client.classes.Bank;
+import client.classes.BankAccount;
+import client.classes.Logger;
+import client.classes.exceptions.AccountNotFoundException;
+import client.classes.exceptions.NotEnoughMoneyException;
 import client.classes.genes.GeneCollections;
+import client.classes.genes.Recipe;
 import client.model.*;
-import common.util.Log;
 
-import java.util.Random;
-
-import static common.network.JsonSocket.TAG;
+import java.util.*;
 
 /**
  * AI class.
@@ -21,6 +25,9 @@ import static common.network.JsonSocket.TAG;
 public class AI {
 
     Random rnd = new Random();
+
+    int attackTurn = 0;
+    HashMap<Path, Recipe> currentAttackRecipe = new HashMap<>();
 
     public AI() {
         GeneCollections.getCollections();
@@ -64,8 +71,151 @@ public class AI {
         */
     }
 
+    private void InsertPathTower(World game, HashMap<Point, List<Path>> cellPaths, HashMap<Path, List<Tower>> pathTowers, Tower t, int x, int y) {
+        if (!Util.inRange(x, y, game.getAttackMap()))
+            return;
+
+        Point point = new Point(x, y);
+        if (cellPaths.containsKey(point)) {
+            for (Path p : cellPaths.get(point)) {
+                if (!pathTowers.containsKey(p))
+                    pathTowers.put(p, new ArrayList<>());
+
+                pathTowers.get(p).add(t);
+            }
+        }
+    }
+
     //This function will be called on both simple and complex turns
     private void commonTurnFunctions(World game) {
+        Logger.println("Turn " + game.getCurrentTurn());
         BankController.handleMoney(game.getMyInformation());
+
+        ahmadalli.plantRandomTowerInASidewayCell(game);
+
+        Attack(game);
+    }
+
+    private void Attack(World game) {
+        if (attackTurn == 0) {
+            Logger.println("Attack begin");
+
+            for (Path path : game.getAttackMapPaths()) {
+                Set<TowerDetails> enemyTowers = AttackMapAnalyser.getVisibleTowerDetailsForPath(game, path);
+                Recipe recipe = GeneCollections.getCollections().getRecipe(enemyTowers, path, GeneCollections.Strategy.Explore);
+                currentAttackRecipe.put(path, recipe);
+
+                Logger.println("For " + path.toString() + " : ");
+
+                Logger.print("Cannons: ");
+                for (byte b : recipe.getCreeps())
+                    Logger.print(b + ", ");
+                Logger.print("Archers: ");
+                for (byte b : recipe.getHeros())
+                    Logger.print(b + ", ");
+            }
+
+
+            Logger.println("");
+
+            ProceedAttack(game);
+        } else if (attackTurn > 0) {
+            ProceedAttack(game);
+        } else {
+            attackTurn++;
+        }
+    }
+
+    private void ProceedAttack(World game) {
+        boolean hasDoneAnything = false;
+
+        for (Path path : currentAttackRecipe.keySet()) {
+            Recipe recipe = currentAttackRecipe.get(path);
+
+            if ((attackTurn >= recipe.getCreeps().length) && (attackTurn >= recipe.getHeros().length)) {
+                continue;
+            }
+
+            hasDoneAnything = true;
+
+            int creepCount = recipe.getCreeps()[attackTurn];
+            int heroCount = recipe.getHeros()[attackTurn];
+
+            int totalPrice = LightUnit.getCurrentPrice(creepCount) + HeavyUnit.getCurrentPrice(heroCount);
+
+            try {
+                if (Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).getBalance() >= totalPrice) {
+                    if (attackTurn < recipe.getCreeps().length) {
+                        TryCreateSoldiers(game, path, UnitType.Creep, recipe.getCreeps()[attackTurn]);
+                    }
+
+                    if (attackTurn < recipe.getHeros().length) {
+                        TryCreateSoldiers(game, path, UnitType.Hero, recipe.getHeros()[attackTurn]);
+                    }
+
+                    attackTurn++;
+                }
+            } catch (AccountNotFoundException e) {
+                Logger.error("Something's very wrong in ProceedAttack!");
+            }
+        }
+
+        if (!hasDoneAnything) {
+            attackTurn = -5;
+            Logger.println("Finished creating attack wave.");
+        }
+    }
+
+    private void TryCreateSoldiers(World game, Path path, UnitType type, int count) {
+        try {
+            BankAccount attackerAccount = Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK);
+
+            int totalPrice;
+
+            if (type == UnitType.Creep)
+                totalPrice = LightUnit.getCurrentPrice(count);
+            else
+                totalPrice = HeavyUnit.getCurrentPrice(count);
+
+            attackerAccount.retrieveMoney(totalPrice);
+
+            int pathIndex = getPathIndex(game, path);
+
+            if (type == UnitType.Creep) {
+                for (int i = 0; i < count; i++) {
+                    game.createLightUnit(pathIndex);
+                    LightUnit.createdUnit();
+
+                    System.out.println("Created a creep.");
+                }
+            }
+            else {
+                for (int i = 0; i < count; i++) {
+                    game.createHeavyUnit(pathIndex);
+                    HeavyUnit.createdUnit();
+
+                    System.out.println("Created a hero.");
+                }
+            }
+
+        } catch (AccountNotFoundException e) {
+            Logger.error("Something's very wrong in TryCreateSoldiers!");
+        } catch (NotEnoughMoneyException e) {
+            Logger.error("Didn't have enough money to create " + count + " creeps. But why? we should've had enough...");
+        }
+    }
+
+    private int getPathIndex(World game, Path path) {
+        for (int i = 0; i < game.getAttackMapPaths().size(); i++)
+            if (path.equals(game.getAttackMapPaths().get(i)))
+                return i;
+
+        Logger.error("getPathIndex fatal error");
+        return -1;
+    }
+
+    public enum UnitType {
+        Creep,
+        Hero
     }
 }
