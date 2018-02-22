@@ -1,5 +1,8 @@
 package client.classes.genes;
 
+import client.model.HeavyUnit;
+import client.model.LightUnit;
+
 public class Recipe {
     byte[] creeps, heros;
 
@@ -14,5 +17,16 @@ public class Recipe {
 
     public byte[] getHeros() {
         return heros;
+    }
+
+    public int getTotalCost() {
+        int totalPrice = 0;
+
+        for (byte b : creeps)
+            totalPrice += LightUnit.getCurrentPrice(b);
+        for (byte b : heros)
+            totalPrice += HeavyUnit.getCurrentPrice(b);
+
+        return totalPrice;
     }
 }

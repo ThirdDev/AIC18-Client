@@ -102,7 +102,7 @@ public class AttackMapAnalyser {
             towerDetails.add(td);
         }
 
-        List<Cell> potentialCells = Util.radiusCells(t.getLocation(), 2, game.getAttackMap());
+        List<Cell> potentialCells = Util.radialCells(t.getLocation(), 2, game.getAttackMap());
 
         for (Path path : game.getAttackMapPaths()) {
             List<Point> confluencePoints = new ArrayList<>();

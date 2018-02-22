@@ -26,8 +26,9 @@ public class AI {
 
     Random rnd = new Random();
 
-    int attackTurn = 0;
     HashMap<Path, Recipe> currentAttackRecipe = new HashMap<>();
+    HashMap<Path, Integer> attackTurns = new HashMap<>();
+    boolean allowedToInitiateAttack = true;
 
     public AI() {
         GeneCollections.getCollections();
@@ -94,82 +95,84 @@ public class AI {
         ahmadalli.plantRandomTowerInASidewayCell(game);
 
         Attack(game);
+
+        try {
+            Logger.print("Attack budget: " + Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).getBalance());
+            Logger.print(", Defence budget: " + Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE).getBalance());
+            Logger.println(", Total: " + game.getMyInformation().getMoney());
+
+        } catch (Exception ex) {}
     }
 
     private void Attack(World game) {
-        if (attackTurn == 0) {
-            Logger.println("Attack begin");
+        for (Path path : game.getAttackMapPaths()) {
+            if (!attackTurns.containsKey(path))
+                attackTurns.put(path, 0);
 
-            for (Path path : game.getAttackMapPaths()) {
+            if (attackTurns.get(path) == 0) {
+                if (!allowedToInitiateAttack)
+                    continue;
+                Logger.println("Attack begin for " + path.toString());
+
                 Set<TowerDetails> enemyTowers = AttackMapAnalyser.getVisibleTowerDetailsForPath(game, path);
                 Recipe recipe = GeneCollections.getCollections().getRecipe(enemyTowers, path, GeneCollections.Strategy.Explore);
+
+                try {
+                    int totalCost = recipe.getTotalCost();
+                    if (!Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).canSpend(totalCost)) {
+                        Logger.println("Not enough money. (we need " + totalCost + ")");
+                        Logger.println("");
+                        continue;
+                    }
+                } catch (AccountNotFoundException e) {
+                    Logger.error("Something's very wrong in ProceedAttack!");
+                }
+
                 currentAttackRecipe.put(path, recipe);
 
-                Logger.println("For " + path.toString() + " : ");
-
-                Logger.print("Cannons: ");
+                Logger.print("Creeps: ");
                 for (byte b : recipe.getCreeps())
                     Logger.print(b + ", ");
-                Logger.print("Archers: ");
+                Logger.print("Heros: ");
                 for (byte b : recipe.getHeros())
                     Logger.print(b + ", ");
+                Logger.println("");
+
+                ProceedAttack(game, path);
+
+                allowedToInitiateAttack = false;
+            } else if (attackTurns.get(path) > 0) {
+                ProceedAttack(game, path);
+            } else {
+                attackTurns.put(path, attackTurns.get(path) + 1);
             }
-
-
-            Logger.println("");
-
-            ProceedAttack(game);
-        } else if (attackTurn > 0) {
-            ProceedAttack(game);
-        } else {
-            attackTurn++;
         }
     }
 
-    private void ProceedAttack(World game) {
-        boolean hasDoneAnything = false;
+    private void ProceedAttack(World game, Path path) {
+        Recipe recipe = currentAttackRecipe.get(path);
 
-        for (Path path : currentAttackRecipe.keySet()) {
-            Recipe recipe = currentAttackRecipe.get(path);
-
-            if ((attackTurn >= recipe.getCreeps().length) && (attackTurn >= recipe.getHeros().length)) {
-                continue;
-            }
-
-            hasDoneAnything = true;
-
-            int creepCount = recipe.getCreeps()[attackTurn];
-            int heroCount = recipe.getHeros()[attackTurn];
-
-            int totalPrice = LightUnit.getCurrentPrice(creepCount) + HeavyUnit.getCurrentPrice(heroCount);
-
-            try {
-                if (Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).getBalance() >= totalPrice) {
-                    if (attackTurn < recipe.getCreeps().length) {
-                        TryCreateSoldiers(game, path, UnitType.Creep, recipe.getCreeps()[attackTurn]);
-                    }
-
-                    if (attackTurn < recipe.getHeros().length) {
-                        TryCreateSoldiers(game, path, UnitType.Hero, recipe.getHeros()[attackTurn]);
-                    }
-
-                    attackTurn++;
-                }
-            } catch (AccountNotFoundException e) {
-                Logger.error("Something's very wrong in ProceedAttack!");
-            }
+        if ((attackTurns.get(path) >= recipe.getCreeps().length) && (attackTurns.get(path) >= recipe.getHeros().length)) {
+            allowedToInitiateAttack = true;
+            attackTurns.put(path, -5);
+            Logger.println("Finished creating attack wave for " + path.toString());
+            return;
         }
 
-        if (!hasDoneAnything) {
-            attackTurn = -5;
-            Logger.println("Finished creating attack wave.");
+        if (attackTurns.get(path) < recipe.getCreeps().length) {
+            TryCreateSoldiers(game, path, UnitType.Creep, recipe.getCreeps()[attackTurns.get(path)]);
         }
+
+        if (attackTurns.get(path) < recipe.getHeros().length) {
+            TryCreateSoldiers(game, path, UnitType.Hero, recipe.getHeros()[attackTurns.get(path)]);
+        }
+
+        attackTurns.put(path, attackTurns.get(path) + 1);
     }
 
     private void TryCreateSoldiers(World game, Path path, UnitType type, int count) {
         try {
             BankAccount attackerAccount = Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK);
-
             int totalPrice;
 
             if (type == UnitType.Creep)

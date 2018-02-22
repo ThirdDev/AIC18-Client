@@ -13,10 +13,12 @@ import java.util.List;
 public abstract class GeneCollection {
 
     HashMap<String, byte[][]> data;
+    String resourceName;
 	
     public GeneCollection(String resourceName) {
 		try {
-            System.out.println(resourceName);
+            Logger.println(resourceName);
+            this.resourceName = resourceName;
 
 		    data = new HashMap<>();
 
@@ -51,6 +53,10 @@ public abstract class GeneCollection {
             Logger.println("Can't find resource " + resourceName);
             e.printStackTrace();
         }
+    }
+
+    public String getResourceName() {
+        return resourceName;
     }
 
     public Collection<byte[][]> getAllValues() {

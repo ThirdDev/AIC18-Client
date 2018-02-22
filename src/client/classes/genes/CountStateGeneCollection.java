@@ -10,11 +10,8 @@ import java.util.List;
 
 public class CountStateGeneCollection extends GeneCollection {
 
-    String resourceName;
-
     public CountStateGeneCollection(String resourceName) {
         super(resourceName);
-        this.resourceName = resourceName;
     }
 
     @Override
