@@ -30,13 +30,13 @@ public class Util {
         int x = location.getX();
         int y = location.getY();
         for (int i = 0; i <= range; i++) {
-            int xUp = x+range-i;
+            int xUp = x-range+i;
             int yUp = y+i;
 
             int xRight = x+i;
             int yRight = y+range-i;
 
-            int xDown = x-range+i;
+            int xDown = x+range-i;
             int yDown = y-i;
 
             int xLeft = x-i;
