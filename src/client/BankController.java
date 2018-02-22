@@ -19,8 +19,16 @@ public class BankController {
             initBank();
 
         int income = player.getMoney() - lastTurnMoney;
+
+        if (income < 0)
+            Logger.error("!!! THEFT ALERT !!! Haji poola ro bordan!!!");
+
         Bank.income(income);
         lastTurnMoney = player.getMoney();
+    }
+
+    public static void spentMoney(int amount) {
+        lastTurnMoney -= amount;
     }
 
     public static void initBank() {

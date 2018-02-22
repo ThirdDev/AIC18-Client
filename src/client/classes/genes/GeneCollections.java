@@ -91,6 +91,10 @@ public class GeneCollections {
         List<Integer> cannons = new ArrayList<>();
         List<Integer> archers = new ArrayList<>();
 
+        if (towers.size() > 0) {
+            String s = "hello";
+        }
+
         for (TowerDetails details : towers) {
             List<Point> points = details.getPointsForPath(path);
             List<List<Point>> adjacentPoints = groupAdjacentPoints(points);
@@ -141,7 +145,7 @@ public class GeneCollections {
         }
 
         GeneCollection collection = FindSuitableGeneCollectionFor(cannons, archers, strategy);
-
+        Logger.println("Will get gene from " + collection.getResourceName() + " (we have " + cannons.size() + " cannons and " + archers.size() + " archers now)");
         return collection.getRecipe(cannons.stream().mapToInt(Integer::intValue).toArray(), archers.stream().mapToInt(Integer::intValue).toArray());
     }
 

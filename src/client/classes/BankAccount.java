@@ -1,5 +1,6 @@
 package client.classes;
 
+import client.BankController;
 import client.classes.exceptions.NotEnoughMoneyException;
 
 public class BankAccount {
@@ -42,6 +43,7 @@ public class BankAccount {
             throw new NotEnoughMoneyException();
 
         balance -= amount;
+        BankController.spentMoney(amount);
     }
 
 }
