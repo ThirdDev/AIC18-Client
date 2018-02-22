@@ -10,14 +10,18 @@ import java.util.Random;
 import java.util.stream.Stream;
 
 public class ahmadalli {
-    public static void plantRandomTowerInASidewayCell(World world) throws AccountNotFoundException {
+    public static void plantRandomTowerInASidewayCell(World world) {
         SideWayCell[] sidewayCells = world.getDefenceMapPaths().stream()
                 .flatMap(x -> x.getSideWayCells().stream())
                 .toArray(SideWayCell[]::new);
 
         SideWayCell randomSideWayCell = sidewayCells[rnd.nextInt(sidewayCells.length)];
-
-        BankAccount defendAccount = Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE);
+        BankAccount defendAccount = null;
+        try {
+            defendAccount = Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE);
+        } catch (Exception ex) {
+            return;
+        }
 
         int towerType = rnd.nextInt() % 2;
         int level = 1;
