@@ -29,7 +29,7 @@ public class Util {
         ArrayList<Cell> cells = new ArrayList<>();
         int x = location.getX();
         int y = location.getY();
-        for (int i = 0; i <= range; i++) {
+        for (int i = 0; i < range; i++) {
             int xUp = x-range+i;
             int yUp = y+i;
 
