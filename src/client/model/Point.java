@@ -21,4 +21,11 @@ public class Point {
         return x;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Point))
+            return false;
+
+        return (((Point)obj).getX() == getX()) && (((Point)obj).getY() == getY());
+    }
 }

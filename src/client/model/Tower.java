@@ -1,5 +1,8 @@
 package client.model;
 
+import java.util.HashMap;
+import java.util.List;
+
 /**
  * Created by Parsa on 1/22/2018 AD.
  */

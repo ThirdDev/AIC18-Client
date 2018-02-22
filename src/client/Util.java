@@ -21,10 +21,14 @@ public class Util {
         return flagX & flagY;
     }
 
-    public static ArrayList<Cell> radiusCells(Cell cell, int range ,Map map){
+    public static ArrayList<Cell> radiusCells(Cell cell, int range, Map map) {
+        return radiusCells(cell.getLocation(), range, map);
+    }
+
+    public static ArrayList<Cell> radiusCells(Point location, int range, Map map){
         ArrayList<Cell> cells = new ArrayList<>();
-        int x = cell.getLocation().getX();
-        int y = cell.getLocation().getY();
+        int x = location.getX();
+        int y = location.getY();
         for (int i = 0; i <= range; i++) {
             int xUp = x+range-i;
             int yUp = y+i;

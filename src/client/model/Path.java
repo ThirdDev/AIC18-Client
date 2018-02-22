@@ -39,5 +39,20 @@ public class Path {
         return result;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return toString().equals(obj.toString());
+    }
 
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+
+    public int getPointIndex(Point p) {
+        for (int i = 0; i < road.size(); i++)
+            if (road.get(i).getLocation().equals(p))
+                return i;
+        return -1;
+    }
 }

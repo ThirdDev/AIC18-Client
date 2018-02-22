@@ -1,29 +1,51 @@
 package client.classes.genes;
 
+import client.classes.Logger;
+import client.model.Path;
+import client.model.Point;
+import client.model.TowerDetails;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
 public class GeneCollections {
 
+    public enum Strategy {
+        Explore,
+        Damage,
+        DamageFullForce,
+    }
+
     // pathLength = 20
+    public final int FourTowersMaxLength = 20;
     public FullStateGeneCollection FourTowersDamage500;
     public FullStateGeneCollection FourTowersDamage1200;
     public FullStateGeneCollection FourTowersExplore200;
 
+    public final int ThreeTowersMaxLength = 20;
     public FullStateGeneCollection ThreeTowersDamage400;
     public FullStateGeneCollection ThreeTowersDamage600;
     public FullStateGeneCollection ThreeTowersExplore200;
 
     // pathLength = 40
+    public final int TwoDoubleTowersMaxLength = 40;
     public FullStateGeneCollection TwoDoubleTowersDamage700;
     public FullStateGeneCollection TwoDoubleTowersExplore200;
 
     // pathLength = 100
+    public final int TwoTowersMaxLength = 100;
     public FullStateGeneCollection TwoTowersDamage275;
     public FullStateGeneCollection TwoTowersDamage500;
     public FullStateGeneCollection TwoTowersExplore200;
 
+    public final int SingleTowerMaxLength = 100;
     public FullStateGeneCollection SingleTowerDamage200;
     public FullStateGeneCollection SingleTowerDamage500;
     public FullStateGeneCollection SingleTowerExplore150;
 
+    public final int RandomMaxCount = 20;
     public CountStateGeneCollection RandomDamage2500;
     public CountStateGeneCollection RandomExplore1000;
 
@@ -63,5 +85,147 @@ public class GeneCollections {
             instance = new GeneCollections();
 
         return instance;
+    }
+
+    public Recipe getRecipe(Set<TowerDetails> towers, Path path, Strategy strategy) {
+        List<Integer> cannons = new ArrayList<>();
+        List<Integer> archers = new ArrayList<>();
+
+        for (TowerDetails details : towers) {
+            List<Point> points = details.getPointsForPath(path);
+            List<List<Point>> adjacentPoints = groupAdjacentPoints(points);
+
+            for (List<Point> pointGroup : adjacentPoints) {
+                if ((pointGroup.size() == 1) || (pointGroup.size() == 2)) {
+                    int pointIndex = path.getPointIndex(pointGroup.get(0));
+
+                    if (pointIndex < 0) {
+                        Logger.error("Something's wrong in getRecipe! (1)");
+                        continue;
+                    }
+
+                    if (details.isArcher())
+                        archers.add(pointIndex);
+                    else
+                        cannons.add(pointIndex);
+                } else if (pointGroup.size() > 2) {
+                    int start = 1;
+                    int end = pointGroup.size() - 2;
+
+                    while (start <= end) {
+                        int pointIndex1 = path.getPointIndex(pointGroup.get(start));
+                        int pointIndex2 = path.getPointIndex(pointGroup.get(end));
+
+                        if (pointIndex1 < 0 || pointIndex2 < 0) {
+                            Logger.error("Something's wrong in getRecipe! (2)");
+                            continue;
+                        }
+
+                        if (details.isArcher())
+                            archers.add(pointIndex1);
+                        else
+                            cannons.add(pointIndex1);
+
+                        if (pointIndex1 != pointIndex2) {
+                            if (details.isArcher())
+                                archers.add(pointIndex2);
+                            else
+                                cannons.add(pointIndex2);
+                        }
+
+                        start += 2;
+                        end -= 2;
+                    }
+                }
+            }
+        }
+
+        GeneCollection collection = FindSuitableGeneCollectionFor(cannons, archers, strategy);
+
+        return collection.getRecipe(cannons.stream().mapToInt(Integer::intValue).toArray(), archers.stream().mapToInt(Integer::intValue).toArray());
+    }
+
+    @SuppressWarnings("Duplicates")
+    private GeneCollection FindSuitableGeneCollectionFor(List<Integer> cannons, List<Integer> archers, Strategy strategy) {
+        int totalCount = cannons.size() + archers.size();
+
+        int maxPosition = Math.max(Collections.max(cannons), Collections.max(archers));
+
+        if (totalCount <= 1) {
+            if (maxPosition < SingleTowerMaxLength) {
+                if (strategy == Strategy.Explore)
+                    return SingleTowerExplore150;
+                else if (strategy == Strategy.Damage)
+                    return SingleTowerDamage200;
+                else
+                    return SingleTowerDamage500;
+            } else {
+                // TODO: ????
+            }
+        } else if (totalCount == 2) {
+            if (maxPosition < TwoTowersMaxLength) {
+                if (strategy == Strategy.Explore)
+                    return TwoTowersExplore200;
+                else if (strategy == Strategy.Damage)
+                    return TwoTowersDamage275;
+                else
+                    return TwoTowersDamage500;
+            } else {
+                // TODO: ????
+            }
+        } else if (totalCount == 3) {
+            if (maxPosition < ThreeTowersMaxLength) {
+                if (strategy == Strategy.Explore)
+                    return ThreeTowersExplore200;
+                else if (strategy == Strategy.Damage)
+                    return ThreeTowersDamage400;
+                else
+                    return ThreeTowersDamage600;
+            } else {
+                // TODO: ????
+            }
+        } else if (totalCount == 4) {
+            if (maxPosition < FourTowersMaxLength) {
+                if (strategy == Strategy.Explore)
+                    return FourTowersExplore200;
+                else if (strategy == Strategy.Damage)
+                    return FourTowersDamage500;
+                else
+                    return FourTowersDamage1200;
+            } else {
+                // TODO: ????
+            }
+        } else if (totalCount < RandomMaxCount) {
+            if (strategy == Strategy.Explore)
+                return RandomExplore1000;
+            else
+                return RandomDamage2500;
+        } else {
+            // TODO: ????
+        }
+        return null;
+    }
+
+    private List<List<Point>> groupAdjacentPoints(List<Point> points) {
+        List<List<Point>> adjacentPoints = new ArrayList<>();
+
+        adjacentPoints.add(new ArrayList<>());
+        adjacentPoints.get(0).add(points.get(0));
+        for (int i = 1; i < points.size(); i++) {
+            if (!IsAdjacent(points.get(i - 1), points.get(i))) {
+                adjacentPoints.add(new ArrayList<>());
+            }
+
+            adjacentPoints.get(adjacentPoints.size() - 1).add(points.get(i));
+        }
+
+        return adjacentPoints;
+    }
+
+    private boolean IsAdjacent(Point p1, Point p2) {
+        return (p1.getX() + 1 == p2.getX() && p1.getY() == p2.getY()) ||
+                (p1.getX() - 1 == p2.getX() && p1.getY() == p2.getY()) ||
+                (p1.getX() == p2.getX() && p1.getY() + 1 == p2.getY()) ||
+                (p1.getX() == p2.getX() && p1.getY() - 1 == p2.getY());
     }
 }
