@@ -12,7 +12,8 @@ import java.util.stream.Stream;
 public class ahmadalli {
     public static void plantRandomTowerInASidewayCell(World world) {
         SideWayCell[] sidewayCells = world.getDefenceMapPaths().stream()
-                .flatMap(x -> x.getSideWayCells().stream())
+                .flatMap(x -> x.getRoad().stream())
+                .flatMap(x -> Util.radiusCells(x, 1, world.getDefenceMap()).stream())
                 .toArray(SideWayCell[]::new);
 
         SideWayCell randomSideWayCell = sidewayCells[rnd.nextInt(sidewayCells.length)];
