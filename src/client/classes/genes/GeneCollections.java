@@ -149,7 +149,22 @@ public class GeneCollections {
     private GeneCollection FindSuitableGeneCollectionFor(List<Integer> cannons, List<Integer> archers, Strategy strategy) {
         int totalCount = cannons.size() + archers.size();
 
-        int maxPosition = Math.max(Collections.max(cannons), Collections.max(archers));
+        int maxPosition;
+
+        if (cannons.size() == 0 && archers.size() == 0) {
+            if (strategy == Strategy.Explore)
+                return SingleTowerExplore150;
+            else if (strategy == Strategy.Damage)
+                return SingleTowerDamage200;
+            else
+                return SingleTowerDamage500;
+        }
+        else if (cannons.size() == 0)
+            maxPosition = Collections.max(archers);
+        else if (archers.size() == 0)
+            maxPosition = Collections.max(cannons);
+        else
+            maxPosition = Math.max(Collections.max(cannons), Collections.max(archers));
 
         if (totalCount <= 1) {
             if (maxPosition < SingleTowerMaxLength) {
