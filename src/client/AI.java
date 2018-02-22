@@ -88,6 +88,7 @@ public class AI {
 
     //This function will be called on both simple and complex turns
     private void commonTurnFunctions(World game) {
+        Logger.println("Turn " + game.getCurrentTurn());
         BankController.handleMoney(game.getMyInformation());
 
         ahmadalli.plantRandomTowerInASidewayCell(game);
@@ -118,8 +119,10 @@ public class AI {
             Logger.println("");
 
             ProceedAttack(game);
-        } else {
+        } else if (attackTurn > 0) {
             ProceedAttack(game);
+        } else {
+            attackTurn++;
         }
     }
 
@@ -158,7 +161,8 @@ public class AI {
         }
 
         if (!hasDoneAnything) {
-            attackTurn = 0;
+            attackTurn = -5;
+            Logger.println("Finished creating attack wave.");
         }
     }
 
@@ -178,12 +182,20 @@ public class AI {
             int pathIndex = getPathIndex(game, path);
 
             if (type == UnitType.Creep) {
-                game.createLightUnit(pathIndex);
-                LightUnit.createdUnit();
+                for (int i = 0; i < count; i++) {
+                    game.createLightUnit(pathIndex);
+                    LightUnit.createdUnit();
+
+                    System.out.println("Created a creep.");
+                }
             }
             else {
-                game.createHeavyUnit(pathIndex);
-                HeavyUnit.createdUnit();
+                for (int i = 0; i < count; i++) {
+                    game.createHeavyUnit(pathIndex);
+                    HeavyUnit.createdUnit();
+
+                    System.out.println("Created a hero.");
+                }
             }
 
         } catch (AccountNotFoundException e) {
