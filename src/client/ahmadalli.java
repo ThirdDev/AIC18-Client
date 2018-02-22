@@ -30,6 +30,8 @@ public class ahmadalli {
                 .flatMap(x -> x.getRoad().stream())
                 .flatMap(x -> Util.radiusCells(x, 2, world.getDefenceMap()).stream())
                 .filter(x -> x instanceof GrassCell)
+                .map(x -> (GrassCell) x)
+                .filter(x -> x.getTower() == null)
                 .distinct()
                 .sorted(compareByTroopAndRoadCellCount(world))
                 .toArray(GrassCell[]::new);
