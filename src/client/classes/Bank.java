@@ -29,38 +29,42 @@ public class Bank {
         return ba;
     }
 
-    public static BankAccount getAccount(String nickname) throws AccountNotFoundException {
+    public static BankAccount getAccount(String nickname) {
         if (!accounts.containsKey(nickname))
-            throw new AccountNotFoundException();
+            return null;
 
         return accounts.get(nickname);
     }
 
-    public static void changeDistributionPercentage(BankAccount accountToIncrease,
+    public static boolean changeDistributionPercentage(BankAccount accountToIncrease,
                                                     BankAccount accountToDecrease,
-                                                    double percentage) throws InvalidArgumentException {
+                                                    double percentage) {
 
         double accountToIncreaseNewPercentage = accountToIncrease.getPercent() + percentage;
         double accountToDecreaseNewPercentage = accountToDecrease.getPercent() - percentage;
 
         if (percentage < 0 || percentage > 1)
-            throw new InvalidArgumentException();
+            return false;
         if (accountToIncreaseNewPercentage > 1)
-            throw new InvalidArgumentException();
+            return false;
         if (accountToDecreaseNewPercentage < 0)
-            throw new InvalidArgumentException();
+            return false;
 
         accountToIncrease.setPercent(accountToIncreaseNewPercentage);
         accountToDecrease.setPercent(accountToDecreaseNewPercentage);
+        return true;
     }
 
     public static boolean IsInitialized() {
         return (totalPercentage == 1.0);
     }
 
-    public static void TransferMoney(BankAccount sender, BankAccount receiver, int amount) throws NotEnoughMoneyException {
-        sender.retrieveMoney(amount);
+    public static boolean TransferMoney(BankAccount sender, BankAccount receiver, int amount) {
+        if (sender.retrieveMoney(amount) == false)
+            return false;
         receiver.increaseBalance(amount);
+
+        return true;
     }
 
     public static void income(int amount) {

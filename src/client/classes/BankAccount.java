@@ -1,7 +1,6 @@
 package client.classes;
 
 import client.BankController;
-import client.classes.exceptions.NotEnoughMoneyException;
 
 public class BankAccount {
     String nickname;
@@ -38,12 +37,13 @@ public class BankAccount {
         return ((balance - amount) >= 0);
     }
 
-    public void retrieveMoney(int amount) throws NotEnoughMoneyException {
+    public boolean retrieveMoney(int amount) {
         if (balance - amount < 0)
-            throw new NotEnoughMoneyException();
+            return false;
 
         balance -= amount;
         BankController.spentMoney(amount);
+        return true;
     }
 
 }
