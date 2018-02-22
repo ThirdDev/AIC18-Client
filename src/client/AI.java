@@ -115,17 +115,13 @@ public class AI {
                 Logger.println("Attack begin for " + path.toString());
 
                 Set<TowerDetails> enemyTowers = AttackMapAnalyser.getVisibleTowerDetailsForPath(game, path);
-                Recipe recipe = GeneCollections.getCollections().getRecipe(enemyTowers, path, GeneCollections.Strategy.Explore);
+                Recipe recipe = GeneCollections.getCollections().getRecipe(enemyTowers, path, GeneCollections.Strategy.DamageFullForce);
 
-                try {
-                    int totalCost = recipe.getTotalCost();
-                    if (!Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).canSpend(totalCost)) {
-                        Logger.println("Not enough money. (we need " + totalCost + ")");
-                        Logger.println("");
-                        continue;
-                    }
-                } catch (AccountNotFoundException e) {
-                    Logger.error("Something's very wrong in ProceedAttack!");
+                int totalCost = recipe.getTotalCost();
+                if (!Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).canSpend(totalCost)) {
+                    Logger.println("Not enough money. (we need " + totalCost + ")");
+                    Logger.println("");
+                    continue;
                 }
 
                 currentAttackRecipe.put(path, recipe);
@@ -171,40 +167,36 @@ public class AI {
     }
 
     private void TryCreateSoldiers(World game, Path path, UnitType type, int count) {
-        try {
-            BankAccount attackerAccount = Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK);
-            int totalPrice;
+        BankAccount attackerAccount = Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK);
+        int totalPrice;
 
-            if (type == UnitType.Creep)
-                totalPrice = LightUnit.getCurrentPrice(count);
-            else
-                totalPrice = HeavyUnit.getCurrentPrice(count);
+        if (type == UnitType.Creep)
+            totalPrice = LightUnit.getCurrentPrice(count);
+        else
+            totalPrice = HeavyUnit.getCurrentPrice(count);
 
-            attackerAccount.retrieveMoney(totalPrice);
-
-            int pathIndex = getPathIndex(game, path);
-
-            if (type == UnitType.Creep) {
-                for (int i = 0; i < count; i++) {
-                    game.createLightUnit(pathIndex);
-                    LightUnit.createdUnit();
-
-                    System.out.println("Created a creep.");
-                }
-            }
-            else {
-                for (int i = 0; i < count; i++) {
-                    game.createHeavyUnit(pathIndex);
-                    HeavyUnit.createdUnit();
-
-                    System.out.println("Created a hero.");
-                }
-            }
-
-        } catch (AccountNotFoundException e) {
-            Logger.error("Something's very wrong in TryCreateSoldiers!");
-        } catch (NotEnoughMoneyException e) {
+        if (attackerAccount.retrieveMoney(totalPrice) == false) {
             Logger.error("Didn't have enough money to create " + count + " creeps. But why? we should've had enough...");
+            return;
+        }
+
+        int pathIndex = getPathIndex(game, path);
+
+        if (type == UnitType.Creep) {
+            for (int i = 0; i < count; i++) {
+                game.createLightUnit(pathIndex);
+                LightUnit.createdUnit();
+
+                System.out.println("Created a creep.");
+            }
+        }
+        else {
+            for (int i = 0; i < count; i++) {
+                game.createHeavyUnit(pathIndex);
+                HeavyUnit.createdUnit();
+
+                System.out.println("Created a hero.");
+            }
         }
     }
 
