@@ -28,7 +28,9 @@ public class ahmadalli {
 
     public static Stream<Path> getNearbyPaths(Cell cell, int range, World world) {
         return world.getDefenceMapPaths().stream()
-                .filter(x -> x.getRoad().stream()
+                .filter(x -> Stream.concat(x.getRoad().stream()
+                                .flatMap(y -> Util.radialCells(y, range, world.getDefenceMap()).stream()),
+                        x.getRoad().stream())
                         .anyMatch(y -> y.equals(cell)));
     }
 
