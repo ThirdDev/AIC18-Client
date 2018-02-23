@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 public class Util {
 
-
     public static boolean inRange(Point point, Map map){
         int x = point.getX();
         int y = point.getY();
