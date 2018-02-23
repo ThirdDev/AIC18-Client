@@ -19,7 +19,7 @@ public class FullStateGeneCollection implements GeneCollection {
 
             data = new HashMap<>();
 
-            InputStream inputStream = new FileInputStream("datafiles/" + resourceName);
+            InputStream inputStream = this.getClass().getResourceAsStream("/datafiles/" + resourceName);
             InputStreamReader streamReader = new InputStreamReader(inputStream, "UTF-8");
             String[] lines = new BufferedReader(streamReader).lines().toArray(String[]::new);
 
@@ -44,9 +44,6 @@ public class FullStateGeneCollection implements GeneCollection {
             }
         } catch (UnsupportedEncodingException e) {
             Logger.println("Can't load resource " + resourceName);
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            Logger.println("Can't find resource " + resourceName);
             e.printStackTrace();
         }
     }
