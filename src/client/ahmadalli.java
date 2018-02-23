@@ -11,13 +11,15 @@ import java.util.stream.Stream;
 
 public class ahmadalli {
 
+    private static Random rnd = new Random();
+
     private static Comparator<Cell> compareByTroopAndRoadCellCount(World world) {
         return Comparator.comparingInt(o -> cellScore(o, world));
     }
 
     public static int cellScore(Cell cell, World world) {
-        return getNearbyRoadCells(cell, world).
-                mapToInt(x -> (int) x.getUnits().stream().count() + 1).sum();
+        return (int) getNearbyRoadCells(cell, world)
+                .count();
     }
 
     public static Stream<RoadCell> getNearbyRoadCells(Cell cell, World world) {
@@ -86,5 +88,5 @@ public class ahmadalli {
         }
     }
 
-    static Random rnd = new Random();
+
 }
