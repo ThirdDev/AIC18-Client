@@ -4,16 +4,16 @@ import java.util.ArrayList;
 
 public class SideWayCell extends GrassCell implements Comparable {
 
-    ArrayList<Path> paths;
-    ArrayList<RoadCell> roadCells;
+    private ArrayList<Path> paths;
+    private ArrayList<RoadCell> roadCells;
+    private int color;
 
     public SideWayCell(int x, int y, Tower tower) {
         super(x, y, tower);
         paths = new ArrayList<>();
         roadCells = new ArrayList<>();
+        color = -1;
     }
-
-
 
     public ArrayList<Path> getPaths() {
         return paths;
@@ -23,11 +23,11 @@ public class SideWayCell extends GrassCell implements Comparable {
         return roadCells;
     }
 
-    public void addPaths(Path path) {
+    public void addPath(Path path) {
         this.paths.add(path);
     }
 
-    public void addRoadCells(RoadCell roadCell) {
+    public void addRoadCell(RoadCell roadCell) {
         this.roadCells.add(roadCell);
     }
 
@@ -39,5 +39,11 @@ public class SideWayCell extends GrassCell implements Comparable {
         return ans;
     }
 
+    public int getColor() {
+        return color;
+    }
 
+    public void setColor(int color) {
+        this.color = color;
+    }
 }

@@ -21,6 +21,14 @@ public class Path {
         return road;
     }
 
+    public ArrayList<SideWayCell> getSideWayCells() {
+        return sideWayCells;
+    }
+
+    public void addSideWayCell(SideWayCell sideWayCell) {
+        this.sideWayCells.add(sideWayCell);
+    }
+
     @Override
     public String toString() {
         String result = "Path: ";
