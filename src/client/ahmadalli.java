@@ -64,7 +64,7 @@ public class ahmadalli {
 
         BankAccount defendAccount = Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE);
 
-        int towerType = rnd.nextInt() % 2;
+        int towerType = rnd.nextInt() % 5;
         int level = 1;
         if (towerType == 0 && defendAccount.canSpend(ArcherTower.INITIAL_PRICE)) {
             if (defendAccount.retrieveMoney(ArcherTower.INITIAL_PRICE)) {
@@ -74,7 +74,7 @@ public class ahmadalli {
                 world.createArcherTower(level, x, y);
             }
         }
-        if (towerType == 1 && defendAccount.canSpend(CannonTower.INITIAL_PRICE)) {
+        if (towerType != 0 && defendAccount.canSpend(CannonTower.INITIAL_PRICE)) {
             if (defendAccount.retrieveMoney(CannonTower.INITIAL_PRICE)) {
                 int x = cellToBuild.getLocation().getX();
                 int y = cellToBuild.getLocation().getY();
