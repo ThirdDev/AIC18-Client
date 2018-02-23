@@ -31,7 +31,7 @@ public class Attack {
                     Logger.println("Explore begin for " + path.toString());
 
                     Set<TowerDetails> enemyTowers = AttackMapAnalyser.getVisibleTowerDetailsForPath(game, path);
-                    Recipe recipe = GeneCollections.getCollections().getRecipe(enemyTowers, path, GeneCollections.Strategy.Explore);
+                    Recipe recipe = GeneCollections.getCollections().getRecipe(enemyTowers, path, GeneCollections.Strategy.DamageFullForce);
 
                     int totalCost = recipe.getTotalCost();
                     if (!Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).canSpend(totalCost)) {

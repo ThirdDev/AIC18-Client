@@ -34,8 +34,8 @@ public class BankController {
     public static void initBank() {
         try {
             System.out.println("Initializing bank...");
-            Bank.registerAccount(BANK_ACCOUNT_ATTACK, 0.5);
-            Bank.registerAccount(BANK_ACCOUNT_DEFENCE, 0.5);
+            Bank.registerAccount(BANK_ACCOUNT_ATTACK, 0.6);
+            Bank.registerAccount(BANK_ACCOUNT_DEFENCE, 0.4);
         } catch (TotalPercentageExceededException e) {
             System.out.println("Something went terribly wrong in bank initialization !!!");
         }
