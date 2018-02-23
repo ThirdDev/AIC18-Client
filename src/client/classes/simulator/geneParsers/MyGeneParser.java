@@ -4,15 +4,15 @@ import client.classes.simulator.AttackAction;
 
 public class MyGeneParser implements GeneParser {
 
-    double[] gene;
+    byte[][] gene;
     int len;
 
     @Override
-    public double[] getGene() {
+    public byte[][] getGene() {
         return gene;
     }
 
-    public MyGeneParser(double[] gene, int len) {
+    public MyGeneParser(byte[][] gene, int len) {
         this.gene = gene;
         this.len = len;
     }
@@ -22,14 +22,10 @@ public class MyGeneParser implements GeneParser {
         if (turn >= len)
             return new AttackAction(0, 0);
 
-        double a = gene[turn % len];
-        double b = gene[(turn % len) + len];
+        byte a = gene[0][turn];
+        byte b = gene[1][turn];
 
-        return new AttackAction(geneToTroopCount(a), geneToTroopCount(b));
+        return new AttackAction(a, b);
 
-    }
-
-    public static int geneToTroopCount(double a) {
-        return (int) Math.max(7, a) - 7;
     }
 }

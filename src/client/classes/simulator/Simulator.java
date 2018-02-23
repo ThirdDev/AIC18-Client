@@ -11,10 +11,10 @@ import java.util.*;
 public class Simulator {
     int pathLength;
     private int maximumTurns;
-    Cannon[] cannons;
-    Archer[] archers;
+    List<Cannon> cannons;
+    List<Archer> archers;
 
-    public Simulator(int pathLength, int maximumTurns, Cannon[] cannons, Archer[] archers) {
+    public Simulator(int pathLength, int maximumTurns, List<Cannon> cannons, List<Archer> archers) {
         this.pathLength = pathLength;
         this.maximumTurns = maximumTurns;
 
@@ -22,15 +22,19 @@ public class Simulator {
         this.archers = archers;
     }
 
-    public static double[] findBestGene(List<double[]> genes, Simulator simulator, Judge judge, int pathLength, long maximumTimeMilliseconds) {
+    public static byte[][] findBestGene(List<byte[][]> genes, Simulator simulator, Judge judge, long maximumTimeMilliseconds) {
         long startTime = System.currentTimeMillis();
 
-        double[] bestGene = null;
+        int pathLength = simulator.pathLength;
+
+        byte[][] bestGene = null;
         double score = Double.MIN_VALUE;
 
-        for (double[] gene : genes) {
+        int counter = 0;
+        for (byte[][] gene : genes) {
             SimulationResult result = simulator.simulate(new MyGeneParser(gene, pathLength));
             double currentScore = judge.calculateScore(result);
+            counter++;
 
             if (currentScore > score) {
                 bestGene = gene;
@@ -42,6 +46,8 @@ public class Simulator {
                 break;
             }
         }
+
+        Logger.println("Examined " + counter + " genes.");
 
         return bestGene;
     }

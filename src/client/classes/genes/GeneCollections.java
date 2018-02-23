@@ -1,6 +1,9 @@
 package client.classes.genes;
 
 import client.classes.Logger;
+import client.classes.simulator.Simulator;
+import client.classes.simulator.towers.Archer;
+import client.classes.simulator.towers.Cannon;
 import client.model.Path;
 import client.model.Point;
 import client.model.TowerDetails;
@@ -22,12 +25,11 @@ public class GeneCollections {
     public final int FourTowersMaxLength = 20;
     public FullStateGeneCollection FourTowersDamage500;
     public FullStateGeneCollection FourTowersDamage1200;
-    public FullStateGeneCollection FourTowersExplore200;
+    public FullStateGeneCollection FourTowersExplore500;
 
-    public final int ThreeTowersMaxLength = 20;
-    public FullStateGeneCollection ThreeTowersDamage400;
+    public final int ThreeTowersMaxLength = 25;
     public FullStateGeneCollection ThreeTowersDamage600;
-    public FullStateGeneCollection ThreeTowersExplore200;
+    public FullStateGeneCollection ThreeTowersExplore500;
 
     // pathLength = 40
     public final int TwoDoubleTowersMaxLength = 40;
@@ -36,18 +38,21 @@ public class GeneCollections {
 
     // pathLength = 100
     public final int TwoTowersMaxLength = 100;
-    public FullStateGeneCollection TwoTowersDamage275;
     public FullStateGeneCollection TwoTowersDamage500;
-    public FullStateGeneCollection TwoTowersExplore200;
+    public FullStateGeneCollection TwoTowersExplore400;
 
     public final int SingleTowerMaxLength = 100;
     public FullStateGeneCollection SingleTowerDamage200;
     public FullStateGeneCollection SingleTowerDamage500;
     public FullStateGeneCollection SingleTowerExplore150;
 
-    public final int RandomMaxCount = 20;
-    public CountStateGeneCollection RandomDamage2500;
-    public CountStateGeneCollection RandomExplore1000;
+    //public final int RandomMaxCount = 20;
+    //public CountStateGeneCollection RandomDamage2500;
+    //public CountStateGeneCollection RandomExplore1000;
+
+    public final int UnifiedRandomMaxCount = 20;
+    public CountStateGeneCollection UniformRandomDamage;
+    public CountStateGeneCollection UniformRandomExplore;
 
     //Singleton class
     private GeneCollections() {
@@ -55,25 +60,23 @@ public class GeneCollections {
 
         FourTowersDamage500 = new FullStateGeneCollection("FourTowers-DamagePolicy 500-pathLength 20-2018-21-2--00-51-00.sgdf");
         FourTowersDamage1200 = new FullStateGeneCollection("FourTowers-DamagePolicy 1200-pathLength 20-2018-21-2--01-00-47.sgdf");
-        FourTowersExplore200 = new FullStateGeneCollection("FourTowers-ExplorePolicy 200-pathLength 20-2018-21-2--00-52-30.sgdf");
+        FourTowersExplore500 = new FullStateGeneCollection("FourTowers-ExplorePolicy 500-pathLength 20-2018-23-2--04-06-26.sgdf");
 
-        ThreeTowersDamage400 = new FullStateGeneCollection("ThreeTowers-DamagePolicy 400-pathLength 20-2018-20-2--20-49-25.sgdf");
-        ThreeTowersDamage600 = new FullStateGeneCollection("ThreeTowers-DamagePolicy 600-pathLength 20-2018-20-2--20-38-47.sgdf");
-        ThreeTowersExplore200 = new FullStateGeneCollection("ThreeTowers-ExplorePolicy 200-pathLength 20-2018-20-2--20-32-26.sgdf");
+        ThreeTowersDamage600 = new FullStateGeneCollection("ThreeTowers-DamagePolicy 600-pathLength 25-2018-23-2--04-11-39.sgdf");
+        ThreeTowersExplore500 = new FullStateGeneCollection("ThreeTowers-ExplorePolicy 500-pathLength 25-2018-23-2--04-05-51.sgdf");
 
         TwoDoubleTowersDamage700 = new FullStateGeneCollection("TwoDoubleTowers-DamagePolicy 700-pathLength 40-2018-20-2--19-19-12.sgdf");
         TwoDoubleTowersExplore200 = new FullStateGeneCollection("TwoDoubleTowers-ExplorePolicy 200-pathLength 40-2018-20-2--19-05-53.sgdf");
 
-        TwoTowersDamage275 = new FullStateGeneCollection("TwoTowers-DamagePolicy 275-pathLength 100-2018-21-2--22-17-54.sgdf");
-        TwoTowersDamage500 = new FullStateGeneCollection("TwoTowers-DamagePolicy 500-pathLength 100-2018-21-2--13-25-39.sgdf");
-        TwoTowersExplore200 = new FullStateGeneCollection("TwoTowers-ExplorePolicy 200-pathLength 100-2018-21-2--23-49-39.sgdf");
+        TwoTowersDamage500 = new FullStateGeneCollection("TwoTowers-DamagePolicy 500-pathLength 100-2018-23-2--04-49-45.sgdf");
+        TwoTowersExplore400 = new FullStateGeneCollection("TwoTowers-ExplorePolicy 400-pathLength 100-2018-23-2--04-43-28.sgdf");
 
         SingleTowerDamage200 = new FullStateGeneCollection("SingleTower-DamagePolicy 200-pathLength 100-2018-21-2--17-26-28.sgdf");
         SingleTowerDamage500 = new FullStateGeneCollection("SingleTower-DamagePolicy 500-pathLength 100-2018-21-2--22-03-37.sgdf");
         SingleTowerExplore150 = new FullStateGeneCollection("SingleTower-ExplorePolicy 150-pathLength 100-2018-21-2--19-20-24.sgdf");
 
-        RandomDamage2500 = new CountStateGeneCollection("RandomTowers-DamagePolicy 2500-pathLength 20-2018-21-2--01-47-18.sgdf");
-        RandomExplore1000 = new CountStateGeneCollection("RandomTowers-ExplorePolicy 1000-pathLength 20-2018-21-2--01-47-39.sgdf");
+        UniformRandomExplore = new CountStateGeneCollection("UniformRandomTowers-ExplorePolicyByTowerCount -1-pathLength 20-2018-23-2--14-53-16.sgdf");
+        UniformRandomDamage = new CountStateGeneCollection("UniformRandomTowers-DamagePolicyByTowerCount -1-pathLength 20-2018-23-2--14-49-51.sgdf");
 
         long delta = System.currentTimeMillis() - time;
         System.out.println(delta + " ms");
@@ -88,69 +91,95 @@ public class GeneCollections {
     }
 
     public Recipe getRecipe(Set<TowerDetails> towers, Path path, Strategy strategy) {
-        List<Integer> cannons = new ArrayList<>();
-        List<Integer> archers = new ArrayList<>();
+        List<Integer> cannonsModel = new ArrayList<>();
+        List<Integer> archersModel = new ArrayList<>();
 
+        List<Cannon> cannonsSimulationModel = new ArrayList<>();
+        List<Archer> archersSimulationModel = new ArrayList<>();
+
+        CreatePathModel(towers, path, cannonsModel, archersModel, cannonsSimulationModel, archersSimulationModel);
+
+        GeneCollection collection = FindSuitableGeneCollectionFor(cannonsModel, archersModel, cannonsSimulationModel, archersSimulationModel, strategy);
+
+        if (collection == null)
+            Logger.println("Okay, I don't know what to do. I have " + cannonsModel.size() + " cannons and " + archersModel.size() + " archers...");
+        else
+            Logger.println("Will get gene from " + collection.getResourceName() + " (we have " + cannonsModel.size() + " cannons and " + archersModel.size() + " archers now)");
+        return collection.getRecipe(cannonsModel.stream().mapToInt(Integer::intValue).toArray(), archersModel.stream().mapToInt(Integer::intValue).toArray());
+    }
+
+    private void CreatePathModel(Set<TowerDetails> towers, Path path, List<Integer> cannons, List<Integer> archers, List<Cannon> cannonsSimu, List<Archer> archersSimu) {
         for (TowerDetails details : towers) {
             List<Point> points = details.getPointsForPath(path);
             List<List<Point>> adjacentPoints = groupAdjacentPoints(points);
 
-            for (List<Point> pointGroup : adjacentPoints) {
-                if ((pointGroup.size() == 1) || (pointGroup.size() == 2)) {
-                    int pointIndex = path.getPointIndex(pointGroup.get(0));
+            CreatePathModelForGenes(path, cannons, archers, details, adjacentPoints);
+            CreatePathModelForSimulation(path, cannonsSimu, archersSimu, details, adjacentPoints);
+        }
+    }
 
-                    if (pointIndex < 0) {
-                        Logger.error("Something's wrong in getRecipe! (1)");
+    private void CreatePathModelForSimulation(Path path, List<Cannon> cannons, List<Archer> archers, TowerDetails details, List<List<Point>> adjacentPoints) {
+        for (List<Point> pointGroup : adjacentPoints) {
+            int centerPos = path.getPointIndex(pointGroup.get(pointGroup.size() / 2));
+            int[] delta = new int[pointGroup.size()];
+            for (int i = 0; i < pointGroup.size(); i++)
+                delta[i] = i - (pointGroup.size() / 2);
+
+            if (details.isArcher())
+                archers.add(new Archer(centerPos, delta));
+            else
+                cannons.add(new Cannon(centerPos, delta));
+        }
+    }
+
+    private void CreatePathModelForGenes(Path path, List<Integer> cannons, List<Integer> archers, TowerDetails details, List<List<Point>> adjacentPoints) {
+        for (List<Point> pointGroup : adjacentPoints) {
+            if ((pointGroup.size() == 1) || (pointGroup.size() == 2)) {
+                int pointIndex = path.getPointIndex(pointGroup.get(0));
+
+                if (pointIndex < 0) {
+                    Logger.error("Something's wrong in getRecipe! (1)");
+                    continue;
+                }
+
+                if (details.isArcher())
+                    archers.add(pointIndex);
+                else
+                    cannons.add(pointIndex);
+            } else if (pointGroup.size() > 2) {
+                int start = 1;
+                int end = pointGroup.size() - 2;
+
+                while (start <= end) {
+                    int pointIndex1 = path.getPointIndex(pointGroup.get(start));
+                    int pointIndex2 = path.getPointIndex(pointGroup.get(end));
+
+                    if (pointIndex1 < 0 || pointIndex2 < 0) {
+                        Logger.error("Something's wrong in getRecipe! (2)");
                         continue;
                     }
 
                     if (details.isArcher())
-                        archers.add(pointIndex);
+                        archers.add(pointIndex1);
                     else
-                        cannons.add(pointIndex);
-                } else if (pointGroup.size() > 2) {
-                    int start = 1;
-                    int end = pointGroup.size() - 2;
+                        cannons.add(pointIndex1);
 
-                    while (start <= end) {
-                        int pointIndex1 = path.getPointIndex(pointGroup.get(start));
-                        int pointIndex2 = path.getPointIndex(pointGroup.get(end));
-
-                        if (pointIndex1 < 0 || pointIndex2 < 0) {
-                            Logger.error("Something's wrong in getRecipe! (2)");
-                            continue;
-                        }
-
+                    if (pointIndex1 != pointIndex2) {
                         if (details.isArcher())
-                            archers.add(pointIndex1);
+                            archers.add(pointIndex2);
                         else
-                            cannons.add(pointIndex1);
-
-                        if (pointIndex1 != pointIndex2) {
-                            if (details.isArcher())
-                                archers.add(pointIndex2);
-                            else
-                                cannons.add(pointIndex2);
-                        }
-
-                        start += 2;
-                        end -= 2;
+                            cannons.add(pointIndex2);
                     }
+
+                    start += 2;
+                    end -= 2;
                 }
             }
         }
-
-        GeneCollection collection = FindSuitableGeneCollectionFor(cannons, archers, strategy);
-
-        if (collection == null)
-            Logger.println("Okay, I don't know what to do. I have " + cannons.size() + " cannons and " + archers.size() + " archers...");
-        else
-            Logger.println("Will get gene from " + collection.getResourceName() + " (we have " + cannons.size() + " cannons and " + archers.size() + " archers now)");
-        return collection.getRecipe(cannons.stream().mapToInt(Integer::intValue).toArray(), archers.stream().mapToInt(Integer::intValue).toArray());
     }
 
     @SuppressWarnings("Duplicates")
-    private GeneCollection FindSuitableGeneCollectionFor(List<Integer> cannons, List<Integer> archers, Strategy strategy) {
+    private GeneCollection FindSuitableGeneCollectionFor(List<Integer> cannons, List<Integer> archers, List<Cannon> cannonsSimulationModel, List<Archer> archersSimulationModel, Strategy strategy) {
         int totalCount = cannons.size() + archers.size();
 
         int maxPosition;
@@ -170,6 +199,14 @@ public class GeneCollections {
         else
             maxPosition = Math.max(Collections.max(cannons), Collections.max(archers));
 
+        Simulator simulator = new Simulator(maxPosition + 1, (maxPosition + 1) * 4, cannonsSimulationModel, archersSimulationModel);
+
+        UniformRandomDamage.setSimulator(simulator);
+        UniformRandomDamage.setTimeout(30);
+
+        UniformRandomExplore.setSimulator(simulator);
+        UniformRandomExplore.setTimeout(30);
+
         if (totalCount <= 1) {
             if (maxPosition < SingleTowerMaxLength) {
                 if (strategy == Strategy.Explore)
@@ -179,50 +216,55 @@ public class GeneCollections {
                 else
                     return SingleTowerDamage500;
             } else {
-                // TODO: ????
+                if (strategy == Strategy.Explore)
+                    return UniformRandomExplore;
+                else
+                    return UniformRandomDamage;
             }
         } else if (totalCount == 2) {
             if (maxPosition < TwoTowersMaxLength) {
                 if (strategy == Strategy.Explore)
-                    return TwoTowersExplore200;
-                else if (strategy == Strategy.Damage)
-                    return TwoTowersDamage275;
+                    return TwoTowersExplore400;
                 else
                     return TwoTowersDamage500;
             } else {
-                // TODO: ????
+                if (strategy == Strategy.Explore)
+                    return UniformRandomExplore;
+                else
+                    return UniformRandomDamage;
             }
         } else if (totalCount == 3) {
             if (maxPosition < ThreeTowersMaxLength) {
                 if (strategy == Strategy.Explore)
-                    return ThreeTowersExplore200;
-                else if (strategy == Strategy.Damage)
-                    return ThreeTowersDamage400;
+                    return ThreeTowersExplore500;
                 else
                     return ThreeTowersDamage600;
             } else {
-                // TODO: ????
+                if (strategy == Strategy.Explore)
+                    return UniformRandomExplore;
+                else
+                    return UniformRandomDamage;
             }
         } else if (totalCount == 4) {
             if (maxPosition < FourTowersMaxLength) {
                 if (strategy == Strategy.Explore)
-                    return FourTowersExplore200;
+                    return FourTowersExplore500;
                 else if (strategy == Strategy.Damage)
                     return FourTowersDamage500;
                 else
                     return FourTowersDamage1200;
             } else {
-                // TODO: ????
+                if (strategy == Strategy.Explore)
+                    return UniformRandomExplore;
+                else
+                    return UniformRandomDamage;
             }
-        } else if (totalCount < RandomMaxCount) {
-            if (strategy == Strategy.Explore)
-                return RandomExplore1000;
-            else
-                return RandomDamage2500;
         } else {
-            // TODO: ????
+            if (strategy == Strategy.Explore)
+                return UniformRandomExplore;
+            else
+                return UniformRandomDamage;
         }
-        return null;
     }
 
     private List<List<Point>> groupAdjacentPoints(List<Point> points) {
