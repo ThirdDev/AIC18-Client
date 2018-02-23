@@ -91,10 +91,6 @@ public class GeneCollections {
         List<Integer> cannons = new ArrayList<>();
         List<Integer> archers = new ArrayList<>();
 
-        if (towers.size() > 0) {
-            String s = "hello";
-        }
-
         for (TowerDetails details : towers) {
             List<Point> points = details.getPointsForPath(path);
             List<List<Point>> adjacentPoints = groupAdjacentPoints(points);
@@ -227,6 +223,9 @@ public class GeneCollections {
 
     private List<List<Point>> groupAdjacentPoints(List<Point> points) {
         List<List<Point>> adjacentPoints = new ArrayList<>();
+
+        if (points.size() == 0)
+            return adjacentPoints;
 
         adjacentPoints.add(new ArrayList<>());
         adjacentPoints.get(0).add(points.get(0));
