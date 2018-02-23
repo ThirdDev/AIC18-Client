@@ -12,9 +12,9 @@ public class MyGeneParser implements GeneParser {
         return gene;
     }
 
-    public MyGeneParser(byte[][] gene, int len) {
+    public MyGeneParser(byte[][] gene) {
         this.gene = gene;
-        this.len = len;
+        this.len = gene[0].length;
     }
 
     @Override
