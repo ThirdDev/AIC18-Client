@@ -17,9 +17,12 @@ public class Cell {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Cell cell = (Cell) o;
-        return (location.getX() == cell.getLocation().getX() &
-            location.getY() == cell.getLocation().getY());
+        return o.hashCode() == hashCode();
+    }
+
+    @Override
+    public int hashCode() {
+        return getLocation().hashCode();
     }
 
 
