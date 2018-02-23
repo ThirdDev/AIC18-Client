@@ -26,6 +26,12 @@ public class ahmadalli {
                 .map(x -> (RoadCell) x);
     }
 
+    public static Stream<Path> getNearbyPaths(Cell cell, int range, World world) {
+        return world.getDefenceMapPaths().stream()
+                .filter(x -> x.getRoad().stream()
+                        .anyMatch(y -> y.equals(cell)));
+    }
+
     public static boolean hasTowerBesideOfIt(Cell cell, World world) {
         return Util.radialCells(cell, 1, world.getDefenceMap()).stream()
                 .filter(x -> x instanceof GrassCell)
