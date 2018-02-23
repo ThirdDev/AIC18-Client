@@ -141,7 +141,11 @@ public class GeneCollections {
         }
 
         GeneCollection collection = FindSuitableGeneCollectionFor(cannons, archers, strategy);
-        Logger.println("Will get gene from " + collection.getResourceName() + " (we have " + cannons.size() + " cannons and " + archers.size() + " archers now)");
+
+        if (collection == null)
+            Logger.println("Okay, I don't know what to do. I have " + cannons.size() + " cannons and " + archers.size() + " archers...");
+        else
+            Logger.println("Will get gene from " + collection.getResourceName() + " (we have " + cannons.size() + " cannons and " + archers.size() + " archers now)");
         return collection.getRecipe(cannons.stream().mapToInt(Integer::intValue).toArray(), archers.stream().mapToInt(Integer::intValue).toArray());
     }
 
