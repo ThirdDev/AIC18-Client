@@ -45,6 +45,9 @@ public class ahmadalli {
                 .sorted(compareByTroopAndRoadCellCount(world))
                 .toArray(GrassCell[]::new);
 
+        if (sidewayCells.length == 0)
+            return;
+
 
         GrassCell cellToBuild = null;
 
