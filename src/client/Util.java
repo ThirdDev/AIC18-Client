@@ -102,6 +102,21 @@ public class Util {
         }
     }
 
+    public static boolean upgradeTower(BankAccount bankAccount, World game,
+                                       Tower tower){
+        int priceToPay = CannonTower.getPrice(tower.getLevel()+1) -
+                CannonTower.getPrice(tower.getLevel());
+        if(bankAccount.canSpend(priceToPay)){
+            game.upgradeTower(tower);
+            bankAccount.retrieveMoney(priceToPay);
+            return true;
+        }
+        else{
+            return false;
+        }
+
+    }
+
     public static boolean buildCreep(int count,BankAccount bankAccount,
                                       int pathIndex, World game){
         if(bankAccount.canSpend(LightUnit.getCurrentPrice(count))){
