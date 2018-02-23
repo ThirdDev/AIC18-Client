@@ -16,8 +16,8 @@ public class ahmadalli {
     }
 
     public static int cellScore(Cell cell, World world) {
-        return getNearbyRoadCells(cell, world).
-                mapToInt(x -> (int) x.getUnits().stream().count() + 1).sum();
+        return (int) getNearbyRoadCells(cell, world)
+                .count();
     }
 
     public static Stream<RoadCell> getNearbyRoadCells(Cell cell, World world) {
