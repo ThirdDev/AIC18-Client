@@ -68,15 +68,22 @@ public class Bank {
     }
 
     public static void income(int amount) {
+        //Logger.println("Earned " + amount + " this turn!");
+
         floatingMoney += amount;
         distribute();
     }
 
     private static void distribute() {
+        int totalDistributedAmount = 0;
         for (BankAccount ba : accounts.values()) {
             int amount = (int) Math.floor(ba.getPercent() * floatingMoney);
             ba.increaseBalance(amount);
-            floatingMoney -= amount;
+
+            totalDistributedAmount += amount;
+            //Logger.println("About " + amount + " goes to " + ba.getNickname());
         }
+
+        floatingMoney -= totalDistributedAmount;
     }
 }
