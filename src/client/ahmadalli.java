@@ -21,7 +21,7 @@ public class ahmadalli {
     }
 
     public static Stream<RoadCell> getNearbyRoadCells(Cell cell, World world) {
-        return Util.radiusCells(cell, 2, world.getDefenceMap()).stream()
+        return Util.radialCells(cell, 2, world.getDefenceMap()).stream()
                 .filter(x -> x instanceof RoadCell)
                 .map(x -> (RoadCell) x);
     }
@@ -29,7 +29,7 @@ public class ahmadalli {
     public static void plantRandomTowerInASidewayCell(World world) {
         GrassCell[] sidewayCells = world.getDefenceMapPaths().stream()
                 .flatMap(x -> x.getRoad().stream())
-                .flatMap(x -> Util.radiusCells(x, 2, world.getDefenceMap()).stream())
+                .flatMap(x -> Util.radialCells(x, 2, world.getDefenceMap()).stream())
                 .filter(x -> x instanceof GrassCell)
                 .map(x -> (GrassCell) x)
                 .filter(x -> x.getTower() == null)
