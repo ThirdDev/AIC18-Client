@@ -52,7 +52,7 @@ public class ahmadalli {
         if (towerType == 0 && defendAccount.canSpend(ArcherTower.INITIAL_PRICE)) {
             if (defendAccount.retrieveMoney(ArcherTower.INITIAL_PRICE)) {
                 int x = cellToBuild.getLocation().getX();
-                int y = cellToBuild.getLocation().getX();
+                int y = cellToBuild.getLocation().getY();
                 Logger.println("creating an archer tower @(" + x + ", " + y + ")");
                 world.createArcherTower(level, x, y);
             }
@@ -60,7 +60,7 @@ public class ahmadalli {
         if (towerType == 1 && defendAccount.canSpend(CannonTower.INITIAL_PRICE)) {
             if (defendAccount.retrieveMoney(CannonTower.INITIAL_PRICE)) {
                 int x = cellToBuild.getLocation().getX();
-                int y = cellToBuild.getLocation().getX();
+                int y = cellToBuild.getLocation().getY();
                 Logger.println("creating an cannon tower @(" + x + ", " + y + ")");
                 world.createCannonTower(level, x, y);
             }
