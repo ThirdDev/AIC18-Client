@@ -28,7 +28,7 @@ public class Tower extends Entity {
         return 0;
     }
 
-    public int getPrice(int level) {
+    public static int getPrice(int level) {
         return 0;
     }
 
