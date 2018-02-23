@@ -2,6 +2,7 @@ package client;
 
 import client.classes.Bank;
 import client.classes.BankAccount;
+import client.classes.Logger;
 import client.model.*;
 
 import java.util.Comparator;
@@ -44,27 +45,24 @@ public class ahmadalli {
 
         cellToBuild = sidewayCells[sidewayCells.length - 1];
 
-        BankAccount defendAccount = null;
-        try {
-            defendAccount = Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE);
-        } catch (Exception ex) {
-            return;
-        }
+        BankAccount defendAccount = Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE);
 
         int towerType = rnd.nextInt() % 2;
         int level = 1;
         if (towerType == 0 && defendAccount.canSpend(ArcherTower.INITIAL_PRICE)) {
-            try {
-                defendAccount.retrieveMoney(ArcherTower.INITIAL_PRICE);
-                world.createArcherTower(level, cellToBuild.getLocation().getX(), cellToBuild.getLocation().getX());
-            } catch (Exception ex) {
+            if (defendAccount.retrieveMoney(ArcherTower.INITIAL_PRICE)) {
+                int x = cellToBuild.getLocation().getX();
+                int y = cellToBuild.getLocation().getX();
+                Logger.println("creating an archer tower @(" + x + ", " + y + ")");
+                world.createArcherTower(level, x, y);
             }
         }
         if (towerType == 1 && defendAccount.canSpend(CannonTower.INITIAL_PRICE)) {
-            try {
-                defendAccount.retrieveMoney(CannonTower.INITIAL_PRICE);
-                world.createCannonTower(level, cellToBuild.getLocation().getX(), cellToBuild.getLocation().getX());
-            } catch (Exception ex) {
+            if (defendAccount.retrieveMoney(CannonTower.INITIAL_PRICE)) {
+                int x = cellToBuild.getLocation().getX();
+                int y = cellToBuild.getLocation().getX();
+                Logger.println("creating an cannon tower @(" + x + ", " + y + ")");
+                world.createCannonTower(level, x, y);
             }
         }
     }
