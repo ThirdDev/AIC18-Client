@@ -92,16 +92,13 @@ public class AI {
         Logger.println("Turn " + game.getCurrentTurn());
         BankController.handleMoney(game.getMyInformation());
 
+        Logger.print("Attack budget: " + Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).getBalance());
+        Logger.print(", Defence budget: " + Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE).getBalance());
+        Logger.println(", Total: " + game.getMyInformation().getMoney());
+
         ahmadalli.plantRandomTowerInASidewayCell(game);
 
         Attack(game);
-
-        try {
-            Logger.print("Attack budget: " + Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).getBalance());
-            Logger.print(", Defence budget: " + Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE).getBalance());
-            Logger.println(", Total: " + game.getMyInformation().getMoney());
-
-        } catch (Exception ex) {}
     }
 
     private void Attack(World game) {
@@ -187,7 +184,7 @@ public class AI {
                 game.createLightUnit(pathIndex);
                 LightUnit.createdUnit();
 
-                System.out.println("Created a creep.");
+                Logger.println("Created a creep.");
             }
         }
         else {
@@ -195,7 +192,7 @@ public class AI {
                 game.createHeavyUnit(pathIndex);
                 HeavyUnit.createdUnit();
 
-                System.out.println("Created a hero.");
+                Logger.println("Created a hero.");
             }
         }
     }
