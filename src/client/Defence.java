@@ -95,7 +95,7 @@ public class Defence {
 
     private void color(Point point,int cl){
         SideWayCell sideWayCell = sideWayCells.get(point);
-        if(sideWayCell == null) return;
+        if(sideWayCell == null || sideWayCell.getColor() != -1) return;
         if(sideWayCell.getColor() != cl){
             System.out.println("WTF IN COLORING");
         }
@@ -118,27 +118,27 @@ public class Defence {
             sideWayCells.remove(tempBean.getPoint());
         }
         if(beans.size() > 0) reColor();
-        ArrayList<SideWayCell> sideWayCellArrayList = new ArrayList<> (sideWayCells.values());
-        Collections.sort(sideWayCellArrayList);
-        Random random = new Random();
-        if(sideWayCellArrayList.size()>0){
-            SideWayCell candidate = sideWayCellArrayList.get(0);
-            //System.out.print("***RoadCells:");
-            //System.out.println(candidate.getRoadCells().size());
-            if(game.isTowerConstructable(candidate)){
-                Point location = candidate.getLocation();
-                if(random.nextDouble()<0.5){
-                    game.createArcherTower(2,location.getX(),location.getY());
-                }
-                else{
-                    game.createCannonTower(2,location.getX(),location.getY());
-                }
-            }
-            else{
-                if (candidate.getTower() != null){
-                    game.upgradeTower(candidate.getTower());
-                }
-            }
-        }
+//        ArrayList<SideWayCell> sideWayCellArrayList = new ArrayList<> (sideWayCells.values());
+//        Collections.sort(sideWayCellArrayList);
+//        Random random = new Random();
+//        if(sideWayCellArrayList.size()>0){
+//            SideWayCell candidate = sideWayCellArrayList.get(0);
+//            //System.out.print("***RoadCells:");
+//            //System.out.println(candidate.getRoadCells().size());
+//            if(game.isTowerConstructable(candidate)){
+//                Point location = candidate.getLocation();
+//                if(random.nextDouble()<0.5){
+//                    game.createArcherTower(2,location.getX(),location.getY());
+//                }
+//                else{
+//                    game.createCannonTower(2,location.getX(),location.getY());
+//                }
+//            }
+//            else{
+//                if (candidate.getTower() != null){
+//                    game.upgradeTower(candidate.getTower());
+//                }
+//            }
+//        }
     }
 }
