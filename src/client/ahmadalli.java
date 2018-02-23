@@ -11,6 +11,8 @@ import java.util.stream.Stream;
 
 public class ahmadalli {
 
+    private static Random rnd = new Random();
+
     private static Comparator<Cell> compareByTroopAndRoadCellCount(World world) {
         return Comparator.comparingInt(o -> cellScore(o, world));
     }
@@ -86,5 +88,5 @@ public class ahmadalli {
         }
     }
 
-    static Random rnd = new Random();
+
 }
