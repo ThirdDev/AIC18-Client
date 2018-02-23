@@ -26,13 +26,21 @@ public class ahmadalli {
                 .map(x -> (RoadCell) x);
     }
 
+    public static boolean hasTowerBesideOfIt(Cell cell, World world) {
+        return Util.radialCells(cell, 1, world.getDefenceMap()).stream()
+                .filter(x -> x instanceof GrassCell)
+                .map(x -> (GrassCell) x)
+                .anyMatch(x -> !x.isEmpty());
+    }
+
     public static void plantRandomTowerInASidewayCell(World world) {
         GrassCell[] sidewayCells = world.getDefenceMapPaths().stream()
                 .flatMap(x -> x.getRoad().stream())
                 .flatMap(x -> Util.radialCells(x, 2, world.getDefenceMap()).stream())
                 .filter(x -> x instanceof GrassCell)
                 .map(x -> (GrassCell) x)
-                .filter(x -> x.getTower() == null)
+                .filter(x -> x.isEmpty())
+                .filter(x -> !hasTowerBesideOfIt(x, world))
                 .distinct()
                 .sorted(compareByTroopAndRoadCellCount(world))
                 .toArray(GrassCell[]::new);
