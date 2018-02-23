@@ -1,5 +1,6 @@
 package client;
 
+import client.classes.BankAccount;
 import client.model.*;
 
 import java.util.ArrayList;
@@ -76,4 +77,62 @@ public class Util {
 
         return cells;
     }
+
+    public static boolean buildArcher(int level, BankAccount bankAccount,
+                                      Point point, World game){
+        if(bankAccount.canSpend(ArcherTower.getPrice(level))){
+            game.createArcherTower(level,point.getX(),point.getY());
+            bankAccount.retrieveMoney(ArcherTower.getPrice(level));
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public static boolean buildCannon(int level, BankAccount bankAccount,
+                                      Point point, World game){
+        if(bankAccount.canSpend(CannonTower.getPrice(level))){
+            game.createCannonTower(level,point.getX(),point.getY());
+            bankAccount.retrieveMoney(CannonTower.getPrice(level));
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public static boolean buildCreep(int count,BankAccount bankAccount,
+                                      int pathIndex, World game){
+        if(bankAccount.canSpend(LightUnit.getCurrentPrice(count))){
+            for (int i = 0; i < count; i++) {
+                game.createLightUnit(pathIndex);
+                LightUnit.createdUnit();
+            }
+            bankAccount.retrieveMoney(LightUnit.getCurrentPrice(count));
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    public static boolean buildHero(int count,BankAccount bankAccount,
+                                     int pathIndex, World game){
+        if(bankAccount.canSpend(HeavyUnit.getCurrentPrice(count))){
+            for (int i = 0; i < count; i++) {
+                game.createHeavyUnit(pathIndex);
+                HeavyUnit.createdUnit();
+            }
+            bankAccount.retrieveMoney(HeavyUnit.getCurrentPrice(count));
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+
+
+
 }
