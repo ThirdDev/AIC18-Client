@@ -25,7 +25,7 @@ public class BankAccount {
         return balance;
     }
 
-    protected void increaseBalance(int amount) {
+    protected synchronized void increaseBalance(int amount) {
         balance += amount;
     }
 
@@ -37,7 +37,7 @@ public class BankAccount {
         return ((balance - amount) >= 0);
     }
 
-    public boolean retrieveMoney(int amount) {
+    public synchronized boolean retrieveMoney(int amount) {
         if (balance - amount < 0)
             return false;
 

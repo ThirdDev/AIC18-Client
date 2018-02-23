@@ -9,9 +9,9 @@ import java.util.*;
 
 public class Defence {
     BankAccount bankAccount;
-    Game game;
+    World game;
 
-    public Defence(BankAccount bankAccount, Game game) {
+    public Defence(BankAccount bankAccount, World game) {
         this.bankAccount = bankAccount;
         this.game = game;
     }
