@@ -5,6 +5,7 @@ import client.classes.BankAccount;
 import client.classes.Logger;
 import client.model.*;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Random;
 import java.util.stream.Stream;
@@ -86,6 +87,61 @@ public class ahmadalli {
                 world.createCannonTower(level, x, y);
             }
         }
+    }
+
+    public static Stream<RoadCell> dangerousCellsOrderByDangerScore(ArrayList<Path> paths, Map map, double portion, int minCount, int maxCount) {
+        return paths.stream()
+                .flatMap(x -> endingRoadCells(x, portion, minCount, maxCount).stream())
+                .filter(x -> dangerScore(x, map) > 0)
+                .sorted((x, y) -> (int) (dangerScore(y, map) - dangerScore(x, map)));
+    }
+
+    public static long dangerScore(RoadCell roadCell, Map map) {
+        Stream<Cell> radialCells = Util.radialCells(roadCell, 2, map).stream();
+        Stream<GrassCell> towerCellsInRange = radialCells
+                .filter(x -> x instanceof GrassCell)
+                .map(x -> (GrassCell) x)
+                .filter(x -> !x.isEmpty());
+
+        boolean hasCannonCellsInRange = towerCellsInRange
+                .filter(x -> x.getTower() instanceof CannonTower)
+                .count() > 0;
+
+        long archerCellsInRangeCount = towerCellsInRange
+                .filter(x -> x.getTower() instanceof ArcherTower)
+                .count();
+
+        Stream<Unit> units = roadCell.getUnits().stream();
+
+        long creepsCount = units.filter(x -> x instanceof LightUnit).count();
+        long herosCount = units.filter(x -> x instanceof HeavyUnit).count();
+
+        long score = 0;
+
+        if (creepsCount > 0 && !hasCannonCellsInRange)
+            score += creepsCount * LightUnit.DAMAGE;
+        if (archerCellsInRangeCount < herosCount)
+            score += (herosCount) * HeavyUnit.DAMAGE;
+
+        return score;
+    }
+
+    public static ArrayList<RoadCell> endingRoadCells(Path path, double portion, int minCount, int maxCount) {
+        ArrayList<RoadCell> roeadCells = path.getRoad();
+
+        int portionCount = (int) (roeadCells.size() * portion);
+        int count = Math.max(minCount, portionCount);
+        count = Math.min(maxCount, count);
+        count = Math.min(roeadCells.size(), count);
+
+
+        ArrayList<RoadCell> result = new ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            result.add(roeadCells.get(roeadCells.size() - 1 - i));
+        }
+
+        return result;
+
     }
 
 
