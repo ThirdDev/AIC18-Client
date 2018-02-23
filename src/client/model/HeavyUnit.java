@@ -64,7 +64,7 @@ public class HeavyUnit extends Unit {
     static int createdUnits = 0;
 
     public static int getCurrentPrice() {
-        return INITIAL_PRICE + PRICE_INCREASE * (createdUnits % 15);
+        return INITIAL_PRICE + PRICE_INCREASE * (int)(Math.floor(createdUnits / 15));
     }
 
     public static int getCurrentPrice(int count) {
@@ -72,7 +72,7 @@ public class HeavyUnit extends Unit {
         int createdUnitsTemp = createdUnits;
 
         for (int i = 0; i < count; i++) {
-            totalPrice += INITIAL_PRICE + PRICE_INCREASE * (createdUnitsTemp % 15);
+            totalPrice += INITIAL_PRICE + PRICE_INCREASE * (Math.floor(createdUnitsTemp / 15));
             createdUnitsTemp++;
         }
 

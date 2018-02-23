@@ -62,7 +62,7 @@ public class LightUnit extends Unit {
     static int createdUnits = 0;
 
     public static int getCurrentPrice() {
-        return INITIAL_PRICE + PRICE_INCREASE * (createdUnits % 60);
+        return INITIAL_PRICE + PRICE_INCREASE * (int)(Math.floor(createdUnits / 60));
     }
 
     public static int getCurrentPrice(int count) {
@@ -70,7 +70,7 @@ public class LightUnit extends Unit {
         int createdUnitsTemp = createdUnits;
 
         for (int i = 0; i < count; i++) {
-            totalPrice += INITIAL_PRICE + PRICE_INCREASE * (createdUnitsTemp % 60);
+            totalPrice += INITIAL_PRICE + PRICE_INCREASE * (int)(Math.floor(createdUnitsTemp / 60));
             createdUnitsTemp++;
         }
 
