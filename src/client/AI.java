@@ -26,10 +26,6 @@ public class AI {
 
     Random rnd = new Random();
 
-    HashMap<Path, Recipe> currentAttackRecipe = new HashMap<>();
-    HashMap<Path, Integer> attackTurns = new HashMap<>();
-    boolean allowedToInitiateAttack = true;
-
     public AI() {
         GeneCollections.getCollections();
     }
@@ -98,116 +94,6 @@ public class AI {
 
         ahmadalli.plantRandomTowerInASidewayCell(game);
 
-        Attack(game);
-    }
-
-    private void Attack(World game) {
-        for (Path path : game.getAttackMapPaths()) {
-            if (!attackTurns.containsKey(path))
-                attackTurns.put(path, 0);
-
-            if (attackTurns.get(path) == 0) {
-                if (!allowedToInitiateAttack)
-                    continue;
-                Logger.println("Attack begin for " + path.toString());
-
-                Set<TowerDetails> enemyTowers = AttackMapAnalyser.getVisibleTowerDetailsForPath(game, path);
-                Recipe recipe = GeneCollections.getCollections().getRecipe(enemyTowers, path, GeneCollections.Strategy.DamageFullForce);
-
-                int totalCost = recipe.getTotalCost();
-                if (!Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).canSpend(totalCost)) {
-                    Logger.println("Not enough money. (we need " + totalCost + ")");
-                    Logger.println("");
-                    continue;
-                }
-
-                currentAttackRecipe.put(path, recipe);
-
-                Logger.print("Creeps: ");
-                for (byte b : recipe.getCreeps())
-                    Logger.print(b + ", ");
-                Logger.print("Heros: ");
-                for (byte b : recipe.getHeros())
-                    Logger.print(b + ", ");
-                Logger.println("");
-
-                ProceedAttack(game, path);
-
-                allowedToInitiateAttack = false;
-            } else if (attackTurns.get(path) > 0) {
-                ProceedAttack(game, path);
-            } else {
-                attackTurns.put(path, attackTurns.get(path) + 1);
-            }
-        }
-    }
-
-    private void ProceedAttack(World game, Path path) {
-        Recipe recipe = currentAttackRecipe.get(path);
-
-        if ((attackTurns.get(path) >= recipe.getCreeps().length) && (attackTurns.get(path) >= recipe.getHeros().length)) {
-            allowedToInitiateAttack = true;
-            attackTurns.put(path, -5);
-            Logger.println("Finished creating attack wave for " + path.toString());
-            return;
-        }
-
-        if (attackTurns.get(path) < recipe.getCreeps().length) {
-            TryCreateSoldiers(game, path, UnitType.Creep, recipe.getCreeps()[attackTurns.get(path)]);
-        }
-
-        if (attackTurns.get(path) < recipe.getHeros().length) {
-            TryCreateSoldiers(game, path, UnitType.Hero, recipe.getHeros()[attackTurns.get(path)]);
-        }
-
-        attackTurns.put(path, attackTurns.get(path) + 1);
-    }
-
-    private void TryCreateSoldiers(World game, Path path, UnitType type, int count) {
-        BankAccount attackerAccount = Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK);
-        int totalPrice;
-
-        if (type == UnitType.Creep)
-            totalPrice = LightUnit.getCurrentPrice(count);
-        else
-            totalPrice = HeavyUnit.getCurrentPrice(count);
-
-        if (attackerAccount.retrieveMoney(totalPrice) == false) {
-            Logger.error("Didn't have enough money to create " + count + " creeps. But why? we should've had enough...");
-            return;
-        }
-
-        int pathIndex = getPathIndex(game, path);
-
-        if (type == UnitType.Creep) {
-            for (int i = 0; i < count; i++) {
-                game.createLightUnit(pathIndex);
-                LightUnit.createdUnit();
-
-                Logger.println("Created a creep.");
-            }
-        }
-        else {
-            for (int i = 0; i < count; i++) {
-                game.createHeavyUnit(pathIndex);
-                HeavyUnit.createdUnit();
-
-                Logger.println("Created a hero.");
-            }
-        }
-    }
-
-    private int getPathIndex(World game, Path path) {
-        for (int i = 0; i < game.getAttackMapPaths().size(); i++)
-            if (path.equals(game.getAttackMapPaths().get(i)))
-                return i;
-
-        Logger.error("getPathIndex fatal error");
-        return -1;
-    }
-
-    public enum UnitType {
-        Creep,
-        Hero
+        Attack.Explore(game);
     }
 }
