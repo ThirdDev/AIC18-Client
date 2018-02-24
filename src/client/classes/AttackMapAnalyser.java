@@ -115,7 +115,8 @@ public class AttackMapAnalyser {
                 }
             }
 
-            td.setConfluenceForPath(path, confluencePoints);
+            if (confluencePoints.size() > 0)
+                td.setConfluenceForPath(path, confluencePoints);
         }
 
         return td;
