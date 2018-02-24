@@ -15,7 +15,7 @@ public class BankController {
     } //Static class
 
     public static void handleMoney(Player player) {
-        if (!Bank.IsInitialized())
+        if (!Bank.isInitialized())
             initBank();
 
         int income = player.getMoney() - lastTurnMoney;
@@ -32,13 +32,9 @@ public class BankController {
     }
 
     public static void initBank() {
-        try {
-            System.out.println("Initializing bank...");
-            Bank.registerAccount(BANK_ACCOUNT_ATTACK, 0.6);
-            Bank.registerAccount(BANK_ACCOUNT_DEFENCE, 0.4);
-        } catch (TotalPercentageExceededException e) {
-            System.out.println("Something went terribly wrong in bank initialization !!!");
-        }
+        System.out.println("Initializing bank...");
+        Bank.registerAccount(BANK_ACCOUNT_ATTACK, 0.6);
+        Bank.registerAccount(BANK_ACCOUNT_DEFENCE, 0.4);
     }
 
     @SuppressWarnings("Duplicates")

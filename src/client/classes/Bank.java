@@ -19,10 +19,7 @@ public class Bank {
     private Bank() {
     } //Static class
 
-    public static BankAccount registerAccount(String nickname, double percent) throws TotalPercentageExceededException {
-        if ((totalPercentage + percent) > 1.0)
-            throw new TotalPercentageExceededException();
-
+    public static BankAccount registerAccount(String nickname, double percent) {
         BankAccount ba = new BankAccount(nickname, percent);
         accounts.put(nickname, ba);
         totalPercentage += percent;
@@ -55,11 +52,11 @@ public class Bank {
         return true;
     }
 
-    public static boolean IsInitialized() {
+    public static boolean isInitialized() {
         return (totalPercentage == 1.0);
     }
 
-    public static boolean TransferMoney(BankAccount sender, BankAccount receiver, int amount) {
+    public static boolean transferMoney(BankAccount sender, BankAccount receiver, int amount) {
         if (sender.retrieveMoney(amount) == false)
             return false;
         receiver.increaseBalance(amount);
@@ -72,6 +69,7 @@ public class Bank {
 
         floatingMoney += amount;
         distribute();
+        checkGoals();
     }
 
     private static void distribute() {
@@ -85,5 +83,28 @@ public class Bank {
         }
 
         floatingMoney -= totalDistributedAmount;
+    }
+
+    private static void checkGoals() {
+        for (BankAccount b1 : accounts.values()) {
+            for (BankAccount b2 : accounts.values()) {
+                if (b1.getNickname().equals(b2.getNickname()))
+                    continue;
+
+                int g1 = b1.getGoal();
+                int g2 = b2.getGoal();
+
+                if (g1 > 0 && g2 < 0) {
+                    int amount = Math.min(g1, -g2);
+
+                    if (transferMoney(b1, b2, amount)) {
+                        b1.setGoal(g1 - amount);
+                        b2.setGoal(g2 + amount);
+
+                        System.out.println("Transferred donation " + amount + " from " + b1.getNickname() + " to " + b2.getNickname() + ".");
+                    }
+                }
+            }
+        }
     }
 }

@@ -6,11 +6,13 @@ public class BankAccount {
     String nickname;
     double percent;
     int balance;
+    int goal;
 
     public BankAccount(String nickname, double percent) {
         this.nickname = nickname;
         this.percent = percent;
         balance = 0;
+        goal = 0;
     }
 
     public String getNickname() {
@@ -35,6 +37,14 @@ public class BankAccount {
 
     public boolean canSpend(int amount) {
         return ((balance - amount) >= 0);
+    }
+
+    public void setGoal(int amount) {
+        goal = amount;
+    }
+
+    protected int getGoal() {
+        return goal;
     }
 
     public synchronized boolean retrieveMoney(int amount) {
