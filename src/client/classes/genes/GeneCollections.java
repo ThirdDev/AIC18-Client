@@ -90,7 +90,7 @@ public class GeneCollections {
         return instance;
     }
 
-    public Recipe getRecipe(Set<TowerDetails> towers, Path path, Strategy strategy) {
+    public Recipe getRecipe(Set<TowerDetails> towers, Path path, Strategy strategy, double multiplier) {
         List<Integer> cannonsModel = new ArrayList<>();
         List<Integer> archersModel = new ArrayList<>();
 
@@ -105,6 +105,7 @@ public class GeneCollections {
             Logger.println("Okay, I don't know what to do. I have " + cannonsModel.size() + " cannons and " + archersModel.size() + " archers...");
         else
             Logger.println("Will get gene from " + collection.getResourceName() + " (we have " + cannonsModel.size() + " cannons and " + archersModel.size() + " archers now)");
+        collection.setMultiplier(multiplier);
         return collection.getRecipe(cannonsModel.stream().mapToInt(Integer::intValue).toArray(), archersModel.stream().mapToInt(Integer::intValue).toArray());
     }
 

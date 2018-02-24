@@ -18,6 +18,7 @@ public class CountStateGeneCollection implements GeneCollection {
     String resourceName;
     Simulator simulator;
     int timeout;
+    double multiplier = 1.0;
 
     public CountStateGeneCollection(String resourceName) {
         try {
@@ -59,6 +60,11 @@ public class CountStateGeneCollection implements GeneCollection {
         }
     }
 
+    @Override
+    public void setMultiplier(double multiplier) {
+        this.multiplier = multiplier;
+    }
+
     public String getResourceName() {
         return resourceName;
     }
@@ -79,15 +85,40 @@ public class CountStateGeneCollection implements GeneCollection {
     private Recipe getRecipe(int cannonsCount, int archersCount) {
         String key = cannonsCount + "," + archersCount;
 
-        if (!data.containsKey(key)) {
+        double multiplier = 1.0;
+
+        while (!data.containsKey(key)) {
             Logger.error("Can't find key " + key + " in CountStateGeneCollection of " + resourceName);
-            return null;
+
+            multiplier *= 1.5;
+
+            key = (int)(cannonsCount / multiplier) + "," + (int)(archersCount / multiplier);
         }
 
         //Logger.println("Simulating...");
         List<byte[][]> genes = data.get(key);
+        List<byte[][]> multipliedGenes = new ArrayList<>();
+
+        for (byte[][] gene : genes) {
+            byte[] creeps = new byte[gene[0].length];
+            byte[] heros = new byte[gene[1].length];
+
+            for (int i = 0; i < creeps.length; i++)
+                creeps[i] = (byte)(gene[0][i] * multiplier * this.multiplier);
+            for (int i = 0; i < creeps.length; i++)
+                heros[i] = (byte)(gene[1][i] * multiplier * this.multiplier);
+
+            byte[][] multipliedGene = new byte[][] { creeps, heros };
+            multipliedGenes.add(multipliedGene);
+        }
+
         Judge judge = new AttackJudge();
-        byte[][] bestGene = Simulator.findBestGene(genes, simulator, judge, timeout);
+        byte[][] bestGene = Simulator.findBestGene(multipliedGenes, simulator, judge, timeout);
+
+        if (bestGene == null) { //Simulator failed
+            Logger.error("Simulator failed. Will send first gene.");
+            bestGene = multipliedGenes.get(0);
+        }
 
         return new Recipe(bestGene[0], bestGene[1]);
     }
