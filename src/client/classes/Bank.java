@@ -101,7 +101,7 @@ public class Bank {
                         b1.setGoal(g1 - amount);
                         b2.setGoal(g2 + amount);
 
-                        System.out.println("Transferred donation " + amount + " from " + b1.getNickname() + " to " + b2.getNickname() + ".");
+                        Logger.println("Transferred donation " + amount + " from " + b1.getNickname() + " to " + b2.getNickname() + ".");
                     }
                 }
             }

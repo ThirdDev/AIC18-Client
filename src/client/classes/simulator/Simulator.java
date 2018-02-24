@@ -32,11 +32,11 @@ public class Simulator {
 
         int counter = 0;
         for (byte[][] gene : genes) {
-            Logger.print("Gene #" + counter);
+            //Logger.print("Gene #" + counter);
             SimulationResult result = simulator.simulate(new MyGeneParser(gene));
             double currentScore = judge.calculateScore(result);
             counter++;
-            Logger.println(": " + currentScore);
+            //Logger.println(": " + currentScore);
 
             if (currentScore > score) {
                 bestGene = gene;

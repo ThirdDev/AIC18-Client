@@ -84,7 +84,7 @@ public class CountStateGeneCollection implements GeneCollection {
             return null;
         }
 
-        Logger.println("Simulating...");
+        //Logger.println("Simulating...");
         List<byte[][]> genes = data.get(key);
         Judge judge = new AttackJudge();
         byte[][] bestGene = Simulator.findBestGene(genes, simulator, judge, timeout);
