@@ -7,6 +7,7 @@ public class BankAccount {
     double percent;
     int balance;
     int goal;
+    boolean isGoalExact;
 
     public BankAccount(String nickname, double percent) {
         this.nickname = nickname;
@@ -45,6 +46,14 @@ public class BankAccount {
 
     protected int getGoal() {
         return goal;
+    }
+
+    public void setIsGoalExact(boolean isExact) {
+        isGoalExact = isExact;
+    }
+
+    protected boolean isGoalExact() {
+        return isGoalExact;
     }
 
     public synchronized boolean retrieveMoney(int amount) {

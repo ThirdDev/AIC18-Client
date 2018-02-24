@@ -85,7 +85,7 @@ public class Bank {
         floatingMoney -= totalDistributedAmount;
     }
 
-    private static void checkGoals() {
+    public static void checkGoals() {
         for (BankAccount b1 : accounts.values()) {
             for (BankAccount b2 : accounts.values()) {
                 if (b1.getNickname().equals(b2.getNickname()))
@@ -96,6 +96,9 @@ public class Bank {
 
                 if (g1 > 0 && g2 < 0) {
                     int amount = Math.min(g1, -g2);
+
+                    if (b2.isGoalExact() && amount != -g2)
+                        continue;
 
                     if (transferMoney(b1, b2, amount)) {
                         b1.setGoal(g1 - amount);
