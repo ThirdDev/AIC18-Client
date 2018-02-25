@@ -95,6 +95,8 @@ public class ahmadalli {
                 }
                 if (defendAccount.retrieveMoney(upgradePrice)) {
                     world.upgradeTower(tower);
+                } else {
+                    break;
                 }
             } else {
                 int towerType = rnd.nextInt() % 5;
@@ -105,6 +107,8 @@ public class ahmadalli {
                         int y = cellToBuild.getLocation().getY();
                         Logger.println("creating an archer tower @(" + x + ", " + y + ")");
                         world.createArcherTower(level, x, y);
+                    } else {
+                        break;
                     }
                 }
                 if (towerType != 0) {
@@ -113,6 +117,8 @@ public class ahmadalli {
                         int y = cellToBuild.getLocation().getY();
                         Logger.println("creating an cannon tower @(" + x + ", " + y + ")");
                         world.createCannonTower(level, x, y);
+                    } else {
+                        break;
                     }
                 }
             }
