@@ -110,15 +110,15 @@ public class ahmadalli {
 
     }
 
-    static int stormDamageScoreSum(Cell cell, Map map, int stormRange) {
+    public static int stormDamageScoreSum(Cell cell, Map map, int stormRange) {
         return Util.radialCells(cell, stormRange, map).stream()
                 .filter(x -> x instanceof RoadCell)
                 .map(x -> (RoadCell) x)
-                .mapToInt(x -> (int) dangerScore(x))
+                .mapToInt(x -> dangerScore(x))
                 .sum();
     }
 
-    static Cell getCenterOfMostVulnerableAreaContainingRoadCell(RoadCell cell, Map map, int range) {
+    public static Cell getCenterOfMostVulnerableAreaContainingRoadCell(RoadCell cell, Map map, int range) {
         return Util.radialCells(cell, range, map).stream()
                 .sorted((x, y) -> stormDamageScoreSum(y, map, range) - stormDamageScoreSum(x, map, range))
                 .findFirst().get();
