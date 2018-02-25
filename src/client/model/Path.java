@@ -1,7 +1,6 @@
 package client.model;
 
 import client.Util;
-import javafx.geometry.Side;
 
 import java.util.ArrayList;
 
@@ -12,9 +11,14 @@ public class Path {
 
     private ArrayList<RoadCell> road;
     private ArrayList<SideWayCell> sideWayCells;
-
+    private ArrayList<Double> archerData;
+    private ArrayList<Double> cannonData;
+    private int updateDataTurn = -1;
     public Path(ArrayList<RoadCell> road) {
         this.road = road;
+        sideWayCells = new ArrayList<>();
+        archerData = new ArrayList<>();
+        cannonData = new ArrayList<>();
     }
 
     public ArrayList<RoadCell> getRoad() {
@@ -27,6 +31,52 @@ public class Path {
 
     public void addSideWayCell(SideWayCell sideWayCell) {
         this.sideWayCells.add(sideWayCell);
+    }
+
+    private void updateDates(int lastModifiedTurn, World game){
+        if(updateDataTurn >= lastModifiedTurn) return;
+        archerData.clear();
+        cannonData.clear();
+        for (int i = road.size()-1; i >= 0 ; i--) {
+            RoadCell roadCell = road.get(i);
+            ArrayList<Cell> nearbyCells = Util.radialCells(roadCell,2,game.getDefenceMap());
+            Double archer = new Double(0);
+            Double cannon = new Double(0);
+            for (int j = 0; j < nearbyCells.size(); j++) {
+
+                Cell tempCell = nearbyCells.get(j);
+
+                if(tempCell instanceof GrassCell){
+                    Tower tower = ((GrassCell) tempCell).getTower();
+                    if(tower != null)
+                    {
+                        if(tower instanceof ArcherTower){
+                            archer += (double)tower.getDamage();
+                        }
+                        else{
+                            cannon += tower.getDamage()/(double)tower.getAttackSpeed();
+                        }
+                    }
+                }
+            }
+            archerData.add(archer);
+            cannonData.add(cannon);
+
+        }
+        updateDataTurn = game.getCurrentTurn();
+    }
+
+
+    public int getCreepsDamage(int level, World game, int lastModifiedTurn){
+        updateDates(lastModifiedTurn,game);
+
+        return 0;
+    }
+
+    public int getHeroDamage(int level, World game, int lastModifiedTurn){
+        updateDates(lastModifiedTurn,game);
+
+        return 0;
     }
 
     @Override

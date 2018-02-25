@@ -106,7 +106,7 @@ public class Util {
         int priceToPay = CannonTower.getPrice(tower.getLevel()+1) -
                 CannonTower.getPrice(tower.getLevel());
         if(bankAccount.canSpend(priceToPay)){
-            game.upgradeTower(tower);
+            game.upgradeTower(tower.getId());
             bankAccount.retrieveMoney(priceToPay);
             return true;
         }

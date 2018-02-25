@@ -13,7 +13,9 @@ public class Defence {
     Map map;
     ArrayList<Path> paths;
     HashMap<Point,SideWayCell> sideWayCells;
-    int[] colorPoint;
+    ArrayList<SideWayCell> buildable;
+    ArrayList<SideWayCell> tempArray0;
+    ArrayList<SideWayCell> tempArray1;
     int[] tempColorPoint;
 
     public Defence(BankAccount bankAccount, World game) {
@@ -22,9 +24,10 @@ public class Defence {
         map = game.getDefenceMap();
         paths = game.getDefenceMapPaths();
         sideWayCells = new HashMap<>();
-        //TODO: Need to change as a part of better coloring schema
-        colorPoint = new int[2];
         tempColorPoint = new int[2];
+        tempArray0 = new ArrayList<>();
+        tempArray1 = new ArrayList<>();
+        buildable = new ArrayList<>();
         init();
     }
 
@@ -65,32 +68,35 @@ public class Defence {
     }
 
     public void reColor(){
+
+        buildable.clear();
         Set<Point> keyset = sideWayCells.keySet();
         Iterator<Point> iterator = keyset.iterator();
         while (iterator.hasNext()){
             sideWayCells.get(iterator.next()).setColor(-1);
         }
-        colorPoint[0] = 0;
-        colorPoint[1] = 0;
         iterator = keyset.iterator();
         while (iterator.hasNext()){
             Point nextPoint = iterator.next();
             if(sideWayCells.get(nextPoint).getColor() == -1){
                 tempColorPoint[0] = 0;
                 tempColorPoint[1] = 0;
+                tempArray0.clear();
+                tempArray1.clear();
                 color(nextPoint,0);
                 if(tempColorPoint[0] > tempColorPoint[1]){
                     //Always the color of zero is better
-                    colorPoint[0] += tempColorPoint[0];
-                    colorPoint[1] += tempColorPoint[1];
+                    for(int i = 0 ; i < tempArray0.size(); i++){
+                        buildable.add(tempArray0.get(i));
+                    }
                 }
                 else{
-                    colorPoint[0] += tempColorPoint[1];
-                    colorPoint[1] += tempColorPoint[0];
+                    for(int i = 0 ; i < tempArray1.size(); i++){
+                        buildable.add(tempArray1.get(i));
+                    }
                 }
             }
         }
-
     }
 
     private void color(Point point,int cl){
@@ -101,8 +107,13 @@ public class Defence {
         }
         sideWayCell.setColor(cl);
         tempColorPoint[cl] += sideWayCell.getRoadCells().size();
+        if(cl == 0){
+            tempArray0.add(sideWayCell);
+        }
+        else{
+            tempArray1.add(sideWayCell);
+        }
         ArrayList<Cell> cells = Util.radiusCells(sideWayCell,1,map);
-        //TODO: Better coloring schema to include more than two colors
         int nextCl = (cl == 0) ? 1 : 0;
         for (int i = 0; i < cells.size(); i++) {
             color(cells.get(i).getLocation(),nextCl);
@@ -110,8 +121,9 @@ public class Defence {
     }
 
     public void run(){
-        //TODO: update coloring in event of beam
-        //This could be time consuming and could go to the first heavy turn
+        //Checking beans and planing accordingly could be time
+        // consuming and could go to the first heavy turn,
+        // with the use of an input parameter
         ArrayList<BeanEvent> beans = game.getBeansInThisTurn();
         for (int i = 0; i < beans.size(); i++) {
             BeanEvent tempBean = beans.get(i);

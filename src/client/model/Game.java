@@ -637,6 +637,8 @@ public class Game implements World {
     }
 
     public boolean isTowerConstructable(Cell cell) {
+
+        //TODO:Maybe we should add the bean positions and checks to this method
         if (cell instanceof RoadCell)
             return false;
 
