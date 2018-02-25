@@ -7,6 +7,7 @@ import java.util.Collections;
 
 /**
  * Created by Parsa on 1/22/2018 AD.
+ * Became something useful by Amirhossein on 2/25/2018 AD.
  */
 public class Path {
 
@@ -35,8 +36,7 @@ public class Path {
         this.sideWayCells.add(sideWayCell);
     }
 
-    private void updateDates(int lastModifiedTurn, Map map, int currentTurn){
-        if(updateDataTurn >= lastModifiedTurn) return;
+    private void updateDates(Map map){
         archerData.clear();
         cannonData.clear();
         for (int i = road.size()-1; i >= 0 ; i--) {
@@ -66,76 +66,64 @@ public class Path {
         }
         Collections.reverse(archerData);
         Collections.reverse(cannonData);
-        updateDataTurn = currentTurn;
     }
 
 
-    public PredictionReport getCreepsDamage(int level, Map map, int currentTurn, int lastModifiedTurn){
-        updateDates(lastModifiedTurn,map,currentTurn);
-        int damageToBase = 0;
+    public PredictionReport getReport(Map map){
+        updateDates(map);
+        int heroDamageToBase = 0;
+        int creepDamageToBase = 0;
+        double damageToHero = 0;
         double damageToCreep = 0;
-        int firstPassingUnit = -1;
+        int firstPassingHero = -1;
+        int firstPassingCreep = -1;
         for (int i = road.size() - 1; i >= 0 ; i--) {
+            damageToHero += archerData.get(i);
             damageToCreep += cannonData.get(i);
             RoadCell roadCell = road.get(i);
             ArrayList<Unit> units = roadCell.getUnits();
             if(units.size()>0){
-                int maxHealth = 0;
-                for(Unit tmpUnit:units){
-                    if(tmpUnit instanceof LightUnit){
-                        maxHealth = Math.max(maxHealth,tmpUnit.getMaxHealth());
-                    }
-                }
-                if(maxHealth > damageToCreep){
-                    damageToBase += units.size() * LightUnit.DAMAGE;
-                    firstPassingUnit = i;
-                }
-                else{
-                    if(i != road.size() - 1 &&
-                            road.get(i+1).getUnits().size() > 0 &&
-                            maxHealth > damageToCreep*sucsesiveCoff ){
-                        damageToBase += units.size();
-                        firstPassingUnit = i;
-                    }
-                }
-            }
-        }
-        return new PredictionReport(damageToBase,firstPassingUnit);
-    }
-
-    public PredictionReport getHeroDamage(int level, Map map, int currentTurn, int lastModifiedTurn){
-        updateDates(lastModifiedTurn,map,currentTurn);
-        int damageToBase = 0;
-        double damageToHero = 0;
-        int firstPassingUnit = -1;
-        for (int i = road.size() - 1; i >= 0 ; i--) {
-            damageToHero += archerData.get(i);
-            RoadCell roadCell = road.get(i);
-            ArrayList<Unit> units = roadCell.getUnits();
-            if(units.size()>0){
                 int sumHealth = 0;
-                int maxHealth = 0;
+                int maxHeroHealth = 0;
+                int maxCreepHealth = 0;
                 for(Unit tmpUnit:units){
                     if(tmpUnit instanceof HeavyUnit){
                         sumHealth += tmpUnit.getMaxHealth();
-                        maxHealth = Math.max(maxHealth, tmpUnit.getMaxHealth());
+                        maxHeroHealth = Math.max(maxHeroHealth, tmpUnit.getMaxHealth());
+                    }
+                    else{
+                        maxCreepHealth = Math.max(maxCreepHealth,tmpUnit.getMaxHealth());
                     }
                 }
                 if(sumHealth > damageToHero){
-                    damageToBase += ((sumHealth-damageToHero+maxHealth-1)/maxHealth) * HeavyUnit.DAMAGE;
-                    firstPassingUnit = i;
+                    heroDamageToBase += ((sumHealth-damageToHero+maxHeroHealth-1)/maxHeroHealth) * HeavyUnit.DAMAGE;
+                    firstPassingHero = i;
                 }
                 else{
                     if(i != road.size() - 1 &&
                             road.get(i+1).getUnits().size() > 0 &&
                             sumHealth > damageToHero*sucsesiveCoff ){
-                        damageToBase += ((int)(sumHealth-(damageToHero*sucsesiveCoff)+maxHealth-1)/maxHealth) * HeavyUnit.DAMAGE;
-                        firstPassingUnit = i;
+                        heroDamageToBase += ((int)(sumHealth-(damageToHero*sucsesiveCoff)+maxHeroHealth-1)/maxHeroHealth) * HeavyUnit.DAMAGE;
+                        firstPassingHero = i;
+                    }
+                }
+                if(maxCreepHealth > damageToCreep){
+                    creepDamageToBase += units.size() * LightUnit.DAMAGE;
+                    firstPassingCreep = i;
+                }
+                else{
+                    if(i != road.size() - 1 &&
+                            road.get(i+1).getUnits().size() > 0 &&
+                            maxCreepHealth > damageToCreep*sucsesiveCoff ){
+                        creepDamageToBase += units.size();
+                        firstPassingCreep = i;
                     }
                 }
             }
         }
-        return new PredictionReport(damageToBase,firstPassingUnit);
+        return new PredictionReport
+                (creepDamageToBase,firstPassingCreep,
+                        heroDamageToBase,firstPassingHero);
     }
 
     @Override
