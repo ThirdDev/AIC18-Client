@@ -3,7 +3,6 @@ package client;
 import client.classes.Bank;
 import client.classes.BankAccount;
 import client.classes.Logger;
-import client.classes.simulator.towers.Cannon;
 import client.model.*;
 import client.model.Map;
 
@@ -83,40 +82,42 @@ public class ahmadalli {
 
             cellToBuild = sidewayCells[sidewayCells.length - 1];
 
-            int towerType = rnd.nextInt() % 5;
-            int level = 1;
-            if (towerType == 0 && defendAccount.canSpend(ArcherTower.INITIAL_PRICE)) {
-                if (defendAccount.retrieveMoney(ArcherTower.INITIAL_PRICE)) {
-                    int x = cellToBuild.getLocation().getX();
-                    int y = cellToBuild.getLocation().getY();
+            Tower tower = cellToBuild.getTower();
 
-                    Tower tower = cellToBuild.getTower();
-
-                    if (tower != null) {
-                        Logger.println("upgrading archer tower @(" + x + ", " + y + ")");
-                        world.upgradeTower(tower);
-                    } else {
+            if (tower != null) {
+                int towerLevel = tower.getLevel();
+                int upgradePrice = 0;
+                if (tower instanceof ArcherTower) {
+                    upgradePrice = ArcherTower.getPrice(towerLevel + 1) - ArcherTower.getPrice(towerLevel);
+                }
+                if (tower instanceof CannonTower) {
+                    upgradePrice = CannonTower.getPrice(towerLevel + 1) - ArcherTower.getPrice(towerLevel);
+                }
+                if (defendAccount.retrieveMoney(upgradePrice)) {
+                    world.upgradeTower(tower);
+                }
+            } else {
+                int towerType = rnd.nextInt() % 5;
+                int level = 1;
+                if (towerType == 0) {
+                    if (defendAccount.retrieveMoney(ArcherTower.getPrice(level))) {
+                        int x = cellToBuild.getLocation().getX();
+                        int y = cellToBuild.getLocation().getY();
                         Logger.println("creating an archer tower @(" + x + ", " + y + ")");
                         world.createArcherTower(level, x, y);
                     }
                 }
-            }
-            if (towerType != 0 && defendAccount.canSpend(CannonTower.INITIAL_PRICE)) {
-                if (defendAccount.retrieveMoney(CannonTower.INITIAL_PRICE)) {
-                    int x = cellToBuild.getLocation().getX();
-                    int y = cellToBuild.getLocation().getY();
-
-                    Tower tower = cellToBuild.getTower();
-
-                    if (tower != null) {
-                        Logger.println("upgrading cannon tower @(" + x + ", " + y + ")");
-                        world.upgradeTower(tower);
-                    } else {
+                if (towerType != 0) {
+                    if (defendAccount.retrieveMoney(CannonTower.getPrice(level))) {
+                        int x = cellToBuild.getLocation().getX();
+                        int y = cellToBuild.getLocation().getY();
                         Logger.println("creating an cannon tower @(" + x + ", " + y + ")");
                         world.createCannonTower(level, x, y);
                     }
                 }
             }
+
+
         }
     }
 
