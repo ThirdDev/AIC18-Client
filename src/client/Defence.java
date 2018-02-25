@@ -136,7 +136,7 @@ public class Defence {
         ArrayList<BeanEvent> beans = game.getBeansInThisTurn();
         boolean beanRecolor = false;
         for (BeanEvent tempBean : beans) {
-            if (tempBean.getOwner() == Owner.ENEMY) {
+            if (tempBean.getOwner() == Owner.ENEMY && sideWayCells.containsKey(tempBean.getPoint())) {
                 sideWayCells.remove(tempBean.getPoint());
                 beanRecolor = true;
             }
