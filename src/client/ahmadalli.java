@@ -55,7 +55,7 @@ public class ahmadalli {
                     .filter(x -> !x.isEmpty())
                     .count();
 
-            pathScore += -(double) pathActualCoverage / pathPossibleCoverage * 2;
+            //pathScore += -(double) pathActualCoverage / pathPossibleCoverage * 2;
         }
 
         return nearbyCellsScore + towerScore + pathScore;
