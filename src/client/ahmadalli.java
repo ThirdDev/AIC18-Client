@@ -13,12 +13,12 @@ public class ahmadalli {
 
     private static Random rnd = new Random();
 
-    private static Comparator<Cell> compareByTroopAndRoadCellCount(World world) {
-        return Comparator.comparingInt(o -> cellScore(o, world));
+    private static Comparator<Cell> compareByTroopAndRoadCellCount(Map map) {
+        return Comparator.comparingInt(o -> cellScore(o, map));
     }
 
-    public static int cellScore(Cell cell, World world) {
-        int nearbyCellsScore = getNearbyRoadCells(cell, world).
+    public static int cellScore(Cell cell, Map map) {
+        int nearbyCellsScore = getNearbyRoadCells(cell, map).
                 mapToInt(x -> x.getUnits().size() + 1).sum();
         int towerScore = 0;
         if (cell instanceof GrassCell) {
@@ -30,8 +30,8 @@ public class ahmadalli {
         return nearbyCellsScore + towerScore;
     }
 
-    public static Stream<RoadCell> getNearbyRoadCells(Cell cell, World world) {
-        return Util.radialCells(cell, 2, world.getDefenceMap()).stream()
+    public static Stream<RoadCell> getNearbyRoadCells(Cell cell, Map map) {
+        return Util.radialCells(cell, 2, map).stream()
                 .filter(x -> x instanceof RoadCell)
                 .map(x -> (RoadCell) x);
     }
@@ -69,7 +69,7 @@ public class ahmadalli {
                     .map(x -> (GrassCell) x)
                     .filter(x -> !hasTowerBesideOfIt(x, world))
                     .distinct()
-                    .sorted(compareByTroopAndRoadCellCount(world))
+                    .sorted(compareByTroopAndRoadCellCount(world.getDefenceMap()))
                     .toArray(GrassCell[]::new);
 
             if (sidewayCells.length == 0)
