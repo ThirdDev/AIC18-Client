@@ -97,26 +97,26 @@ public class Path {
                 }
                 if(sumHealth > damageToHero){
                     heroDamageToBase += ((sumHealth-damageToHero+maxHeroHealth-1)/maxHeroHealth) * HeavyUnit.DAMAGE;
-                    firstPassingHero = i;
+                    firstPassingHero = Math.max(firstPassingHero,i);
                 }
                 else{
                     if(i != road.size() - 1 &&
                             road.get(i+1).getUnits().size() > 0 &&
                             sumHealth > damageToHero*sucsesiveCoff ){
                         heroDamageToBase += ((int)(sumHealth-(damageToHero*sucsesiveCoff)+maxHeroHealth-1)/maxHeroHealth) * HeavyUnit.DAMAGE;
-                        firstPassingHero = i;
+                        firstPassingHero = Math.max(firstPassingHero,i);
                     }
                 }
                 if(maxCreepHealth > damageToCreep){
                     creepDamageToBase += units.size() * LightUnit.DAMAGE;
-                    firstPassingCreep = i;
+                    firstPassingCreep = Math.max(firstPassingCreep,i);
                 }
                 else{
                     if(i != road.size() - 1 &&
                             road.get(i+1).getUnits().size() > 0 &&
                             maxCreepHealth > damageToCreep*sucsesiveCoff ){
                         creepDamageToBase += units.size();
-                        firstPassingCreep = i;
+                        firstPassingCreep = Math.max(firstPassingCreep,i);
                     }
                 }
             }

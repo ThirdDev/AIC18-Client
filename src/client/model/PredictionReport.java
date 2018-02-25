@@ -28,4 +28,14 @@ public class PredictionReport {
     public int getPathIndexOfFirstPassingHero() {
         return pathIndexOfFirstPassingHero;
     }
+
+    @Override
+    public String toString() {
+        return "PredictionReport{" +
+                "creepDamageToBase=" + creepDamageToBase +
+                ", pathIndexOfFirstPassingCreep=" + pathIndexOfFirstPassingCreep +
+                ", heroDamageToBase=" + heroDamageToBase +
+                ", pathIndexOfFirstPassingHero=" + pathIndexOfFirstPassingHero +
+                '}';
+    }
 }
