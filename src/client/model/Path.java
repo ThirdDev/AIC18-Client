@@ -35,13 +35,13 @@ public class Path {
         this.sideWayCells.add(sideWayCell);
     }
 
-    private void updateDates(int lastModifiedTurn, World game){
+    private void updateDates(int lastModifiedTurn, Map map, int currentTurn){
         if(updateDataTurn >= lastModifiedTurn) return;
         archerData.clear();
         cannonData.clear();
         for (int i = road.size()-1; i >= 0 ; i--) {
             RoadCell roadCell = road.get(i);
-            ArrayList<Cell> nearbyCells = Util.radialCells(roadCell,2,game.getDefenceMap());
+            ArrayList<Cell> nearbyCells = Util.radialCells(roadCell,2,map);
             Double archer = new Double(0);
             Double cannon = new Double(0);
             for (int j = 0; j < nearbyCells.size(); j++) {
@@ -66,12 +66,12 @@ public class Path {
         }
         Collections.reverse(archerData);
         Collections.reverse(cannonData);
-        updateDataTurn = game.getCurrentTurn();
+        updateDataTurn = currentTurn;
     }
 
 
-    public PredictionReport getCreepsDamage(int level, World game, int lastModifiedTurn){
-        updateDates(lastModifiedTurn,game);
+    public PredictionReport getCreepsDamage(int level, Map map, int currentTurn, int lastModifiedTurn){
+        updateDates(lastModifiedTurn,map,currentTurn);
         int damageToBase = 0;
         double damageToCreep = 0;
         int firstPassingUnit = -1;
@@ -103,8 +103,8 @@ public class Path {
         return new PredictionReport(damageToBase,firstPassingUnit);
     }
 
-    public PredictionReport getHeroDamage(int level, World game, int lastModifiedTurn){
-        updateDates(lastModifiedTurn,game);
+    public PredictionReport getHeroDamage(int level, Map map, int currentTurn, int lastModifiedTurn){
+        updateDates(lastModifiedTurn,map,currentTurn);
         int damageToBase = 0;
         double damageToHero = 0;
         int firstPassingUnit = -1;
