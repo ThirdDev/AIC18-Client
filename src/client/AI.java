@@ -96,7 +96,7 @@ public class AI {
 
         ahmadalli.plantRandomTowerInASidewayCell(game);
 
-        simpleStorm(game);
+        ahmadalli.stormIfNecessary(game);
 
         Attack.Attack(game);
 
