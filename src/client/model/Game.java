@@ -443,7 +443,7 @@ public class Game implements World {
             int x = tmpBean.get(1).getAsJsonObject().get("x").getAsInt();
             int y = tmpBean.get(1).getAsJsonObject().get("y").getAsInt();
 
-            boolean isMymap = tmpBean.get(0).getAsBoolean();
+            boolean isMymap = tmpBean.get(0).getAsInt() == 1;
 
             Log.d(TAG, "Bean planted At x:" + x + ",y:" + y + " -> " + "isMyMap:" + isMymap);
             if (!isMymap) {
