@@ -34,7 +34,7 @@ public class ahmadalli {
         }
 
         int[] pathIndexes = getNearbyRoadCells(cell, map)
-                .mapToInt(x -> getPathIndexOfRoadCell(cell.getLocation()))
+                .mapToInt(x -> getPathIndexOfRoadCell(x.getLocation()))
                 .distinct()
                 .toArray();
 
