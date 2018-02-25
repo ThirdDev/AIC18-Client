@@ -8,6 +8,7 @@ import client.model.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Random;
+import java.util.HashMap;
 import java.util.stream.Stream;
 
 public class ahmadalli {
@@ -89,28 +90,61 @@ public class ahmadalli {
         }
     }
 
-    public static Stream<RoadCell> dangerousCellsOrderByDangerScore(ArrayList<Path> paths, Map map, double portion, int minCount, int maxCount) {
+    public static void stormIfNecessary(World world) {
+        if (world.getMyInformation().getStormsLeft() == 0)
+            return;
+
+        Stream<RoadCell> dangerousCellsInRange3 =
+                dangerousCellsOrderByDangerScoreAscending(world.getDefenceMapPaths(),
+                        world.getDefenceMap(),
+                        0.2, 3, 3);
+
+        RoadCell mostDangerous = dangerousCellsInRange3.findFirst().get();
+
+        if (dangerScore(mostDangerous, world.getDefenceMap()) >= 10) {
+            Cell bestShot = getCenterOfMostVulnerableAreaContainingRoadCell(mostDangerous, world.getDefenceMap(), 2);
+            world.createStorm(bestShot.getLocation().getX(), bestShot.getLocation().getY());
+        }
+
+    }
+
+    static int stormDamageScoreSum(Cell cell, Map map, int stormRange) {
+        return Util.radialCells(cell, stormRange, map).stream()
+                .filter(x -> x instanceof RoadCell)
+                .map(x -> (RoadCell) x)
+                .mapToInt(x -> (int) dangerScore(x, map))
+                .sum();
+    }
+
+    static Cell getCenterOfMostVulnerableAreaContainingRoadCell(RoadCell cell, Map map, int range) {
+        return Util.radialCells(cell, range, map).stream()
+                .sorted((x, y) -> stormDamageScoreSum(y, map, range) - stormDamageScoreSum(x, map, range))
+                .findFirst().get();
+    }
+
+    static HashMap<Point, Integer> pathIndexOfRoadMap = null;
+
+    public static int getPathIndexOfRoadCell(Point roadCellLocation, ArrayList<Path> paths) {
+        if (pathIndexOfRoadMap == null) {
+            pathIndexOfRoadMap = new HashMap<>();
+            for (int i = 0; i < paths.size(); i++) {
+                for (RoadCell theRoadCell : paths.get(i).getRoad()) {
+                    pathIndexOfRoadMap.put(theRoadCell.getLocation(), i);
+                }
+            }
+        }
+
+        return pathIndexOfRoadMap.get(roadCellLocation).intValue();
+    }
+
+    public static Stream<RoadCell> dangerousCellsOrderByDangerScoreAscending(ArrayList<Path> paths, Map map, double portion, int minCount, int maxCount) {
         return paths.stream()
                 .flatMap(x -> endingRoadCells(x, portion, minCount, maxCount).stream())
                 .filter(x -> dangerScore(x, map) > 0)
                 .sorted((x, y) -> (int) (dangerScore(y, map) - dangerScore(x, map)));
     }
 
-    public static long dangerScore(RoadCell roadCell, Map map) {
-        Stream<Cell> radialCells = Util.radialCells(roadCell, 2, map).stream();
-        Stream<GrassCell> towerCellsInRange = radialCells
-                .filter(x -> x instanceof GrassCell)
-                .map(x -> (GrassCell) x)
-                .filter(x -> !x.isEmpty());
-
-        boolean hasCannonCellsInRange = towerCellsInRange
-                .filter(x -> x.getTower() instanceof CannonTower)
-                .count() > 0;
-
-        long archerCellsInRangeCount = towerCellsInRange
-                .filter(x -> x.getTower() instanceof ArcherTower)
-                .count();
-
+    public static long dangerScore(RoadCell roadCell, client.model.Map map) {
         Stream<Unit> units = roadCell.getUnits().stream();
 
         long creepsCount = units.filter(x -> x instanceof LightUnit).count();
@@ -118,10 +152,8 @@ public class ahmadalli {
 
         long score = 0;
 
-        if (creepsCount > 0 && !hasCannonCellsInRange)
-            score += creepsCount * LightUnit.DAMAGE;
-        if (archerCellsInRangeCount < herosCount)
-            score += (herosCount) * HeavyUnit.DAMAGE;
+        score += creepsCount * LightUnit.DAMAGE;
+        score += (herosCount) * HeavyUnit.DAMAGE;
 
         return score;
     }
