@@ -86,28 +86,28 @@ public class Bank {
     }
 
     public static void checkGoals() {
-        for (BankAccount b1 : accounts.values()) {
-            for (BankAccount b2 : accounts.values()) {
-                if (b1.getNickname().equals(b2.getNickname()))
-                    continue;
-
-                int g1 = b1.getGoal();
-                int g2 = b2.getGoal();
-
-                if (g1 > 0 && g2 < 0) {
-                    int amount = Math.min(g1, -g2);
-
-                    if (b2.isGoalExact() && amount != -g2)
-                        continue;
-
-                    if (transferMoney(b1, b2, amount)) {
-                        b1.setGoal(g1 - amount);
-                        b2.setGoal(g2 + amount);
-
-                        Logger.println("Transferred donation " + amount + " from " + b1.getNickname() + " to " + b2.getNickname() + ".");
-                    }
-                }
-            }
-        }
+//        for (BankAccount b1 : accounts.values()) {
+//            for (BankAccount b2 : accounts.values()) {
+//                if (b1.getNickname().equals(b2.getNickname()))
+//                    continue;
+//
+//                int g1 = b1.getGoal();
+//                int g2 = b2.getGoal();
+//
+//                if (g1 > 0 && g2 < 0) {
+//                    int amount = Math.min(g1, -g2);
+//
+//                    if (b2.isGoalExact() && amount != -g2)
+//                        continue;
+//
+//                    if (transferMoney(b1, b2, amount)) {
+//                        b1.setGoal(g1 - amount);
+//                        b2.setGoal(g2 + amount);
+//
+//                        Logger.println("Transferred donation " + amount + " from " + b1.getNickname() + " to " + b2.getNickname() + ".");
+//                    }
+//                }
+//            }
+//        }
     }
 }
