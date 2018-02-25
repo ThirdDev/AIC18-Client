@@ -34,7 +34,7 @@ public class ahmadalli {
 
     public static double cellScore(Cell cell, Map map, ArrayList<Path> paths) {
         int nearbyCellsScore = getNearbyRoadCells(cell, map).
-                mapToInt(x -> x.getUnits().size() + 1).sum() * 10;
+                mapToInt(x -> x.getUnits().size() + 1).sum();
 
         double towerScore = 0;
         if (cell instanceof GrassCell) {
@@ -58,13 +58,14 @@ public class ahmadalli {
                             .filter(x -> x instanceof GrassCell)
                             .map(x -> (GrassCell) x)
                             .filter(x -> !x.isEmpty())
+                            .mapToInt(x -> ((GrassCell) x).getTower().getLevel())
                             .count();
 
-                    return DoubleStream.of(-(double) pathActualCoverage / pathPossibleCoverage);
+                    return DoubleStream.of(-(double) pathActualCoverage / pathPossibleCoverage * 2);
                 })
                 .sum();
 
-        double finalScore = nearbyCellsScore + towerScore + pathScore;
+        double finalScore = nearbyCellsScore + towerScore;
 
         return finalScore;
     }
