@@ -3,6 +3,7 @@ package client;
 import client.classes.Bank;
 import client.classes.BankAccount;
 import client.classes.Logger;
+import client.classes.simulator.towers.Cannon;
 import client.model.*;
 import client.model.Map;
 
@@ -138,7 +139,7 @@ public class ahmadalli {
                     upgradePrice = ArcherTower.getPrice(towerLevel + 1) - ArcherTower.getPrice(towerLevel);
                 }
                 if (tower instanceof CannonTower) {
-                    upgradePrice = CannonTower.getPrice(towerLevel + 1) - ArcherTower.getPrice(towerLevel);
+                    upgradePrice = CannonTower.getPrice(towerLevel + 1) - CannonTower.getPrice(towerLevel);
                 }
                 if (defendAccount.retrieveMoney(upgradePrice)) {
                     world.upgradeTower(tower);
