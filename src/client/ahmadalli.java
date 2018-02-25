@@ -99,7 +99,26 @@ public class ahmadalli {
                     break;
                 }
             } else {
+                int creepCount = (int) getNearbyRoadCells(cellToBuild, world.getDefenceMap())
+                        .flatMap(x -> x.getUnits().stream())
+                        .filter(x -> x instanceof LightUnit)
+                        .count();
+
+                int heroCount = (int) getNearbyRoadCells(cellToBuild, world.getDefenceMap())
+                        .flatMap(x -> x.getUnits().stream())
+                        .filter(x -> x instanceof HeavyUnit)
+                        .count();
+
                 int towerType = rnd.nextInt(5);
+                if (heroCount > 0 || creepCount > 0) {
+                    double heroScore = heroCount * HeavyUnit.DAMAGE / (double) HeavyUnit.MOVE_SPEED;
+                    double creepScore = creepCount * LightUnit.DAMAGE / (double) LightUnit.MOVE_SPEED;
+                    if (heroScore > creepScore) {
+                        towerType = 0;
+                    } else {
+                        towerType = 1;
+                    }
+                }
                 int level = 1;
                 if (towerType == 0) {
                     if (defendAccount.retrieveMoney(ArcherTower.getPrice(level))) {
