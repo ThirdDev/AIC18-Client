@@ -18,7 +18,7 @@ public class Defence {
     private ArrayList<SideWayCell> tempArray1;
     private int[] tempColorPoint;
 
-    public Defence(BankAccount bankAccount, World game) {
+    Defence(BankAccount bankAccount, World game) {
         this.bankAccount = bankAccount;
         this.game = game;
         map = game.getDefenceMap();
@@ -32,33 +32,29 @@ public class Defence {
     }
 
 
-    public void init(){
+    private void init(){
 
-        for (int i = 0; i < paths.size(); i++) {
-            Path tempPath = paths.get(i);
+        for (Path tempPath : paths) {
             ArrayList<RoadCell> tempRoad = tempPath.getRoad();
-            for (int j = 0; j < tempRoad.size(); j++) {
-                RoadCell tempRoadCell = tempRoad.get(j);
-                ArrayList<Cell> candidates = Util.radialCells(tempRoadCell,2,map);
-                for (int k = 0; k < candidates.size(); k++) {
-                    Cell candidateCell = candidates.get(k);
-                    if(!(candidateCell instanceof GrassCell)) continue;
+            for (RoadCell tempRoadCell : tempRoad) {
+                ArrayList<Cell> candidates = Util.radialCells(tempRoadCell, 2, map);
+                for (Cell candidateCell : candidates) {
+                    if (!(candidateCell instanceof GrassCell)) continue;
                     SideWayCell tempSideCell = sideWayCells.get(candidateCell.getLocation());
-                    if (tempSideCell == null){
+                    if (tempSideCell == null) {
                         Point point = candidateCell.getLocation();
-                        SideWayCell newSideWayCell = new SideWayCell(point.getX(),point.getY(),
+                        SideWayCell newSideWayCell = new SideWayCell(point.getX(), point.getY(),
                                 ((GrassCell) candidateCell).getTower());
                         newSideWayCell.addPath(tempPath);
                         newSideWayCell.addRoadCell(tempRoadCell);
-                        sideWayCells.put(candidateCell.getLocation(),newSideWayCell);
+                        sideWayCells.put(candidateCell.getLocation(), newSideWayCell);
                         tempPath.addSideWayCell(newSideWayCell);
-                    }
-                    else{
-                        if(!tempSideCell.getPaths().contains(tempPath)){
+                    } else {
+                        if (!tempSideCell.getPaths().contains(tempPath)) {
                             tempSideCell.addPath(tempPath);
                             tempPath.addSideWayCell(tempSideCell);
                         }
-                        if(!tempSideCell.getRoadCells().contains(tempRoadCell)){
+                        if (!tempSideCell.getRoadCells().contains(tempRoadCell)) {
                             tempSideCell.addRoadCell(tempRoadCell);
                         }
                     }
@@ -67,7 +63,7 @@ public class Defence {
         }
     }
 
-    public void reColor(){
+    private void reColor(){
 
         buildable.clear();
         Set<Point> keyset = sideWayCells.keySet();
@@ -91,22 +87,21 @@ public class Defence {
                 System.out.println(tempColorPoint[1]);
                 if(tempColorPoint[0] > tempColorPoint[1]){
                     //Always the color of zero is better
-                    for(int i = 0 ; i < tempArray0.size(); i++){
-                        buildable.add(tempArray0.get(i));
-                    }
+                    buildable.addAll(tempArray0);
                 }
                 else{
-                    for(int i = 0 ; i < tempArray1.size(); i++){
-                        buildable.add(tempArray1.get(i));
-                    }
+                    buildable.addAll(tempArray1);
                 }
             }
         }
+
+        /**
         System.out.println("Buildables: ");
         for (int i = 0; i < buildable.size(); i++) {
             System.out.println(buildable.get(i).getLocation());
         }
         System.out.print("****************************");
+         /**/
     }
 
     private void color(Point point,int cl){
@@ -126,8 +121,8 @@ public class Defence {
         }
         ArrayList<Cell> cells = Util.radiusCells(sideWayCell,1,map);
         int nextCl = (cl == 0) ? 1 : 0;
-        for (int i = 0; i < cells.size(); i++) {
-            color(cells.get(i).getLocation(),nextCl);
+        for (Cell cell : cells) {
+            color(cell.getLocation(), nextCl);
         }
     }
 
@@ -140,9 +135,8 @@ public class Defence {
         paths = game.getDefenceMapPaths();
         ArrayList<BeanEvent> beans = game.getBeansInThisTurn();
         boolean beanRecolor = false;
-        for (int i = 0; i < beans.size(); i++) {
-            BeanEvent tempBean = beans.get(i);
-            if(tempBean.getOwner() == Owner.ENEMY) {
+        for (BeanEvent tempBean : beans) {
+            if (tempBean.getOwner() == Owner.ENEMY) {
                 sideWayCells.remove(tempBean.getPoint());
                 beanRecolor = true;
             }

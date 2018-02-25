@@ -53,6 +53,8 @@ public class LightUnit extends Unit {
         return ADDED_INCOME;
     }
 
+    public int getMaxHealth(){ return (int)(Math.floor(((double)INITIAL_HEALTH) * Math.pow(HEALTH_COEFF,(double)getLevel()-1)));}
+
     @Override
     public String toString() {
         return "Light" + super.toString();
