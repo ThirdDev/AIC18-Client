@@ -19,7 +19,7 @@ public class ahmadalli {
 
     public static int cellScore(Cell cell, World world) {
         return getNearbyRoadCells(cell, world).
-                mapToInt(x -> (int) x.getUnits().stream().count() + 1).sum();
+                mapToInt(x -> x.getUnits().size() + 1).sum();
     }
 
     public static Stream<RoadCell> getNearbyRoadCells(Cell cell, World world) {
@@ -49,7 +49,7 @@ public class ahmadalli {
                 .flatMap(x -> Util.radialCells(x, 2, world.getDefenceMap()).stream())
                 .filter(x -> x instanceof GrassCell)
                 .map(x -> (GrassCell) x)
-                .filter(x -> x.isEmpty())
+                .filter(GrassCell::isEmpty)
                 .filter(x -> !hasTowerBesideOfIt(x, world))
                 .distinct()
                 .sorted(compareByTroopAndRoadCellCount(world))
@@ -59,7 +59,7 @@ public class ahmadalli {
             return;
 
 
-        GrassCell cellToBuild = null;
+        GrassCell cellToBuild;
 
         // GrassCell randomSideWayCell = sidewayCells[rnd.nextInt(sidewayCells.length)];
         // cellToBuild = randomSideWayCell;
@@ -67,6 +67,8 @@ public class ahmadalli {
         cellToBuild = sidewayCells[sidewayCells.length - 1];
 
         BankAccount defendAccount = Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE);
+        if(defendAccount==null)
+            return;
 
         int towerType = rnd.nextInt() % 5;
         int level = 1;
@@ -94,7 +96,6 @@ public class ahmadalli {
 
         RoadCell[] dangerousInRange3Ordered = dangerousCellsOrderByDangerScoreAscending(
                 world.getDefenceMapPaths(),
-                world.getDefenceMap(),
                 0.2, 3, 3);
         if (dangerousInRange3Ordered.length == 0)
             return;
@@ -102,7 +103,7 @@ public class ahmadalli {
         RoadCell mostDangerous = dangerousInRange3Ordered[0];
         Cell bestShot = getCenterOfMostVulnerableAreaContainingRoadCell(mostDangerous, world.getDefenceMap(), 2);
         int bestShotScore = stormDamageScoreSum(mostDangerous, world.getDefenceMap(), 2);
-        int mostDangerousScore = dangerScore(mostDangerous, world.getDefenceMap());
+        int mostDangerousScore = dangerScore(mostDangerous);
         if ((bestShotScore >= 20) || (mostDangerousScore > world.getMyInformation().getStrength())) {
             world.createStorm(bestShot.getLocation().getX(), bestShot.getLocation().getY());
         }
@@ -113,7 +114,7 @@ public class ahmadalli {
         return Util.radialCells(cell, stormRange, map).stream()
                 .filter(x -> x instanceof RoadCell)
                 .map(x -> (RoadCell) x)
-                .mapToInt(x -> (int) dangerScore(x, map))
+                .mapToInt(x -> (int) dangerScore(x))
                 .sum();
     }
 
@@ -135,18 +136,18 @@ public class ahmadalli {
             }
         }
 
-        return pathIndexOfRoadMap.get(roadCellLocation).intValue();
+        return pathIndexOfRoadMap.get(roadCellLocation);
     }
 
-    public static RoadCell[] dangerousCellsOrderByDangerScoreAscending(ArrayList<Path> paths, Map map, double portion, int minCount, int maxCount) {
+    public static RoadCell[] dangerousCellsOrderByDangerScoreAscending(ArrayList<Path> paths, double portion, int minCount, int maxCount) {
         return paths.stream()
                 .flatMap(x -> endingRoadCells(x, portion, minCount, maxCount).stream())
-                .filter(x -> dangerScore(x, map) > 0)
-                .sorted((x, y) -> (int) (dangerScore(y, map) - dangerScore(x, map)))
+                .filter(x -> dangerScore(x) > 0)
+                .sorted((x, y) -> dangerScore(y) - dangerScore(x))
                 .toArray(RoadCell[]::new);
     }
 
-    public static int dangerScore(RoadCell roadCell, client.model.Map map) {
+    public static int dangerScore(RoadCell roadCell) {
         long creepsCount = roadCell.getUnits().stream().filter(x -> x instanceof LightUnit).count();
         long herosCount = roadCell.getUnits().stream().filter(x -> x instanceof HeavyUnit).count();
 
