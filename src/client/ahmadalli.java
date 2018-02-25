@@ -161,7 +161,7 @@ public class ahmadalli {
         int bestShotScore = stormDamageScoreSum(bestShot, world.getDefenceMap(), 2);
         int mostDangerousScore = dangerScore(mostDangerous);
         Logger.println("bestShotScore = " + bestShotScore + ", mostDangerousScore = " + mostDangerousScore);
-        if ((bestShotScore >= 15) || (mostDangerousScore >= world.getMyInformation().getStrength())) {
+        if ((bestShotScore >= 10) || (mostDangerousScore >= world.getMyInformation().getStrength())) {
             world.createStorm(bestShot.getLocation().getX(), bestShot.getLocation().getY());
         }
 
