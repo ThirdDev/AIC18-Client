@@ -85,6 +85,10 @@ public class Defence {
                 tempArray0.clear();
                 tempArray1.clear();
                 color(nextPoint,0);
+                System.out.println("Color point0:");
+                System.out.println(tempColorPoint[0]);
+                System.out.println("Color point1:");
+                System.out.println(tempColorPoint[1]);
                 if(tempColorPoint[0] > tempColorPoint[1]){
                     //Always the color of zero is better
                     for(int i = 0 ; i < tempArray0.size(); i++){

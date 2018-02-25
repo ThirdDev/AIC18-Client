@@ -26,6 +26,7 @@ public class AI {
 
     Random rnd = new Random();
     int budgetChangePhase = -1;
+    Defence defence;
 
     public AI() {
         GeneCollections.getCollections();
@@ -86,6 +87,10 @@ public class AI {
 
     //This function will be called on both simple and complex turns
     private void commonTurnFunctions(World game) {
+        if(defence == null) defence = new Defence(
+                Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE),
+                game
+        );
         Logger.println("Turn " + game.getCurrentTurn());
         BankController.handleMoney(game.getMyInformation());
 
@@ -93,7 +98,7 @@ public class AI {
         Logger.print(", Defence budget: " + Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE).getBalance());
         Logger.println(", Total: " + game.getMyInformation().getMoney());
         Logger.println(Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).getPercent() + ", " + Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE).getPercent());
-
+        defence.run(game);
         ahmadalli.simpleTowerCreation(game);
 
         ahmadalli.stormIfNecessary(game);

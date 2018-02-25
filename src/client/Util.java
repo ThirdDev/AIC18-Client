@@ -63,7 +63,7 @@ public class Util {
     }
 
     public static ArrayList<Cell> radialCells(Cell cell, int range, Map map){
-        return radiusCells(cell.getLocation(), range, map);
+        return radialCells(cell.getLocation(), range, map);
     }
 
     public static ArrayList<Cell> radialCells(Point location, int range, Map map){
