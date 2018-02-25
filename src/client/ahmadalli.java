@@ -52,66 +52,69 @@ public class ahmadalli {
                 .anyMatch(x -> !x.isEmpty());
     }
 
+    private static boolean canCreateBasicTower(BankAccount defenceBankAccount) {
+        return defenceBankAccount.canSpend(ArcherTower.INITIAL_PRICE) ||
+                defenceBankAccount.canSpend(CannonTower.INITIAL_PRICE);
+    }
+
     public static void simpleTowerCreation(World world) {
         BankAccount defendAccount = Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE);
         if (defendAccount == null)
             return;
 
-        if (!defendAccount.canSpend(ArcherTower.INITIAL_PRICE) ||
-                !defendAccount.canSpend(CannonTower.INITIAL_PRICE))
-            return;
+        while (canCreateBasicTower(defendAccount)) {
+            GrassCell[] sidewayCells = world.getDefenceMapPaths().stream()
+                    .flatMap(x -> x.getRoad().stream())
+                    .flatMap(x -> Util.radialCells(x, 2, world.getDefenceMap()).stream())
+                    .filter(x -> x instanceof GrassCell)
+                    .map(x -> (GrassCell) x)
+                    .filter(x -> !hasTowerBesideOfIt(x, world))
+                    .distinct()
+                    .sorted(compareByTroopAndRoadCellCount(world))
+                    .toArray(GrassCell[]::new);
 
-        GrassCell[] sidewayCells = world.getDefenceMapPaths().stream()
-                .flatMap(x -> x.getRoad().stream())
-                .flatMap(x -> Util.radialCells(x, 2, world.getDefenceMap()).stream())
-                .filter(x -> x instanceof GrassCell)
-                .map(x -> (GrassCell) x)
-                .filter(x -> !hasTowerBesideOfIt(x, world))
-                .distinct()
-                .sorted(compareByTroopAndRoadCellCount(world))
-                .toArray(GrassCell[]::new);
+            if (sidewayCells.length == 0)
+                return;
 
-        if (sidewayCells.length == 0)
-            return;
+            GrassCell cellToBuild;
 
-        GrassCell cellToBuild;
+            // GrassCell randomSideWayCell = sidewayCells[rnd.nextInt(sidewayCells.length)];
+            // cellToBuild = randomSideWayCell;
 
-        // GrassCell randomSideWayCell = sidewayCells[rnd.nextInt(sidewayCells.length)];
-        // cellToBuild = randomSideWayCell;
+            cellToBuild = sidewayCells[sidewayCells.length - 1];
 
-        cellToBuild = sidewayCells[sidewayCells.length - 1];
+            int towerType = rnd.nextInt() % 5;
+            int level = 1;
+            if (towerType == 0 && defendAccount.canSpend(ArcherTower.INITIAL_PRICE)) {
+                if (defendAccount.retrieveMoney(ArcherTower.INITIAL_PRICE)) {
+                    int x = cellToBuild.getLocation().getX();
+                    int y = cellToBuild.getLocation().getY();
 
-        int towerType = rnd.nextInt() % 5;
-        int level = 1;
-        if (towerType == 0 && defendAccount.canSpend(ArcherTower.INITIAL_PRICE)) {
-            if (defendAccount.retrieveMoney(ArcherTower.INITIAL_PRICE)) {
-                int x = cellToBuild.getLocation().getX();
-                int y = cellToBuild.getLocation().getY();
+                    Tower tower = cellToBuild.getTower();
 
-                Tower tower = cellToBuild.getTower();
-
-                if (tower != null) {
-                    Logger.println("upgrading archer tower @(" + x + ", " + y + ")");
-                    world.upgradeTower(tower);
-                } else {
-                    Logger.println("creating an archer tower @(" + x + ", " + y + ")");
-                    world.createArcherTower(level, x, y);
+                    if (tower != null) {
+                        Logger.println("upgrading archer tower @(" + x + ", " + y + ")");
+                        world.upgradeTower(tower);
+                    } else {
+                        Logger.println("creating an archer tower @(" + x + ", " + y + ")");
+                        world.createArcherTower(level, x, y);
+                    }
                 }
             }
-        }
-        if (towerType != 0 && defendAccount.canSpend(CannonTower.INITIAL_PRICE)) {
-            if (defendAccount.retrieveMoney(CannonTower.INITIAL_PRICE)) {
-                int x = cellToBuild.getLocation().getX();
-                int y = cellToBuild.getLocation().getY();
+            if (towerType != 0 && defendAccount.canSpend(CannonTower.INITIAL_PRICE)) {
+                if (defendAccount.retrieveMoney(CannonTower.INITIAL_PRICE)) {
+                    int x = cellToBuild.getLocation().getX();
+                    int y = cellToBuild.getLocation().getY();
 
-                Tower tower = cellToBuild.getTower();
+                    Tower tower = cellToBuild.getTower();
 
-                if (tower != null) {
-                    Logger.println("upgrading cannon tower @(" + x + ", " + y + ")");
-                    world.upgradeTower(tower);
-                } else {
-                    Logger.println("creating an cannon tower @(" + x + ", " + y + ")");
-                    world.createCannonTower(level, x, y);
+                    if (tower != null) {
+                        Logger.println("upgrading cannon tower @(" + x + ", " + y + ")");
+                        world.upgradeTower(tower);
+                    } else {
+                        Logger.println("creating an cannon tower @(" + x + ", " + y + ")");
+                        world.createCannonTower(level, x, y);
+                    }
                 }
             }
         }
