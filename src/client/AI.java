@@ -129,7 +129,7 @@ public class AI {
                     Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE), 0.1);
             budgetChangePhase = 1;
         }
-        if (game.getCurrentTurn() > 300 && budgetChangePhase == 1) {
+        if (game.getCurrentTurn() > 400 && budgetChangePhase == 1) {
             Bank.changeDistributionPercentage(Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK),
                     Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE), 0.15);
             budgetChangePhase = 2;
