@@ -44,7 +44,7 @@ public class ahmadalli {
             }
         }
 
-        double pathScore = getNearbyPaths(cell, 2, paths, map)
+        /*double pathScore = getNearbyPaths(cell, 2, paths, map)
                 .flatMapToDouble(path -> {
                     int pathPossibleCoverage = (int) path.getRoad().stream()
                             .flatMap(x -> Util.radialCells(x, 2, map).stream())
@@ -63,7 +63,7 @@ public class ahmadalli {
 
                     return DoubleStream.of(-(double) pathActualCoverage / pathPossibleCoverage * 2);
                 })
-                .sum();
+                .sum();*/
 
         double finalScore = nearbyCellsScore + towerScore;
 
