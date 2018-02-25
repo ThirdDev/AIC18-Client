@@ -1,5 +1,6 @@
 package client;
 
+import client.classes.Bank;
 import client.classes.BankAccount;
 import client.classes.Logger;
 import client.classes.simulator.towers.Archer;
@@ -130,6 +131,7 @@ public class Defence {
         this.game = game;
         map = game.getDefenceMap();
         paths = game.getDefenceMapPaths();
+        bankAccount = Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE);
         ArrayList<BeanEvent> beans = game.getBeansInThisTurn();
         boolean beanRecolor = false;
         for (BeanEvent tempBean : beans) {
@@ -148,6 +150,7 @@ public class Defence {
             Iterator<Point> iterator = keyset.iterator();
             while (iterator.hasNext()){
                 TowerBuildOrder order = orders.get(iterator.next());
+                Logger.println(order.getPoint().toString() + " " + order.getTowerType());
                 iterator.remove();
                 if(order.getLevel() == -1){
                     Util.upgradeTower(game, order.getPoint());
@@ -200,7 +203,7 @@ public class Defence {
 
             int startIndex = (mvpReport.getHeroDamageToBase() > mvpReport.getCreepDamageToBase())?
                     mvpReport.getPathIndexOfFirstPassingHero() : mvpReport.getPathIndexOfFirstPassingCreep();
-
+            if(startIndex == -1) break;
             ArrayList <RoadCell> roadCells = mvp.getRoad();
             for (int i = startIndex; i < mvp.getRoad().size(); i++) {
                 RoadCell roadCell = roadCells.get(i);
@@ -267,12 +270,14 @@ public class Defence {
                             }
                         }
                     }
-                    orders.put(order.getPoint(), order);
-                    Tower tower1 = new ArcherTower(me.getLocation().getX(),
-                            me.getLocation().getY(), Owner.ME, order.getLevel(), -1);
-                    me.setTower(tower1);
-                    GrassCell grassCell = (GrassCell) map.getCell(me.getLocation().getX(), me.getLocation().getY());
-                    grassCell.setTower(tower1);
+                    if(order != null) {
+                        orders.put(order.getPoint(), order);
+                        Tower tower1 = new ArcherTower(me.getLocation().getX(),
+                                me.getLocation().getY(), Owner.ME, order.getLevel(), -1);
+                        me.setTower(tower1);
+                        GrassCell grassCell = (GrassCell) map.getCell(me.getLocation().getX(), me.getLocation().getY());
+                        grassCell.setTower(tower1);
+                    }
                 }
             }
             else {
@@ -327,18 +332,20 @@ public class Defence {
 
                         }
                     }
-
-                    orders.put(order.getPoint(), order);
-                    Tower tower1 = new CannonTower(me.getLocation().getX(),
-                            me.getLocation().getY(), Owner.ME, order.getLevel(), -1);
-                    me.setTower(tower1);
-                    GrassCell grassCell = (GrassCell) map.getCell(me.getLocation().getX(), me.getLocation().getY());
-                    grassCell.setTower(tower1);
+                    if(order != null) {
+                        orders.put(order.getPoint(), order);
+                        Tower tower1 = new CannonTower(me.getLocation().getX(),
+                                me.getLocation().getY(), Owner.ME, order.getLevel(), -1);
+                        me.setTower(tower1);
+                        GrassCell grassCell = (GrassCell) map.getCell(me.getLocation().getX(), me.getLocation().getY());
+                        grassCell.setTower(tower1);
+                    }
                 }
             }
 
         }
         while (orders.keySet().size()>0);
+
         //Todo:Add the tower to the cell of the map and it's respective SideWayCell
         //Todo:Do above steps again until you run out of money
     }

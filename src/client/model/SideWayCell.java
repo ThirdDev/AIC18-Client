@@ -37,8 +37,10 @@ public class SideWayCell extends GrassCell implements Comparable {
         int ans = oo.getRoadCells().size()-roadCells.size() ;
         if(ans == 0) ans = paths.size() - oo.getPaths().size();
         if(ans == 0){
-            int oTowerLevel = oo.getTower().getLevel();
-            int ourLevel = this.getTower().getLevel();
+            Tower oTower = oo.getTower();
+            Tower ourTower = this.getTower();
+            int oTowerLevel = (oTower == null) ? 0 : oTower.getLevel();
+            int ourLevel = (ourTower == null) ? 0 : ourTower.getLevel();
             ans = ourLevel - oTowerLevel;
         }
         return ans;
