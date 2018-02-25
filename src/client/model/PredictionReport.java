@@ -1,19 +1,31 @@
 package client.model;
 
 public class PredictionReport {
-    private int damageToBase;
-    private int pathIndexOfFirstPassingUnit;
+    private int creepDamageToBase;
+    private int pathIndexOfFirstPassingCreep;
+    private int heroDamageToBase;
+    private int pathIndexOfFirstPassingHero;
 
-    public PredictionReport(int damageToBase, int pathIndexOfFirstPassingUnit) {
-        this.damageToBase = damageToBase;
-        this.pathIndexOfFirstPassingUnit = pathIndexOfFirstPassingUnit;
+    public PredictionReport(int creepDamageToBase, int pathIndexOfFirstPassingCreep, int heroDamageToBase, int pathIndexOfFirstPassingHero) {
+        this.creepDamageToBase = creepDamageToBase;
+        this.pathIndexOfFirstPassingCreep = pathIndexOfFirstPassingCreep;
+        this.heroDamageToBase = heroDamageToBase;
+        this.pathIndexOfFirstPassingHero = pathIndexOfFirstPassingHero;
     }
 
-    public int getDamageToBase() {
-        return damageToBase;
+    public int getCreepDamageToBase() {
+        return creepDamageToBase;
     }
 
-    public int getPathIndexOfFirstPassingUnit() {
-        return pathIndexOfFirstPassingUnit;
+    public int getPathIndexOfFirstPassingCreep() {
+        return pathIndexOfFirstPassingCreep;
+    }
+
+    public int getHeroDamageToBase() {
+        return heroDamageToBase;
+    }
+
+    public int getPathIndexOfFirstPassingHero() {
+        return pathIndexOfFirstPassingHero;
     }
 }

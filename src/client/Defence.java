@@ -1,6 +1,7 @@
 package client;
 
 import client.classes.BankAccount;
+import client.classes.Logger;
 import client.model.*;
 import client.model.Map;
 import javafx.geometry.Side;
@@ -142,6 +143,66 @@ public class Defence {
             }
         }
         if(beanRecolor || game.getCurrentTurn() == 1) reColor();
+
+        //TODO: Loop will start from here
+
+        Path mvp = null;
+        PredictionReport mvpReport = new PredictionReport(0,0,
+                0,0);
+        for(Path path: paths){
+            int lastSum = mvpReport.getCreepDamageToBase() + mvpReport.getHeroDamageToBase();
+            PredictionReport tmpReport = path.getReport(map);
+            int sum = tmpReport.getCreepDamageToBase() + tmpReport.getHeroDamageToBase();
+            if(sum > lastSum || mvp == null){
+                mvp = path;
+                mvpReport = tmpReport;
+            }else{
+                if(sum == lastSum){
+                    int minLastRush = Math.min(
+                            mvp.getRoad().size() - mvpReport.getPathIndexOfFirstPassingCreep(),
+                                    mvp.getRoad().size() - mvpReport.getPathIndexOfFirstPassingHero()
+                    );
+                    int minRush = Math.min(
+                            path.getRoad().size() - tmpReport.getPathIndexOfFirstPassingCreep(),
+                            path.getRoad().size() - tmpReport.getPathIndexOfFirstPassingHero()
+                    );
+                    if(minRush < minLastRush){
+                        mvp = path;
+                        mvpReport = tmpReport;
+                    }
+                }
+            }
+        }
+        //Todo:Create the best fit tower or upgrade one
+        ArrayList<SideWayCell> buildCells = new ArrayList<>();
+
+        int startIndex = (mvpReport.getHeroDamageToBase() > mvpReport.getCreepDamageToBase())?
+                mvpReport.getPathIndexOfFirstPassingHero() : mvpReport.getPathIndexOfFirstPassingCreep();
+
+        ArrayList <RoadCell> roadCells = mvp.getRoad();
+        for (int i = startIndex; i < mvp.getRoad().size(); i++) {
+            RoadCell roadCell = roadCells.get(i);
+            ArrayList<Cell> cells = Util.radialCells(roadCell,2,map);
+            for(Cell cell: cells){
+                SideWayCell candidateCell = sideWayCells.get(cell.getLocation());
+                if(candidateCell != null && buildable.contains(candidateCell)){
+                    buildCells.add(candidateCell);
+                }
+            }
+        }
+        //Todo:Good sorting of the cells in the buildCells array
+        
+
+        if(mvpReport.getHeroDamageToBase() > mvpReport.getCreepDamageToBase()){
+            //TODO: Issue archer order
+        }
+        else{
+            //TODO: Issue cannot order
+        }
+
+
+        //Todo:Add the tower to the cell of the map
+        //Todo:Do above steps again until you run out of money
 //        ArrayList<SideWayCell> sideWayCellArrayList = new ArrayList<> (sideWayCells.values());
 //        Collections.sort(sideWayCellArrayList);
 //        Random random = new Random();
