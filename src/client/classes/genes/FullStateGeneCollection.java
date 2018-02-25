@@ -11,6 +11,7 @@ public class FullStateGeneCollection implements GeneCollection {
 
     HashMap<String, byte[][]> data;
     String resourceName;
+    double multiplier = 1.0;
 
     public FullStateGeneCollection(String resourceName) {
         try {
@@ -48,6 +49,11 @@ public class FullStateGeneCollection implements GeneCollection {
         }
     }
 
+    @Override
+    public void setMultiplier(double multiplier) {
+        this.multiplier = multiplier;
+    }
+
     public String getResourceName() {
         return resourceName;
     }
@@ -71,7 +77,15 @@ public class FullStateGeneCollection implements GeneCollection {
 
         byte[][] item = data.get(key);
 
-        return new Recipe(item[0], item[1]);
+        byte[] creeps = new byte[item[0].length];
+        byte[] heros = new byte[item[1].length];
+
+        for (int i = 0; i < creeps.length; i++)
+            creeps[i] = (byte)(item[0][i] * multiplier);
+        for (int i = 0; i < creeps.length; i++)
+            heros[i] = (byte)(item[1][i] * multiplier);
+
+        return new Recipe(creeps, heros);
     }
 
 }

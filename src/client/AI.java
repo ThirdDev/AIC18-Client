@@ -25,6 +25,7 @@ import java.util.*;
 public class AI {
 
     Random rnd = new Random();
+    int budgetChangePhase = -1;
 
     public AI() {
         GeneCollections.getCollections();
@@ -91,9 +92,68 @@ public class AI {
         Logger.print("Attack budget: " + Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).getBalance());
         Logger.print(", Defence budget: " + Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE).getBalance());
         Logger.println(", Total: " + game.getMyInformation().getMoney());
+        Logger.println(Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).getPercent() + ", " + Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE).getPercent());
 
         ahmadalli.plantRandomTowerInASidewayCell(game);
 
-        Attack.Explore(game);
+        simpleStorm(game);
+
+        Attack.Attack(game);
+
+        UpdateBudgetDistribution(game);
+        MorningBeams(game);
+    }
+
+    //int beansCount = 0;
+    private void MorningBeams(World game) {
+        for (Tower t : game.getVisibleEnemyTowers()) {
+            game.plantBean(t.getLocation().getX(), t.getLocation().getY());
+            //beansCount++;
+        }
+    }
+
+    private void UpdateBudgetDistribution(World game) {
+        if (game.getCurrentTurn() > 8 && budgetChangePhase == -1) {
+            Bank.changeDistributionPercentage(Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE),
+                    Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK), 0.5);
+            budgetChangePhase = 1;
+        }
+        if (game.getCurrentTurn() > 300 && budgetChangePhase == 0) {
+            Bank.changeDistributionPercentage(Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK),
+                    Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE), 0.15);
+            budgetChangePhase = 1;
+        }
+        if (game.getCurrentTurn() > 600 && budgetChangePhase == 1) {
+            Bank.changeDistributionPercentage(Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK),
+                    Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE), 0.15);
+            budgetChangePhase = 2;
+        }
+    }
+
+    private void simpleStorm(World game) {
+        for (Path path : game.getDefenceMapPaths()) {
+            int damage = 0;
+            for (int i = Math.max(path.getRoad().size() - 5, 0); i < path.getRoad().size(); i++) {
+                for (Unit unit : path.getRoad().get(i).getUnits()) {
+                    if (unit instanceof HeavyUnit)
+                        damage += 5;
+                    else
+                        damage += 1;
+                }
+            }
+
+            if (damage >= 10) {
+                int index = path.getRoad().size() - 3;
+
+                if (index < 0)
+                    index = path.getRoad().size();
+
+                Point p = path.getRoad().get(index).getLocation();
+                game.createStorm(p.getX(), p.getY());
+
+                Logger.println("Created storm at " + p.getX() + ", " + p.getY());
+            }
+
+        }
     }
 }

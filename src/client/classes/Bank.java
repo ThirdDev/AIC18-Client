@@ -53,7 +53,7 @@ public class Bank {
     }
 
     public static boolean isInitialized() {
-        return (totalPercentage == 1.0);
+        return (totalPercentage > 0);
     }
 
     public static boolean transferMoney(BankAccount sender, BankAccount receiver, int amount) {
