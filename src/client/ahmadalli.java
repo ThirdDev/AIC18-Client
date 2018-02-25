@@ -6,6 +6,7 @@ import client.classes.Logger;
 import client.model.*;
 import client.model.Map;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -19,6 +20,15 @@ public class ahmadalli {
 
     public static void initialize(World world) {
         initializePathRoadeCellIndex(world.getDefenceMapPaths());
+        updateBeans(world.getBeansInThisTurn());
+    }
+
+    private static void updateBeans(ArrayList<BeanEvent> beanEvents) {
+        for (BeanEvent beanEvent : beanEvents) {
+            Logger.println("bean event with owner " + beanEvent.getOwner() + " received");
+            if (beanEvent.getOwner() == Owner.ENEMY)
+                beannedLocations.add(beanEvent.getPoint());
+        }
     }
 
     public static double cellScore(Cell cell, Map map, ArrayList<Path> paths) {
@@ -87,6 +97,12 @@ public class ahmadalli {
                 defenceBankAccount.canSpend(CannonTower.INITIAL_PRICE);
     }
 
+    private static HashSet<Point> beannedLocations = new HashSet<>();
+
+    public static boolean isBeanned(Point point) {
+        return beannedLocations.contains(point);
+    }
+
     public static void simpleTowerCreation(World world) {
         BankAccount defendAccount = Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE);
         if (defendAccount == null)
@@ -98,6 +114,7 @@ public class ahmadalli {
                     .flatMap(x -> Util.radialCells(x, 2, world.getDefenceMap()).stream())
                     .filter(x -> x instanceof GrassCell)
                     .map(x -> (GrassCell) x)
+                    .filter(x -> !isBeanned(x.getLocation()))
                     .filter(x -> !hasTowerBesideOfIt(x, world))
                     .distinct()
                     .sorted(compareByTroopAndRoadCellCount(world.getDefenceMap(), world.getDefenceMapPaths()))
