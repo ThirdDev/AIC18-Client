@@ -61,6 +61,7 @@ public class Unit extends Entity {
         return 0;
     }
 
+    public int getMaxHealth() { return 0;}
 
     @Override
     public String toString() {
