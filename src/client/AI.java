@@ -87,12 +87,13 @@ public class AI {
 
     //This function will be called on both simple and complex turns
     private void commonTurnFunctions(World game) {
-        if(defence == null) defence = new Defence(
+        if (defence == null) defence = new Defence(
                 Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE),
                 game
         );
         Logger.println("Turn " + game.getCurrentTurn());
         BankController.handleMoney(game.getMyInformation());
+        ahmadalli.initialize(game);
 
         Logger.print("Attack budget: " + Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).getBalance());
         Logger.print(", Defence budget: " + Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE).getBalance());
