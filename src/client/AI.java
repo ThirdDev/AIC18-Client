@@ -94,7 +94,7 @@ public class AI {
         Logger.println(", Total: " + game.getMyInformation().getMoney());
         Logger.println(Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).getPercent() + ", " + Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE).getPercent());
 
-        ahmadalli.plantRandomTowerInASidewayCell(game);
+        ahmadalli.simpleTowerCreation(game);
 
         ahmadalli.stormIfNecessary(game);
 

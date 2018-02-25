@@ -43,7 +43,7 @@ public class ahmadalli {
                 .anyMatch(x -> !x.isEmpty());
     }
 
-    public static void plantRandomTowerInASidewayCell(World world) {
+    public static void simpleTowerCreation(World world) {
         GrassCell[] sidewayCells = world.getDefenceMapPaths().stream()
                 .flatMap(x -> x.getRoad().stream())
                 .flatMap(x -> Util.radialCells(x, 2, world.getDefenceMap()).stream())
