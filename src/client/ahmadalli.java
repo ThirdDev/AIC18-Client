@@ -99,8 +99,9 @@ public class ahmadalli {
         if (dangerousInRange3Ordered.length == 0)
             return;
 
-        if (dangerScore(mostDangerous, world.getDefenceMap()) >= 10) {
-            Cell bestShot = getCenterOfMostVulnerableAreaContainingRoadCell(mostDangerous, world.getDefenceMap(), 2);
+        RoadCell mostDangerous = dangerousInRange3Ordered[0];
+        Cell bestShot = getCenterOfMostVulnerableAreaContainingRoadCell(mostDangerous, world.getDefenceMap(), 2);
+        if (stormDamageScoreSum(mostDangerous, world.getDefenceMap(), 2) >= 20) {
             world.createStorm(bestShot.getLocation().getX(), bestShot.getLocation().getY());
         }
 
