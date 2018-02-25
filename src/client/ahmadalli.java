@@ -60,16 +60,11 @@ public class ahmadalli {
                             .filter(x -> !x.isEmpty())
                             .count();
 
-                    Logger.println("path: " + path.hashCode() + ", possible coverage: " + pathPossibleCoverage +
-                            ", actual coverage: " + pathActualCoverage);
-
                     return DoubleStream.of(-(double) pathActualCoverage / pathPossibleCoverage);
                 })
                 .sum();
 
         double finalScore = nearbyCellsScore + towerScore + pathScore;
-
-        Logger.println("score of " + cell + " is " + finalScore);
 
         return finalScore;
     }
