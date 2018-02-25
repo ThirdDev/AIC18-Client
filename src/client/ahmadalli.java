@@ -34,7 +34,7 @@ public class ahmadalli {
 
     public static double cellScore(Cell cell, Map map, ArrayList<Path> paths) {
         int nearbyCellsScore = getNearbyRoadCells(cell, map).
-                mapToInt(x -> x.getUnits().size() + 1).sum() * 5;
+                mapToInt(x -> x.getUnits().size() + 1).sum() * 10;
 
         double towerScore = 0;
         if (cell instanceof GrassCell) {
