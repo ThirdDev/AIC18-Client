@@ -8,10 +8,7 @@ import client.classes.genes.GeneCollections;
 import client.classes.genes.Recipe;
 import client.model.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Attack {
     static HashMap<Path, Recipe> currentAttackRecipe = new HashMap<>();
@@ -85,9 +82,24 @@ public class Attack {
         }
 
         Set<TowerDetails> enemyTowers = AttackMapAnalyser.getVisibleTowerDetailsForPath(game, bestPath);
+        double towerLevelAverage = calculateTowerLevelAverage(enemyTowers, game.getVisibleEnemyTowers());
 
-        Recipe recipe1 = GeneCollections.getCollections().getRecipe(enemyTowers, bestPath, GeneCollections.Strategy.Explore, game.getCurrentTurn() < 300 ? 3.0 : 3.0);
-        Recipe recipe2 = GeneCollections.getCollections().getRecipe(enemyTowers, bestPath, GeneCollections.Strategy.DamageFullForce, game.getCurrentTurn() < 200 ? 2.0 : 1.0);
+        Logger.println("++++2 " + towerLevelAverage + ", " + LightUnit.getCurrentLevel() + ", " + HeavyUnit.getCurrentLevel());
+
+        Recipe recipe1 = GeneCollections.getCollections().getRecipe(enemyTowers,
+                bestPath,
+                GeneCollections.Strategy.Explore,
+                LightUnit.getCurrentLevel(),
+                HeavyUnit.getCurrentLevel(),
+                towerLevelAverage,
+                game.getCurrentTurn() < 300 ? 3.0 : 3.0);
+        Recipe recipe2 = GeneCollections.getCollections().getRecipe(enemyTowers,
+                bestPath,
+                GeneCollections.Strategy.DamageFullForce,
+                LightUnit.getCurrentLevel(),
+                HeavyUnit.getCurrentLevel(),
+                towerLevelAverage,
+                game.getCurrentTurn() < 200 ? 2.0 : 1.0);
 
         Recipe recipe;
 
@@ -124,6 +136,27 @@ public class Attack {
         allowedToInitiateExplore = false;
         allowedToInitiateDamage = false;
         damageInProgress = true;
+    }
+
+    private static double calculateTowerLevelAverage(Set<TowerDetails> enemyTowers, ArrayList<Tower> visibleEnemyTowers) {
+        Set<Integer> towerIndices = new HashSet<>();
+
+        for (TowerDetails td : enemyTowers)
+            towerIndices.add(td.getId());
+
+        int levelSum = 0;
+        int count = 0;
+        for (Tower t : visibleEnemyTowers) {
+            if (towerIndices.contains(t.getId())) {
+                levelSum += t.getLevel();
+                count++;
+            }
+        }
+
+        if (count == 0)
+            return 1.0;
+
+        return ((double)levelSum) / count;
     }
 
     private static void logRecipe(Recipe recipe) {
@@ -174,9 +207,18 @@ public class Attack {
 
             Set<TowerDetails> enemyTowers = AttackMapAnalyser.getVisibleTowerDetailsForPath(game, path);
 
+            double towerLevelAverage = calculateTowerLevelAverage(enemyTowers, game.getVisibleEnemyTowers());
+            Logger.println("++++1 " + towerLevelAverage + ", " + LightUnit.getCurrentLevel() + ", " + HeavyUnit.getCurrentLevel());
+
             double multiplier = 2;
 
-            Recipe recipe = GeneCollections.getCollections().getRecipe(enemyTowers, path, GeneCollections.Strategy.Damage, multiplier);
+            Recipe recipe = GeneCollections.getCollections().getRecipe(enemyTowers,
+                    path,
+                    GeneCollections.Strategy.Damage,
+                    LightUnit.getCurrentLevel(),
+                    HeavyUnit.getCurrentLevel(),
+                    towerLevelAverage,
+                    multiplier);
 
             int totalCost = recipe.getTotalCost();
             if (!Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).canSpend(totalCost)) {

@@ -54,6 +54,21 @@ public class FullStateGeneCollection implements GeneCollection {
         this.multiplier = multiplier;
     }
 
+    @Override
+    public void setTowerLevelAverage(double towerLevelAverage) {
+        // TODO
+    }
+
+    @Override
+    public void setCreepLevel(int level) {
+        // TODO
+    }
+
+    @Override
+    public void setHeroLevel(int level) {
+        // TODO
+    }
+
     public String getResourceName() {
         return resourceName;
     }

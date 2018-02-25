@@ -63,6 +63,10 @@ public class LightUnit extends Unit {
 
     static int createdUnits = 0;
 
+    public static int getCurrentLevel() {
+        return (int)(Math.floor(createdUnits / 60)) + 1;
+    }
+
     public static int getCurrentPrice() {
         return INITIAL_PRICE + PRICE_INCREASE * (int)(Math.floor(createdUnits / 60));
     }

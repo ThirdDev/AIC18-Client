@@ -4,21 +4,22 @@ import client.classes.Logger;
 import client.classes.simulator.Simulator;
 import client.classes.simulator.judges.AttackJudge;
 import client.classes.simulator.judges.Judge;
-import client.model.ArcherTower;
-import client.model.CannonTower;
-import client.model.Tower;
 
 import java.io.*;
 import java.util.*;
 
 public class CountStateGeneCollection implements GeneCollection {
-
+    final double TOWER_DAMAGE_INCREASE = 1.4;
+    final double SOLDIER_HEALTH_INCREASE = 1.3;
 
     HashMap<String, List<byte[][]>> data;
     String resourceName;
     Simulator simulator;
     int timeout;
     double multiplier = 1.0;
+    double towerLevelAverage = 1.0;
+    int creepLevel = 1;
+    int heroLevel = 1;
 
     public CountStateGeneCollection(String resourceName) {
         try {
@@ -65,6 +66,21 @@ public class CountStateGeneCollection implements GeneCollection {
         this.multiplier = multiplier;
     }
 
+    @Override
+    public void setTowerLevelAverage(double towerLevelAverage) {
+        this.towerLevelAverage = towerLevelAverage;
+    }
+
+    @Override
+    public void setCreepLevel(int level) {
+        this.creepLevel = level;
+    }
+
+    @Override
+    public void setHeroLevel(int level) {
+        this.heroLevel = level;
+    }
+
     public String getResourceName() {
         return resourceName;
     }
@@ -78,7 +94,12 @@ public class CountStateGeneCollection implements GeneCollection {
     }
 
     public Recipe getRecipe(int[] cannons, int[] archers) {
-        return getRecipe(cannons.length, archers.length);
+        double countMultiplier = Math.pow(TOWER_DAMAGE_INCREASE, towerLevelAverage - 1) / Math.pow(SOLDIER_HEALTH_INCREASE, Math.min(creepLevel, heroLevel) - 1);
+
+        int cannonsCount = (int)Math.max(cannons.length * countMultiplier, 1);
+        int archersCount = (int)Math.max(archers.length * countMultiplier, 1);
+
+        return getRecipe(cannonsCount, archersCount);
     }
 
 

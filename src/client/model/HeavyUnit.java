@@ -63,6 +63,10 @@ public class HeavyUnit extends Unit {
 
     static int createdUnits = 0;
 
+    public static int getCurrentLevel() {
+        return (int)(Math.floor(createdUnits / 15)) + 1;
+    }
+
     public static int getCurrentPrice() {
         return INITIAL_PRICE + PRICE_INCREASE * (int)(Math.floor(createdUnits / 15));
     }
