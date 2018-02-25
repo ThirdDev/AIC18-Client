@@ -4,11 +4,9 @@ import client.classes.Bank;
 import client.classes.BankAccount;
 import client.classes.Logger;
 import client.model.*;
+import client.model.Map;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Random;
-import java.util.HashMap;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class ahmadalli {
@@ -94,12 +92,12 @@ public class ahmadalli {
         if (world.getMyInformation().getStormsLeft() == 0)
             return;
 
-        Stream<RoadCell> dangerousCellsInRange3 =
-                dangerousCellsOrderByDangerScoreAscending(world.getDefenceMapPaths(),
-                        world.getDefenceMap(),
-                        0.2, 3, 3);
-
-        RoadCell mostDangerous = dangerousCellsInRange3.findFirst().get();
+        RoadCell[] dangerousInRange3Ordered = dangerousCellsOrderByDangerScoreAscending(
+                world.getDefenceMapPaths(),
+                world.getDefenceMap(),
+                0.2, 3, 3);
+        if (dangerousInRange3Ordered.length == 0)
+            return;
 
         if (dangerScore(mostDangerous, world.getDefenceMap()) >= 10) {
             Cell bestShot = getCenterOfMostVulnerableAreaContainingRoadCell(mostDangerous, world.getDefenceMap(), 2);
@@ -137,18 +135,17 @@ public class ahmadalli {
         return pathIndexOfRoadMap.get(roadCellLocation).intValue();
     }
 
-    public static Stream<RoadCell> dangerousCellsOrderByDangerScoreAscending(ArrayList<Path> paths, Map map, double portion, int minCount, int maxCount) {
+    public static RoadCell[] dangerousCellsOrderByDangerScoreAscending(ArrayList<Path> paths, Map map, double portion, int minCount, int maxCount) {
         return paths.stream()
                 .flatMap(x -> endingRoadCells(x, portion, minCount, maxCount).stream())
                 .filter(x -> dangerScore(x, map) > 0)
-                .sorted((x, y) -> (int) (dangerScore(y, map) - dangerScore(x, map)));
+                .sorted((x, y) -> (int) (dangerScore(y, map) - dangerScore(x, map)))
+                .toArray(RoadCell[]::new);
     }
 
     public static long dangerScore(RoadCell roadCell, client.model.Map map) {
-        Stream<Unit> units = roadCell.getUnits().stream();
-
-        long creepsCount = units.filter(x -> x instanceof LightUnit).count();
-        long herosCount = units.filter(x -> x instanceof HeavyUnit).count();
+        long creepsCount = roadCell.getUnits().stream().filter(x -> x instanceof LightUnit).count();
+        long herosCount = roadCell.getUnits().stream().filter(x -> x instanceof HeavyUnit).count();
 
         long score = 0;
 
