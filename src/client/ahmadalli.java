@@ -99,7 +99,7 @@ public class ahmadalli {
                     break;
                 }
             } else {
-                int towerType = rnd.nextInt() % 5;
+                int towerType = rnd.nextInt(5);
                 int level = 1;
                 if (towerType == 0) {
                     if (defendAccount.retrieveMoney(ArcherTower.getPrice(level))) {
