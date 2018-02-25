@@ -8,15 +8,15 @@ import javafx.geometry.Side;
 import java.util.*;
 
 public class Defence {
-    BankAccount bankAccount;
-    World game;
-    Map map;
-    ArrayList<Path> paths;
-    HashMap<Point,SideWayCell> sideWayCells;
-    ArrayList<SideWayCell> buildable;
-    ArrayList<SideWayCell> tempArray0;
-    ArrayList<SideWayCell> tempArray1;
-    int[] tempColorPoint;
+    private BankAccount bankAccount;
+    private World game;
+    private Map map;
+    private ArrayList<Path> paths;
+    private HashMap<Point,SideWayCell> sideWayCells;
+    private ArrayList<SideWayCell> buildable;
+    private ArrayList<SideWayCell> tempArray0;
+    private ArrayList<SideWayCell> tempArray1;
+    private int[] tempColorPoint;
 
     public Defence(BankAccount bankAccount, World game) {
         this.bankAccount = bankAccount;
@@ -73,7 +73,8 @@ public class Defence {
         Set<Point> keyset = sideWayCells.keySet();
         Iterator<Point> iterator = keyset.iterator();
         while (iterator.hasNext()){
-            sideWayCells.get(iterator.next()).setColor(-1);
+            SideWayCell tmp = sideWayCells.get(iterator.next());
+            tmp.setColor(-1);
         }
         iterator = keyset.iterator();
         while (iterator.hasNext()){
@@ -97,13 +98,19 @@ public class Defence {
                 }
             }
         }
+        System.out.println("Buildables: ");
+        for (int i = 0; i < buildable.size(); i++) {
+            System.out.println(buildable.get(i).getLocation());
+        }
+        System.out.print("****************************");
     }
 
     private void color(Point point,int cl){
         SideWayCell sideWayCell = sideWayCells.get(point);
         if(sideWayCell == null || sideWayCell.getColor() != -1) return;
-        if(sideWayCell.getColor() != cl){
+        if(sideWayCell.getColor() != -1 && sideWayCell.getColor() != cl){
             System.out.println("WTF IN COLORING");
+            System.out.println(point);
         }
         sideWayCell.setColor(cl);
         tempColorPoint[cl] += sideWayCell.getRoadCells().size();
@@ -120,16 +127,23 @@ public class Defence {
         }
     }
 
-    public void run(){
+    public void run(World game){
         //Checking beans and planing accordingly could be time
         // consuming and could go to the first heavy turn,
         // with the use of an input parameter
+        this.game = game;
+        map = game.getDefenceMap();
+        paths = game.getDefenceMapPaths();
         ArrayList<BeanEvent> beans = game.getBeansInThisTurn();
+        boolean beanRecolor = false;
         for (int i = 0; i < beans.size(); i++) {
             BeanEvent tempBean = beans.get(i);
-            sideWayCells.remove(tempBean.getPoint());
+            if(tempBean.getOwner() == Owner.ENEMY) {
+                sideWayCells.remove(tempBean.getPoint());
+                beanRecolor = true;
+            }
         }
-        if(beans.size() > 0) reColor();
+        if(beanRecolor || game.getCurrentTurn() == 1) reColor();
 //        ArrayList<SideWayCell> sideWayCellArrayList = new ArrayList<> (sideWayCells.values());
 //        Collections.sort(sideWayCellArrayList);
 //        Random random = new Random();
