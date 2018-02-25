@@ -7,6 +7,7 @@ import client.classes.simulator.towers.Archer;
 import client.classes.simulator.towers.Cannon;
 import client.model.*;
 import client.model.Map;
+import common.util.Log;
 import javafx.geometry.Side;
 
 import java.util.*;
@@ -177,6 +178,7 @@ public class Defence {
             for(Path path: paths){
                 int lastSum = mvpReport.getCreepDamageToBase() + mvpReport.getHeroDamageToBase();
                 PredictionReport tmpReport = path.getReport(map);
+                Logger.println(tmpReport.toString());
                 int sum = tmpReport.getCreepDamageToBase() + tmpReport.getHeroDamageToBase();
                 if(sum > lastSum || mvp == null){
                     mvp = path;
@@ -198,6 +200,9 @@ public class Defence {
                     }
                 }
             }
+            if(mvpReport.getCreepDamageToBase() == 0 &&
+                    mvpReport.getHeroDamageToBase() == 0)
+                break;
             //Todo:Create the best fit tower or upgrade one
             ArrayList<SideWayCell> buildCells = new ArrayList<>();
 
