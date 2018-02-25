@@ -3,6 +3,7 @@ package client;
 import client.classes.Bank;
 import client.classes.BankAccount;
 import client.classes.Logger;
+import client.classes.simulator.towers.Cannon;
 import client.model.*;
 import client.model.Map;
 
@@ -18,8 +19,16 @@ public class ahmadalli {
     }
 
     public static int cellScore(Cell cell, World world) {
-        return getNearbyRoadCells(cell, world).
+        int nearbyCellsScore = getNearbyRoadCells(cell, world).
                 mapToInt(x -> x.getUnits().size() + 1).sum();
+        int towerScore = 0;
+        if (cell instanceof GrassCell) {
+            Tower tower = ((GrassCell) cell).getTower();
+            if (tower != null) {
+                towerScore = -tower.getLevel() * 2;
+            }
+        }
+        return nearbyCellsScore + towerScore;
     }
 
     public static Stream<RoadCell> getNearbyRoadCells(Cell cell, World world) {
@@ -44,12 +53,19 @@ public class ahmadalli {
     }
 
     public static void simpleTowerCreation(World world) {
+        BankAccount defendAccount = Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE);
+        if (defendAccount == null)
+            return;
+
+        if (!defendAccount.canSpend(ArcherTower.INITIAL_PRICE) ||
+                !defendAccount.canSpend(CannonTower.INITIAL_PRICE))
+            return;
+
         GrassCell[] sidewayCells = world.getDefenceMapPaths().stream()
                 .flatMap(x -> x.getRoad().stream())
                 .flatMap(x -> Util.radialCells(x, 2, world.getDefenceMap()).stream())
                 .filter(x -> x instanceof GrassCell)
                 .map(x -> (GrassCell) x)
-                .filter(GrassCell::isEmpty)
                 .filter(x -> !hasTowerBesideOfIt(x, world))
                 .distinct()
                 .sorted(compareByTroopAndRoadCellCount(world))
@@ -58,7 +74,6 @@ public class ahmadalli {
         if (sidewayCells.length == 0)
             return;
 
-
         GrassCell cellToBuild;
 
         // GrassCell randomSideWayCell = sidewayCells[rnd.nextInt(sidewayCells.length)];
@@ -66,26 +81,38 @@ public class ahmadalli {
 
         cellToBuild = sidewayCells[sidewayCells.length - 1];
 
-        BankAccount defendAccount = Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE);
-        if(defendAccount==null)
-            return;
-
         int towerType = rnd.nextInt() % 5;
         int level = 1;
         if (towerType == 0 && defendAccount.canSpend(ArcherTower.INITIAL_PRICE)) {
             if (defendAccount.retrieveMoney(ArcherTower.INITIAL_PRICE)) {
                 int x = cellToBuild.getLocation().getX();
                 int y = cellToBuild.getLocation().getY();
-                Logger.println("creating an archer tower @(" + x + ", " + y + ")");
-                world.createArcherTower(level, x, y);
+
+                Tower tower = cellToBuild.getTower();
+
+                if (tower != null) {
+                    Logger.println("upgrading archer tower @(" + x + ", " + y + ")");
+                    world.upgradeTower(tower);
+                } else {
+                    Logger.println("creating an archer tower @(" + x + ", " + y + ")");
+                    world.createArcherTower(level, x, y);
+                }
             }
         }
         if (towerType != 0 && defendAccount.canSpend(CannonTower.INITIAL_PRICE)) {
             if (defendAccount.retrieveMoney(CannonTower.INITIAL_PRICE)) {
                 int x = cellToBuild.getLocation().getX();
                 int y = cellToBuild.getLocation().getY();
-                Logger.println("creating an cannon tower @(" + x + ", " + y + ")");
-                world.createCannonTower(level, x, y);
+
+                Tower tower = cellToBuild.getTower();
+
+                if (tower != null) {
+                    Logger.println("upgrading cannon tower @(" + x + ", " + y + ")");
+                    world.upgradeTower(tower);
+                } else {
+                    Logger.println("creating an cannon tower @(" + x + ", " + y + ")");
+                    world.createCannonTower(level, x, y);
+                }
             }
         }
     }
