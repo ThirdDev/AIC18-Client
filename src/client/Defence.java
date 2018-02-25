@@ -2,6 +2,8 @@ package client;
 
 import client.classes.BankAccount;
 import client.classes.Logger;
+import client.classes.simulator.towers.Archer;
+import client.classes.simulator.towers.Cannon;
 import client.model.*;
 import client.model.Map;
 import javafx.geometry.Side;
@@ -82,10 +84,6 @@ public class Defence {
                 tempArray0.clear();
                 tempArray1.clear();
                 color(nextPoint,0);
-                System.out.println("Color point0:");
-                System.out.println(tempColorPoint[0]);
-                System.out.println("Color point1:");
-                System.out.println(tempColorPoint[1]);
                 if(tempColorPoint[0] > tempColorPoint[1]){
                     //Always the color of zero is better
                     buildable.addAll(tempArray0);
@@ -108,12 +106,10 @@ public class Defence {
     private void color(Point point,int cl){
         SideWayCell sideWayCell = sideWayCells.get(point);
         if(sideWayCell == null || sideWayCell.getColor() != -1) return;
-        if(sideWayCell.getColor() != -1 && sideWayCell.getColor() != cl){
-            System.out.println("WTF IN COLORING");
-            System.out.println(point);
-        }
         sideWayCell.setColor(cl);
-        tempColorPoint[cl] += sideWayCell.getRoadCells().size();
+        if(game.isTowerConstructable(sideWayCell)) {
+            tempColorPoint[cl] += sideWayCell.getRoadCells().size();
+        }
         if(cl == 0){
             tempArray0.add(sideWayCell);
         }
@@ -144,86 +140,206 @@ public class Defence {
         }
         if(beanRecolor || game.getCurrentTurn() == 1) reColor();
 
-        //TODO: Loop will start from here
+        HashMap<Point,TowerBuildOrder> orders = new HashMap<>();
 
-        Path mvp = null;
-        PredictionReport mvpReport = new PredictionReport(0,0,
-                0,0);
-        for(Path path: paths){
-            int lastSum = mvpReport.getCreepDamageToBase() + mvpReport.getHeroDamageToBase();
-            PredictionReport tmpReport = path.getReport(map);
-            int sum = tmpReport.getCreepDamageToBase() + tmpReport.getHeroDamageToBase();
-            if(sum > lastSum || mvp == null){
-                mvp = path;
-                mvpReport = tmpReport;
-            }else{
-                if(sum == lastSum){
-                    int minLastRush = Math.min(
-                            mvp.getRoad().size() - mvpReport.getPathIndexOfFirstPassingCreep(),
-                                    mvp.getRoad().size() - mvpReport.getPathIndexOfFirstPassingHero()
-                    );
-                    int minRush = Math.min(
-                            path.getRoad().size() - tmpReport.getPathIndexOfFirstPassingCreep(),
-                            path.getRoad().size() - tmpReport.getPathIndexOfFirstPassingHero()
-                    );
-                    if(minRush < minLastRush){
-                        mvp = path;
-                        mvpReport = tmpReport;
+        //TODO: Loop will start from here
+        do {
+            Set<Point> keyset = orders.keySet();
+            Iterator<Point> iterator = keyset.iterator();
+            while (iterator.hasNext()){
+                TowerBuildOrder order = orders.get(iterator.next());
+                iterator.remove();
+                if(order.getLevel() == -1){
+                    Util.upgradeTower(game, order.getPoint());
+                }
+                else{
+                    if (order.getTowerType().equals(
+                            TowerBuildOrder.TowerType.Cannon)){
+                        game.createCannonTower(order.getLevel(),
+                                order.getPoint().getX(),
+                                order.getPoint().getY());
+                    }
+                    if (order.getTowerType().equals(
+                            TowerBuildOrder.TowerType.Archer)){
+                        game.createCannonTower(order.getLevel(),
+                                order.getPoint().getX(),
+                                order.getPoint().getY());
                     }
                 }
             }
-        }
-        //Todo:Create the best fit tower or upgrade one
-        ArrayList<SideWayCell> buildCells = new ArrayList<>();
 
-        int startIndex = (mvpReport.getHeroDamageToBase() > mvpReport.getCreepDamageToBase())?
-                mvpReport.getPathIndexOfFirstPassingHero() : mvpReport.getPathIndexOfFirstPassingCreep();
-
-        ArrayList <RoadCell> roadCells = mvp.getRoad();
-        for (int i = startIndex; i < mvp.getRoad().size(); i++) {
-            RoadCell roadCell = roadCells.get(i);
-            ArrayList<Cell> cells = Util.radialCells(roadCell,2,map);
-            for(Cell cell: cells){
-                SideWayCell candidateCell = sideWayCells.get(cell.getLocation());
-                if(candidateCell != null && buildable.contains(candidateCell)){
-                    buildCells.add(candidateCell);
+            Path mvp = null;
+            PredictionReport mvpReport = new PredictionReport(0,0,
+                    0,0);
+            for(Path path: paths){
+                int lastSum = mvpReport.getCreepDamageToBase() + mvpReport.getHeroDamageToBase();
+                PredictionReport tmpReport = path.getReport(map);
+                int sum = tmpReport.getCreepDamageToBase() + tmpReport.getHeroDamageToBase();
+                if(sum > lastSum || mvp == null){
+                    mvp = path;
+                    mvpReport = tmpReport;
+                }else{
+                    if(sum == lastSum){
+                        int minLastRush = Math.min(
+                                mvp.getRoad().size() - mvpReport.getPathIndexOfFirstPassingCreep(),
+                                mvp.getRoad().size() - mvpReport.getPathIndexOfFirstPassingHero()
+                        );
+                        int minRush = Math.min(
+                                path.getRoad().size() - tmpReport.getPathIndexOfFirstPassingCreep(),
+                                path.getRoad().size() - tmpReport.getPathIndexOfFirstPassingHero()
+                        );
+                        if(minRush < minLastRush){
+                            mvp = path;
+                            mvpReport = tmpReport;
+                        }
+                    }
                 }
             }
-        }
-        //Todo:Good sorting of the cells in the buildCells array
-        
+            //Todo:Create the best fit tower or upgrade one
+            ArrayList<SideWayCell> buildCells = new ArrayList<>();
 
-        if(mvpReport.getHeroDamageToBase() > mvpReport.getCreepDamageToBase()){
-            //TODO: Issue archer order
-        }
-        else{
-            //TODO: Issue cannot order
-        }
+            int startIndex = (mvpReport.getHeroDamageToBase() > mvpReport.getCreepDamageToBase())?
+                    mvpReport.getPathIndexOfFirstPassingHero() : mvpReport.getPathIndexOfFirstPassingCreep();
+
+            ArrayList <RoadCell> roadCells = mvp.getRoad();
+            for (int i = startIndex; i < mvp.getRoad().size(); i++) {
+                RoadCell roadCell = roadCells.get(i);
+                ArrayList<Cell> cells = Util.radialCells(roadCell,2,map);
+                for(Cell cell: cells){
+                    SideWayCell candidateCell = sideWayCells.get(cell.getLocation());
+                    if(candidateCell != null && buildable.contains(candidateCell)){
+                        buildCells.add(candidateCell);
+                    }
+                }
+            }
+            //Todo:Good sorting of the cells in the buildCells array
+            Collections.sort(buildCells);
+            if(mvpReport.getHeroDamageToBase() > mvpReport.getCreepDamageToBase()){
+                //Issues archer order
+                ArrayList<SideWayCell> buildArcherCells = new ArrayList<>();
+                for(SideWayCell swc:buildCells){
+                    if(swc.isEmpty() || swc.getTower() instanceof ArcherTower){
+                        buildArcherCells.add(swc);
+                    }
+                }
+                for(int i = 0 ; i < buildArcherCells.size()-1; i++){
+                    SideWayCell me = buildArcherCells.get(i);
+                    SideWayCell next = buildArcherCells.get(i+1);
+                    if(me.getRoadCells().size() ==
+                            next.getRoadCells().size()) continue;
+                    Tower tower = me.getTower();
+                    Tower nextTower = next.getTower();
+                    int towerLevel = (tower == null) ? 0 : tower.getLevel();
+                    int nextTowerLevel = (nextTower == null) ? 0 : nextTower.getLevel();
+                    if(towerLevel-nextTowerLevel == 2) continue;
+                    TowerBuildOrder order = orders.get(me.getLocation());
+
+                    if(order == null){
+                        if(towerLevel == 0){
+                            int money = ArcherTower.getPrice(1);
+                            if(bankAccount.canSpend(money)){
+                                order = new TowerBuildOrder(me.getLocation(), 1,
+                                        TowerBuildOrder.TowerType.Archer);
+                                bankAccount.retrieveMoney(money);
+                            }
+                        }
+                        else{
+                            int money = ArcherTower.getPrice(towerLevel+1);
+                            if(bankAccount.canSpend(money)){
+                                order = new TowerBuildOrder(me.getLocation(), -1,
+                                        TowerBuildOrder.TowerType.Archer);
+                                bankAccount.retrieveMoney(money);
+                            }
+                        }
+
+                    }
+                    else{
+                        if(order.getTowerType() == TowerBuildOrder.TowerType.Archer){
+
+                            int level = order.getLevel();
+                            int money = ArcherTower.getPrice(level+1)
+                                    - ArcherTower.getPrice(level);
+                            if(bankAccount.canSpend(money)){
+                                orders.remove(me.getLocation());
+                                order = new TowerBuildOrder(me.getLocation(),level+1,
+                                        TowerBuildOrder.TowerType.Archer);
+                                bankAccount.retrieveMoney(money);
+                            }
+                        }
+                    }
+                    orders.put(order.getPoint(), order);
+                    Tower tower1 = new ArcherTower(me.getLocation().getX(),
+                            me.getLocation().getY(), Owner.ME, order.getLevel(), -1);
+                    me.setTower(tower1);
+                    GrassCell grassCell = (GrassCell) map.getCell(me.getLocation().getX(), me.getLocation().getY());
+                    grassCell.setTower(tower1);
+                }
+            }
+            else {
+                //Issues cannon order
+                ArrayList<SideWayCell> buildCannonCells = new ArrayList<>();
+                for(SideWayCell swc:buildCells){
+                    if(swc.isEmpty() || swc.getTower() instanceof CannonTower){
+                        buildCannonCells.add(swc);
+                    }
+                }
+                for(int i = 0 ; i < buildCannonCells.size()-1; i++) {
+                    SideWayCell me = buildCannonCells.get(i);
+                    SideWayCell next = buildCannonCells.get(i + 1);
+                    if (me.getRoadCells().size() ==
+                            next.getRoadCells().size()) continue;
+                    Tower tower = me.getTower();
+                    Tower nextTower = next.getTower();
+                    int towerLevel = (tower == null) ? 0 : tower.getLevel();
+                    int nextTowerLevel = (nextTower == null) ? 0 : nextTower.getLevel();
+                    if (towerLevel - nextTowerLevel == 2) continue;
+                    TowerBuildOrder order = orders.get(me.getLocation());
 
 
-        //Todo:Add the tower to the cell of the map
+                    if (order == null) {
+                        if(towerLevel == 0){
+                            int money = CannonTower.getPrice(1);
+                            if(bankAccount.canSpend(money)){
+                                order = new TowerBuildOrder(me.getLocation(), 1,
+                                        TowerBuildOrder.TowerType.Cannon);
+                                bankAccount.retrieveMoney(money);
+                            }
+                        }
+                        else{
+                            int money = CannonTower.getPrice(towerLevel+1);
+                            if(bankAccount.canSpend(money)){
+                                order = new TowerBuildOrder(me.getLocation(), -1,
+                                        TowerBuildOrder.TowerType.Cannon);
+                                bankAccount.retrieveMoney(money);
+                            }
+                        }
+
+                    } else {
+                        if (order.getTowerType() == TowerBuildOrder.TowerType.Cannon) {
+                            int level = order.getLevel();
+                            int money = CannonTower.getPrice(level+1) - CannonTower.getPrice(level);
+                            if(bankAccount.canSpend(money)){
+                                orders.remove(me.getLocation());
+                                order = new TowerBuildOrder(me.getLocation(), level + 1,
+                                        TowerBuildOrder.TowerType.Cannon);
+                                bankAccount.retrieveMoney(money);
+                            }
+
+                        }
+                    }
+
+                    orders.put(order.getPoint(), order);
+                    Tower tower1 = new CannonTower(me.getLocation().getX(),
+                            me.getLocation().getY(), Owner.ME, order.getLevel(), -1);
+                    me.setTower(tower1);
+                    GrassCell grassCell = (GrassCell) map.getCell(me.getLocation().getX(), me.getLocation().getY());
+                    grassCell.setTower(tower1);
+                }
+            }
+
+        }
+        while (orders.keySet().size()>0);
+        //Todo:Add the tower to the cell of the map and it's respective SideWayCell
         //Todo:Do above steps again until you run out of money
-//        ArrayList<SideWayCell> sideWayCellArrayList = new ArrayList<> (sideWayCells.values());
-//        Collections.sort(sideWayCellArrayList);
-//        Random random = new Random();
-//        if(sideWayCellArrayList.size()>0){
-//            SideWayCell candidate = sideWayCellArrayList.get(0);
-//            //System.out.print("***RoadCells:");
-//            //System.out.println(candidate.getRoadCells().size());
-//            if(game.isTowerConstructable(candidate)){
-//                Point location = candidate.getLocation();
-//                if(random.nextDouble()<0.5){
-//                    game.createArcherTower(2,location.getX(),location.getY());
-//                }
-//                else{
-//                    game.createCannonTower(2,location.getX(),location.getY());
-//                }
-//            }
-//            else{
-//                if (candidate.getTower() != null){
-//                    game.upgradeTower(candidate.getTower());
-//                }
-//            }
-//        }
     }
 }

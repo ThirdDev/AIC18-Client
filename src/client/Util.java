@@ -101,19 +101,12 @@ public class Util {
         }
     }
 
-    public static boolean upgradeTower(BankAccount bankAccount, World game,
-                                       Tower tower){
-        int priceToPay = CannonTower.getPrice(tower.getLevel()+1) -
-                CannonTower.getPrice(tower.getLevel());
-        if(bankAccount.canSpend(priceToPay)){
-            game.upgradeTower(tower.getId());
-            bankAccount.retrieveMoney(priceToPay);
-            return true;
-        }
-        else{
-            return false;
-        }
-
+    public static void
+    upgradeTower(World game, Point point){
+        Map map = game.getDefenceMap();
+        GrassCell cell = (GrassCell) map.getCell(point.getX(),point.getY());
+        Tower tower = cell.getTower();
+        game.upgradeTower(tower.getId());
     }
 
     public static boolean buildCreep(int count,BankAccount bankAccount,
