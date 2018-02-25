@@ -6,8 +6,8 @@ import client.classes.Logger;
 import client.model.*;
 import client.model.Map;
 
-import java.lang.reflect.Array;
 import java.util.*;
+import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
 public class ahmadalli {
@@ -34,42 +34,44 @@ public class ahmadalli {
 
     public static double cellScore(Cell cell, Map map, ArrayList<Path> paths) {
         int nearbyCellsScore = getNearbyRoadCells(cell, map).
-                mapToInt(x -> x.getUnits().size() + 1).sum();
+                mapToInt(x -> x.getUnits().size() + 1).sum() * 5;
 
         double towerScore = 0;
         if (cell instanceof GrassCell) {
             Tower tower = ((GrassCell) cell).getTower();
             if (tower != null) {
-                towerScore = (-tower.getLevel() * 1.3);
+                towerScore = (-tower.getLevel() * 2);
             }
         }
 
-        int[] pathIndexes = getNearbyRoadCells(cell, map)
-                .mapToInt(x -> getPathIndexOfRoadCell(x.getLocation()))
-                .distinct()
-                .toArray();
+        double pathScore = getNearbyPaths(cell, 2, paths, map)
+                .flatMapToDouble(path -> {
+                    int pathPossibleCoverage = (int) path.getRoad().stream()
+                            .flatMap(x -> Util.radialCells(x, 2, map).stream())
+                            .distinct()
+                            .filter(x -> x instanceof GrassCell)
+                            .count();
 
-        double pathScore = 0;
-        for (int pathIndex : pathIndexes) {
-            Path path = paths.get(pathIndex);
-            int pathPossibleCoverage = (int) path.getRoad().stream()
-                    .map(x -> Util.radialCells(x, 2, map).stream())
-                    .distinct()
-                    .filter(x -> x instanceof GrassCell)
-                    .count();
+                    int pathActualCoverage = (int) path.getRoad().stream()
+                            .flatMap(x -> Util.radialCells(x, 2, map).stream())
+                            .distinct()
+                            .filter(x -> x instanceof GrassCell)
+                            .map(x -> (GrassCell) x)
+                            .filter(x -> !x.isEmpty())
+                            .count();
 
-            int pathActualCoverage = (int) path.getRoad().stream()
-                    .map(x -> Util.radialCells(x, 2, map).stream())
-                    .distinct()
-                    .filter(x -> x instanceof GrassCell)
-                    .map(x -> (GrassCell) x)
-                    .filter(x -> !x.isEmpty())
-                    .count();
+                    Logger.println("path: " + path.hashCode() + ", possible coverage: " + pathPossibleCoverage +
+                            ", actual coverage: " + pathActualCoverage);
 
-            //pathScore += -(double) pathActualCoverage / pathPossibleCoverage * 2;
-        }
+                    return DoubleStream.of(-(double) pathActualCoverage / pathPossibleCoverage);
+                })
+                .sum();
 
-        return nearbyCellsScore + towerScore + pathScore;
+        double finalScore = nearbyCellsScore + towerScore + pathScore;
+
+        Logger.println("score of " + cell + " is " + finalScore);
+
+        return finalScore;
     }
 
     public static Stream<RoadCell> getNearbyRoadCells(Cell cell, Map map) {
@@ -78,10 +80,10 @@ public class ahmadalli {
                 .map(x -> (RoadCell) x);
     }
 
-    public static Stream<Path> getNearbyPaths(Cell cell, int range, World world) {
-        return world.getDefenceMapPaths().stream()
+    public static Stream<Path> getNearbyPaths(Cell cell, int range, ArrayList<Path> paths, Map map) {
+        return paths.stream()
                 .filter(x -> Stream.concat(x.getRoad().stream()
-                                .flatMap(y -> Util.radialCells(y, range, world.getDefenceMap()).stream()),
+                                .flatMap(y -> Util.radialCells(y, range, map).stream()),
                         x.getRoad().stream())
                         .anyMatch(y -> y.equals(cell)));
     }
@@ -113,11 +115,11 @@ public class ahmadalli {
             GrassCell[] sidewayCells = world.getDefenceMapPaths().stream()
                     .flatMap(x -> x.getRoad().stream())
                     .flatMap(x -> Util.radialCells(x, 2, world.getDefenceMap()).stream())
+                    .distinct()
+                    .filter(x -> !isBeanned(x.getLocation()))
                     .filter(x -> x instanceof GrassCell)
                     .map(x -> (GrassCell) x)
-                    .filter(x -> !isBeanned(x.getLocation()))
                     .filter(x -> !hasTowerBesideOfIt(x, world))
-                    .distinct()
                     .sorted(compareByTroopAndRoadCellCount(world.getDefenceMap(), world.getDefenceMapPaths()))
                     .toArray(GrassCell[]::new);
 
