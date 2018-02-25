@@ -204,27 +204,16 @@ public class Controller {
      * Starts {@link AI#simpleTurn} with turn timeout.
      */
     private void lightTurn() {
-        new Thread() {
-            @Override
-            public void run() {
-                ai.simpleTurn(game);
-                sendEndMsg(event);
-            }
-        }.start();
+        ai.simpleTurn(game);
+        sendEndMsg(event);
     }
 
     /**
      * Starts {@link AI#complexTurn} with turn timeout.
      */
     private void heavyTurn() {
-        new Thread() {
-            @Override
-            public void run() {
-                ai.complexTurn(game);
-                sendEndMsg(event);
-
-            }
-        }.start();
+        ai.complexTurn(game);
+        sendEndMsg(event);
     }
 
     private void sendEndMsg(Event event) {
