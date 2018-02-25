@@ -124,15 +124,20 @@ public class AI {
                     Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK), 0.5);
             budgetChangePhase = 0;
         }
-        if (game.getCurrentTurn() > 300 && budgetChangePhase == 0) {
+        if (game.getCurrentTurn() > 100 && budgetChangePhase == 0) {
             Bank.changeDistributionPercentage(Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK),
-                    Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE), 0.15);
+                    Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE), 0.1);
             budgetChangePhase = 1;
         }
-        if (game.getCurrentTurn() > 600 && budgetChangePhase == 1) {
+        if (game.getCurrentTurn() > 300 && budgetChangePhase == 1) {
             Bank.changeDistributionPercentage(Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK),
                     Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE), 0.15);
             budgetChangePhase = 2;
+        }
+        if (game.getCurrentTurn() > 600 && budgetChangePhase == 2) {
+            Bank.changeDistributionPercentage(Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK),
+                    Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE), 0.15);
+            budgetChangePhase = 3;
         }
     }
 
