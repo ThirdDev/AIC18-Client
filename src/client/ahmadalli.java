@@ -25,9 +25,10 @@ public class ahmadalli {
 
     private static void updateBeans(ArrayList<BeanEvent> beanEvents) {
         for (BeanEvent beanEvent : beanEvents) {
-            Logger.println("bean event with owner " + beanEvent.getOwner() + " received");
+            Logger.println("bean event with owner " + beanEvent.getOwner() +
+                    " in point " + beanEvent.getPoint() + " received");
             if (beanEvent.getOwner() == Owner.ENEMY)
-                beannedLocations.add(beanEvent.getPoint());
+                beannedLocations.add(beanEvent.getPoint().hashCode());
         }
     }
 
@@ -97,10 +98,10 @@ public class ahmadalli {
                 defenceBankAccount.canSpend(CannonTower.INITIAL_PRICE);
     }
 
-    private static HashSet<Point> beannedLocations = new HashSet<>();
+    private static HashSet<Integer> beannedLocations = new HashSet<>();
 
     public static boolean isBeanned(Point point) {
-        return beannedLocations.contains(point);
+        return beannedLocations.contains(point.hashCode());
     }
 
     public static void simpleTowerCreation(World world) {
