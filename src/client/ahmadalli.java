@@ -14,32 +14,31 @@ public class ahmadalli {
     private static Random rnd = new Random();
 
     private static Comparator<Cell> compareByTroopAndRoadCellCount(Map map, ArrayList<Path> paths) {
-        return Comparator.comparingInt(o -> cellScore(o, map, paths));
+        return Comparator.comparingDouble(o -> cellScore(o, map, paths));
     }
 
     public static void initialize(World world) {
         initializePathRoadeCellIndex(world.getDefenceMapPaths());
     }
 
-    public static int cellScore(Cell cell, Map map, ArrayList<Path> paths) {
+    public static double cellScore(Cell cell, Map map, ArrayList<Path> paths) {
         int nearbyCellsScore = getNearbyRoadCells(cell, map).
                 mapToInt(x -> x.getUnits().size() + 1).sum();
 
-        int towerScore = 0;
+        double towerScore = 0;
         if (cell instanceof GrassCell) {
             Tower tower = ((GrassCell) cell).getTower();
             if (tower != null) {
-                towerScore = (int) (-tower.getLevel() * 1.3);
+                towerScore = (-tower.getLevel() * 1.3);
             }
         }
 
         int[] pathIndexes = getNearbyRoadCells(cell, map)
                 .mapToInt(x -> getPathIndexOfRoadCell(cell.getLocation()))
                 .distinct()
-                //.map(x->x.intValue())
                 .toArray();
 
-        int pathScore = 0;
+        double pathScore = 0;
         for (int pathIndex : pathIndexes) {
             Path path = paths.get(pathIndex);
             int pathPossibleCoverage = (int) path.getRoad().stream()
@@ -56,7 +55,7 @@ public class ahmadalli {
                     .filter(x -> !x.isEmpty())
                     .count();
 
-            pathScore += -pathActualCoverage / pathPossibleCoverage * 2;
+            pathScore += -(double) pathActualCoverage / pathPossibleCoverage * 2;
         }
 
         return nearbyCellsScore + towerScore + pathScore;
