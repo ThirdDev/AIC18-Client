@@ -146,7 +146,7 @@ public class ahmadalli {
                 .toArray(RoadCell[]::new);
     }
 
-    public static long dangerScore(RoadCell roadCell, client.model.Map map) {
+    public static int dangerScore(RoadCell roadCell, client.model.Map map) {
         long creepsCount = roadCell.getUnits().stream().filter(x -> x instanceof LightUnit).count();
         long herosCount = roadCell.getUnits().stream().filter(x -> x instanceof HeavyUnit).count();
 
@@ -155,7 +155,7 @@ public class ahmadalli {
         score += creepsCount * LightUnit.DAMAGE;
         score += (herosCount) * HeavyUnit.DAMAGE;
 
-        return score;
+        return (int) score;
     }
 
     public static ArrayList<RoadCell> endingRoadCells(Path path, double portion, int minCount, int maxCount) {
