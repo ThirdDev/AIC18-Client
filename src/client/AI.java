@@ -1,13 +1,10 @@
 package client;
 
-import client.classes.AttackMapAnalyser;
+import client.ahmadalli.defend.StormCreation;
+import client.ahmadalli.defend.TowerCreation;
 import client.classes.Bank;
-import client.classes.BankAccount;
 import client.classes.Logger;
-import client.classes.exceptions.AccountNotFoundException;
-import client.classes.exceptions.NotEnoughMoneyException;
 import client.classes.genes.GeneCollections;
-import client.classes.genes.Recipe;
 import client.model.*;
 
 import java.util.*;
@@ -48,17 +45,14 @@ public class AI {
         );
         Logger.println("Turn " + game.getCurrentTurn());
         BankController.handleMoney(game.getMyInformation());
-        ahmadalli.initialize(game);
 
         Logger.print("Attack budget: " + Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).getBalance());
         Logger.print(", Defence budget: " + Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE).getBalance());
         Logger.println(", Total: " + game.getMyInformation().getMoney());
         Logger.println(Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).getPercent() + ", " + Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE).getPercent());
 
-        ahmadalli.simpleTowerCreation(game);
-
-
-        ahmadalli.stormIfNecessary(game);
+        TowerCreation.simpleTowerCreation(game);
+        StormCreation.stormIfNecessary(game);
 
         Attack.Attack(game);
 
