@@ -19,10 +19,6 @@ public class ahmadalli {
         return Comparator.comparingDouble(o -> cellScore(o, map, paths));
     }
 
-    private static Comparator<Cell> randomCompare() {
-        return Comparator.comparingInt(o -> rnd.nextInt());
-    }
-
     public static void initialize(World world) {
         initializePathRoadeCellIndex(world.getDefenceMapPaths());
         updateBeans(world.getBeansInThisTurn());
@@ -118,23 +114,28 @@ public class ahmadalli {
                     .flatMap(x -> x.getRoad().stream())
                     .flatMap(x -> Util.radialCells(x, 2, world.getDefenceMap()).stream())
                     .distinct()
-                    .filter(x -> !isBeanned(x.getLocation()))
                     .filter(x -> x instanceof GrassCell)
-                    .map(x -> (GrassCell) x)
-                    .filter(x -> !hasTowerBesideOfIt(x, world))
-                    .sorted(randomCompare())
-                    .sorted(compareByTroopAndRoadCellCount(world.getDefenceMap(), world.getDefenceMapPaths()))
                     .toArray(GrassCell[]::new);
 
             if (sidewayCells.length == 0)
                 return;
 
+            LinkedList<GrassCell> sidewayShuffle = new LinkedList<>(Arrays.asList(sidewayCells));
+
+            Collections.shuffle(sidewayShuffle);
+            GrassCell[] bestCells = sidewayShuffle.stream()
+                    .filter(x -> x instanceof GrassCell)
+                    .map(x -> (GrassCell) x)
+                    .filter(x -> !hasTowerBesideOfIt(x, world))
+                    .sorted(compareByTroopAndRoadCellCount(world.getDefenceMap(), world.getDefenceMapPaths()))
+                    .toArray(GrassCell[]::new);
+
             GrassCell cellToBuild;
 
-            // GrassCell randomSideWayCell = sidewayCells[rnd.nextInt(sidewayCells.length)];
+            // GrassCell randomSideWayCell = bestCells[rnd.nextInt(bestCells.length)];
             // cellToBuild = randomSideWayCell;
 
-            cellToBuild = sidewayCells[sidewayCells.length - 1];
+            cellToBuild = bestCells[bestCells.length - 1];
 
             Tower tower = cellToBuild.getTower();
 
