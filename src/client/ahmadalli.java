@@ -59,7 +59,7 @@ public class ahmadalli {
                 .filter(x -> x instanceof GrassCell)
                 .map(x -> (GrassCell) x)
                 .filter(x -> !x.isEmpty())
-                .mapToInt(x -> ((GrassCell) x).getTower().getLevel())
+                .mapToInt(x -> x.getTower().getLevel())
                 .count();
 
         return -(double) pathActualCoverage / pathPossibleCoverage * 1.0;
@@ -144,7 +144,7 @@ public class ahmadalli {
             Collections.shuffle(sidewayShuffle);
             GrassCell[] bestCells = sidewayShuffle.stream()
                     .filter(x -> x instanceof GrassCell)
-                    .map(x -> (GrassCell) x)
+                    .map(x -> x)
                     .filter(x -> !hasTowerBesideOfIt(x, world))
                     .sorted(compareByTroopAndRoadCellCount(world.getDefenceMap(), world.getDefenceMapPaths()))
                     .toArray(GrassCell[]::new);
