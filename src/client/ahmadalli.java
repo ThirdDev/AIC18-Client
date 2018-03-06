@@ -46,6 +46,25 @@ public class ahmadalli {
 
     }
 
+    public static double pathCoverageScore(Path path, Map map) {
+        int pathPossibleCoverage = (int) path.getRoad().stream()
+                .flatMap(x -> Util.radialCells(x, 2, map).stream())
+                .distinct()
+                .filter(x -> x instanceof GrassCell)
+                .count();
+
+        int pathActualCoverage = (int) path.getRoad().stream()
+                .flatMap(x -> Util.radialCells(x, 2, map).stream())
+                .distinct()
+                .filter(x -> x instanceof GrassCell)
+                .map(x -> (GrassCell) x)
+                .filter(x -> !x.isEmpty())
+                .mapToInt(x -> ((GrassCell) x).getTower().getLevel())
+                .count();
+
+        return -(double) pathActualCoverage / pathPossibleCoverage * 1.0;
+    }
+
     public static double cellScore(Cell cell, Map map, ArrayList<Path> paths) {
         double nearbyCellsScore = getNearbyRoadCells(cell, map).
                 mapToDouble(x -> cellUnitScore(x) + 1).sum();
@@ -58,28 +77,15 @@ public class ahmadalli {
             }
         }
 
-        /*double pathScore = getNearbyPaths(cell, 2, paths, map)
-                .flatMapToDouble(path -> {
-                    int pathPossibleCoverage = (int) path.getRoad().stream()
-                            .flatMap(x -> Util.radialCells(x, 2, map).stream())
-                            .distinct()
-                            .filter(x -> x instanceof GrassCell)
-                            .count();
+        double pathScore = 0;
 
-                    int pathActualCoverage = (int) path.getRoad().stream()
-                            .flatMap(x -> Util.radialCells(x, 2, map).stream())
-                            .distinct()
-                            .filter(x -> x instanceof GrassCell)
-                            .map(x -> (GrassCell) x)
-                            .filter(x -> !x.isEmpty())
-                            .mapToInt(x -> ((GrassCell) x).getTower().getLevel())
-                            .count();
+        /**/
+        pathScore = getNearbyPaths(cell, 2, paths, map)
+                .mapToDouble(path -> pathCoverageScore(path, map))
+                .sum();
+        /**/
 
-                    return DoubleStream.of(-(double) pathActualCoverage / pathPossibleCoverage * 2);
-                })
-                .sum();*/
-
-        double finalScore = nearbyCellsScore + towerScore;
+        double finalScore = nearbyCellsScore + towerScore + pathScore;
 
         return finalScore;
     }
