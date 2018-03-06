@@ -21,16 +21,6 @@ public class ahmadalli {
 
     public static void initialize(World world) {
         initializePathRoadeCellIndex(world.getDefenceMapPaths());
-        updateBeans(world.getBeansInThisTurn());
-    }
-
-    private static void updateBeans(ArrayList<BeanEvent> beanEvents) {
-        for (BeanEvent beanEvent : beanEvents) {
-            Logger.println("bean event with owner " + beanEvent.getOwner() +
-                    " in point " + beanEvent.getPoint() + " received");
-            if (beanEvent.getOwner() == Owner.ENEMY)
-                beannedLocations.add(beanEvent.getPoint().hashCode());
-        }
     }
 
     public static double cellUnitScore(RoadCell roadCell) {
@@ -114,12 +104,6 @@ public class ahmadalli {
     private static boolean canCreateBasicTower(BankAccount defenceBankAccount) {
         return defenceBankAccount.canSpend(ArcherTower.INITIAL_PRICE) ||
                 defenceBankAccount.canSpend(CannonTower.INITIAL_PRICE);
-    }
-
-    private static HashSet<Integer> beannedLocations = new HashSet<>();
-
-    public static boolean isBeanned(Point point) {
-        return beannedLocations.contains(point.hashCode());
     }
 
     @SuppressWarnings("RedundantStreamOptionalCall")
