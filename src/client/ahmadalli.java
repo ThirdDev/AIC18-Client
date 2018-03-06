@@ -19,6 +19,10 @@ public class ahmadalli {
         return Comparator.comparingDouble(o -> cellScore(o, map, paths));
     }
 
+    private static Comparator<Cell> randomCompare() {
+        return Comparator.comparingInt(o -> rnd.nextInt());
+    }
+
     public static void initialize(World world) {
         initializePathRoadeCellIndex(world.getDefenceMapPaths());
         updateBeans(world.getBeansInThisTurn());
@@ -103,6 +107,7 @@ public class ahmadalli {
         return beannedLocations.contains(point.hashCode());
     }
 
+    @SuppressWarnings("RedundantStreamOptionalCall")
     public static void simpleTowerCreation(World world) {
         BankAccount defendAccount = Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE);
         if (defendAccount == null)
@@ -117,6 +122,7 @@ public class ahmadalli {
                     .filter(x -> x instanceof GrassCell)
                     .map(x -> (GrassCell) x)
                     .filter(x -> !hasTowerBesideOfIt(x, world))
+                    .sorted(randomCompare())
                     .sorted(compareByTroopAndRoadCellCount(world.getDefenceMap(), world.getDefenceMapPaths()))
                     .toArray(GrassCell[]::new);
 
