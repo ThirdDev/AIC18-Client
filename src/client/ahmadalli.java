@@ -20,7 +20,6 @@ public class ahmadalli {
     }
 
     public static void initialize(World world) {
-        initializePathRoadeCellIndex(world.getDefenceMapPaths());
     }
 
     public static double cellUnitScore(RoadCell roadCell) {
@@ -245,23 +244,6 @@ public class ahmadalli {
         return Util.radialCells(cell, range, map).stream()
                 .sorted((x, y) -> stormDamageScoreSum(y, map, range) - stormDamageScoreSum(x, map, range))
                 .findFirst().get();
-    }
-
-    static HashMap<Point, Integer> pathIndexOfRoadMap = null;
-
-    public static int getPathIndexOfRoadCell(Point roadCellLocation) {
-        return pathIndexOfRoadMap.get(roadCellLocation);
-    }
-
-    private static void initializePathRoadeCellIndex(ArrayList<Path> paths) {
-        if (pathIndexOfRoadMap == null) {
-            pathIndexOfRoadMap = new HashMap<>();
-            for (int i = 0; i < paths.size(); i++) {
-                for (RoadCell theRoadCell : paths.get(i).getRoad()) {
-                    pathIndexOfRoadMap.put(theRoadCell.getLocation(), i);
-                }
-            }
-        }
     }
 
     public static RoadCell[] dangerousCellsOrderByDangerScoreAscending(ArrayList<Path> paths, double portion, int minCount, int maxCount) {
