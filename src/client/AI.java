@@ -29,6 +29,7 @@ public class AI {
     Defence defence;
 
     public AI() {
+        // Logger.disableLogging();
         GeneCollections.getCollections();
     }
 
@@ -99,10 +100,10 @@ public class AI {
         Logger.print(", Defence budget: " + Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE).getBalance());
         Logger.println(", Total: " + game.getMyInformation().getMoney());
         Logger.println(Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).getPercent() + ", " + Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE).getPercent());
-        
+
         ahmadalli.simpleTowerCreation(game);
 
-        
+
         ahmadalli.stormIfNecessary(game);
 
         Attack.Attack(game);
