@@ -108,6 +108,8 @@ public class ahmadalli {
 
     @SuppressWarnings("RedundantStreamOptionalCall")
     public static void simpleTowerCreation(World world) {
+        Logger.println("-- starting to defend simply --");
+
         BankAccount defendAccount = Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE);
         if (defendAccount == null)
             return;
@@ -145,13 +147,19 @@ public class ahmadalli {
             if (tower != null) {
                 int towerLevel = tower.getLevel();
                 int upgradePrice = 0;
+                String towerType = "";
                 if (tower instanceof ArcherTower) {
                     upgradePrice = ArcherTower.getPrice(towerLevel + 1) - ArcherTower.getPrice(towerLevel);
+                    towerType = "archer";
                 }
                 if (tower instanceof CannonTower) {
                     upgradePrice = CannonTower.getPrice(towerLevel + 1) - CannonTower.getPrice(towerLevel);
+                    towerType = "cannon";
                 }
                 if (defendAccount.retrieveMoney(upgradePrice)) {
+                    int x = tower.getLocation().getX();
+                    int y = tower.getLocation().getY();
+                    Logger.println("upgrading a level " + towerLevel + " " + towerType + " tower @(" + x + ", " + y + ")");
                     world.upgradeTower(tower);
                 } else {
                     break;
@@ -182,7 +190,7 @@ public class ahmadalli {
                     if (defendAccount.retrieveMoney(ArcherTower.getPrice(level))) {
                         int x = cellToBuild.getLocation().getX();
                         int y = cellToBuild.getLocation().getY();
-                        Logger.println("creating an archer tower @(" + x + ", " + y + ")");
+                        Logger.println("creating a level " + level + " archer tower @(" + x + ", " + y + ")");
                         world.createArcherTower(level, x, y);
                     } else {
                         break;
@@ -192,7 +200,7 @@ public class ahmadalli {
                     if (defendAccount.retrieveMoney(CannonTower.getPrice(level))) {
                         int x = cellToBuild.getLocation().getX();
                         int y = cellToBuild.getLocation().getY();
-                        Logger.println("creating an cannon tower @(" + x + ", " + y + ")");
+                        Logger.println("creating a level " + level + " cannon tower @(" + x + ", " + y + ")");
                         world.createCannonTower(level, x, y);
                     } else {
                         break;
@@ -200,6 +208,8 @@ public class ahmadalli {
                 }
             }
         }
+
+        Logger.println("-- simple defend ended --");
     }
 
     public static void stormIfNecessary(World world) {
