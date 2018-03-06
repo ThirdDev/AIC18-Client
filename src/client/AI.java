@@ -68,9 +68,11 @@ public class AI {
 
     //int beansCount = 0;
     private void MorningBeams(World game) {
-        for (Tower t : game.getVisibleEnemyTowers()) {
-            game.plantBean(t.getLocation().getX(), t.getLocation().getY());
-            //beansCount++;
+        if (game.getMyInformation().getBeansLeft() > 0) {
+            for (Tower t : game.getVisibleEnemyTowers()) {
+                game.plantBean(t.getLocation().getX(), t.getLocation().getY());
+                //beansCount++;
+            }
         }
     }
 }
