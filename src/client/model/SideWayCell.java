@@ -53,4 +53,14 @@ public class SideWayCell extends GrassCell implements Comparable {
     public void setColor(int color) {
         this.color = color;
     }
+
+    @Override
+    public String toString() {
+        return "SideWayCell{" +
+                super.toString()+
+                "paths=" + paths +
+                ", roadCells=" + roadCells +
+                ", color=" + color +
+                '}';
+    }
 }

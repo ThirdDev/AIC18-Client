@@ -28,6 +28,6 @@ public class GrassCell extends Cell {
 
     @Override
     public String toString() {
-        return "g";
+        return super.toString() + " g ";
     }
 }

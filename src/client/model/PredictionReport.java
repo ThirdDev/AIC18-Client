@@ -2,40 +2,40 @@ package client.model;
 
 public class PredictionReport {
     private int creepDamageToBase;
-    private int pathIndexOfFirstPassingCreep;
+    private int indexOfFirstPassingCreep;
     private int heroDamageToBase;
-    private int pathIndexOfFirstPassingHero;
+    private int indexOfFirstPassingHero;
 
     public PredictionReport(int creepDamageToBase, int pathIndexOfFirstPassingCreep, int heroDamageToBase, int pathIndexOfFirstPassingHero) {
         this.creepDamageToBase = creepDamageToBase;
-        this.pathIndexOfFirstPassingCreep = pathIndexOfFirstPassingCreep;
+        this.indexOfFirstPassingCreep = pathIndexOfFirstPassingCreep;
         this.heroDamageToBase = heroDamageToBase;
-        this.pathIndexOfFirstPassingHero = pathIndexOfFirstPassingHero;
+        this.indexOfFirstPassingHero = pathIndexOfFirstPassingHero;
     }
 
     public int getCreepDamageToBase() {
         return creepDamageToBase;
     }
 
-    public int getPathIndexOfFirstPassingCreep() {
-        return pathIndexOfFirstPassingCreep;
+    public int getIndexOfFirstPassingCreep() {
+        return indexOfFirstPassingCreep;
     }
 
     public int getHeroDamageToBase() {
         return heroDamageToBase;
     }
 
-    public int getPathIndexOfFirstPassingHero() {
-        return pathIndexOfFirstPassingHero;
+    public int getIndexOfFirstPassingHero() {
+        return indexOfFirstPassingHero;
     }
 
     @Override
     public String toString() {
         return "PredictionReport{" +
                 "creepDamageToBase=" + creepDamageToBase +
-                ", pathIndexOfFirstPassingCreep=" + pathIndexOfFirstPassingCreep +
+                ", pathIndexOfFirstPassingCreep=" + indexOfFirstPassingCreep +
                 ", heroDamageToBase=" + heroDamageToBase +
-                ", pathIndexOfFirstPassingHero=" + pathIndexOfFirstPassingHero +
+                ", pathIndexOfFirstPassingHero=" + indexOfFirstPassingHero +
                 '}';
     }
 }

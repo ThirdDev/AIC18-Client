@@ -95,14 +95,6 @@ public class Defence {
                 }
             }
         }
-
-        /**
-        System.out.println("Buildables: ");
-        for (int i = 0; i < buildable.size(); i++) {
-            System.out.println(buildable.get(i).getLocation());
-        }
-        System.out.print("****************************");
-         /**/
     }
 
     private void color(Point point,int cl){
@@ -137,11 +129,14 @@ public class Defence {
         boolean beanRecolor = false;
         for (BeanEvent tempBean : beans) {
             if (tempBean.getOwner() == Owner.ENEMY && sideWayCells.containsKey(tempBean.getPoint())) {
-                sideWayCells.remove(tempBean.getPoint());
+                SideWayCell beanedCell = sideWayCells.remove(tempBean.getPoint());
+                Logger.println("Our cell beaned : " + beanedCell);
                 beanRecolor = true;
             }
         }
-        if(beanRecolor || game.getCurrentTurn() == 1) reColor();
+        if(beanRecolor || game.getCurrentTurn() == 1){
+            reColor();
+        }
 
         HashMap<Point,TowerBuildOrder> orders = new HashMap<>();
 
@@ -155,6 +150,7 @@ public class Defence {
                 iterator.remove();
                 if(order.getLevel() == -1){
                     Util.upgradeTower(game, order.getPoint());
+                    Logger.println("Upgrade at " + order.getPoint());
                 }
                 else{
                     if (order.getTowerType().equals(
@@ -162,12 +158,14 @@ public class Defence {
                         game.createCannonTower(order.getLevel(),
                                 order.getPoint().getX(),
                                 order.getPoint().getY());
+                        Logger.println("Cannon at " + order.getPoint());
                     }
                     if (order.getTowerType().equals(
                             TowerBuildOrder.TowerType.Archer)){
                         game.createCannonTower(order.getLevel(),
                                 order.getPoint().getX(),
                                 order.getPoint().getY());
+                        Logger.println("Archer at " + order.getPoint());
                     }
                 }
             }
@@ -186,12 +184,12 @@ public class Defence {
                 }else{
                     if(sum == lastSum){
                         int minLastRush = Math.min(
-                                mvp.getRoad().size() - mvpReport.getPathIndexOfFirstPassingCreep(),
-                                mvp.getRoad().size() - mvpReport.getPathIndexOfFirstPassingHero()
+                                mvp.getRoad().size() - mvpReport.getIndexOfFirstPassingCreep(),
+                                mvp.getRoad().size() - mvpReport.getIndexOfFirstPassingHero()
                         );
                         int minRush = Math.min(
-                                path.getRoad().size() - tmpReport.getPathIndexOfFirstPassingCreep(),
-                                path.getRoad().size() - tmpReport.getPathIndexOfFirstPassingHero()
+                                path.getRoad().size() - tmpReport.getIndexOfFirstPassingCreep(),
+                                path.getRoad().size() - tmpReport.getIndexOfFirstPassingHero()
                         );
                         if(minRush < minLastRush){
                             mvp = path;
@@ -207,7 +205,7 @@ public class Defence {
             ArrayList<SideWayCell> buildCells = new ArrayList<>();
 
             int startIndex = (mvpReport.getHeroDamageToBase() > mvpReport.getCreepDamageToBase())?
-                    mvpReport.getPathIndexOfFirstPassingHero() : mvpReport.getPathIndexOfFirstPassingCreep();
+                    mvpReport.getIndexOfFirstPassingHero() : mvpReport.getIndexOfFirstPassingCreep();
             if(startIndex == -1) break;
             ArrayList <RoadCell> roadCells = mvp.getRoad();
             for (int i = startIndex; i < mvp.getRoad().size(); i++) {
@@ -221,15 +219,18 @@ public class Defence {
                 }
             }
             //Todo:Good sorting of the cells in the buildCells array
+
             Collections.sort(buildCells);
+
             if(mvpReport.getHeroDamageToBase() > mvpReport.getCreepDamageToBase()){
                 //Issues archer order
                 ArrayList<SideWayCell> buildArcherCells = new ArrayList<>();
-                for(SideWayCell swc:buildCells){
+                for(SideWayCell swc:buildCells) {
                     if(swc.isEmpty() || swc.getTower() instanceof ArcherTower){
                         buildArcherCells.add(swc);
                     }
                 }
+
                 for(int i = 0 ; i < buildArcherCells.size()-1; i++){
                     SideWayCell me = buildArcherCells.get(i);
                     SideWayCell next = buildArcherCells.get(i+1);
@@ -239,7 +240,12 @@ public class Defence {
                     Tower nextTower = next.getTower();
                     int towerLevel = (tower == null) ? 0 : tower.getLevel();
                     int nextTowerLevel = (nextTower == null) ? 0 : nextTower.getLevel();
-                    if(towerLevel-nextTowerLevel == 2) continue;
+                    if(towerLevel-nextTowerLevel == 2) {
+                        if(i < buildArcherCells.size()-2) continue;
+                        me = next;
+                        tower = nextTower;
+                        towerLevel = nextTowerLevel;
+                    }
                     TowerBuildOrder order = orders.get(me.getLocation());
 
                     if(order == null){
@@ -302,9 +308,13 @@ public class Defence {
                     Tower nextTower = next.getTower();
                     int towerLevel = (tower == null) ? 0 : tower.getLevel();
                     int nextTowerLevel = (nextTower == null) ? 0 : nextTower.getLevel();
-                    if (towerLevel - nextTowerLevel == 2) continue;
+                    if(towerLevel-nextTowerLevel == 2) {
+                        if(i < buildCannonCells.size()-2) continue;
+                        me = next;
+                        tower = nextTower;
+                        towerLevel = nextTowerLevel;
+                    }
                     TowerBuildOrder order = orders.get(me.getLocation());
-
 
                     if (order == null) {
                         if(towerLevel == 0){

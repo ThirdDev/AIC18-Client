@@ -30,4 +30,10 @@ public class Cell {
         return location;
     }
 
+    @Override
+    public String toString() {
+        return "Cell{" +
+                "location=" + location +
+                '}';
+    }
 }

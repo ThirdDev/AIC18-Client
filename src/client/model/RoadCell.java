@@ -19,6 +19,6 @@ public class RoadCell extends Cell {
 
     @Override
     public String toString() {
-        return "r";
+        return super.toString() + " r ";
     }
 }

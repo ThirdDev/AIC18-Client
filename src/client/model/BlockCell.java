@@ -11,6 +11,6 @@ public class BlockCell extends Cell {
 
     @Override
     public String toString() {
-        return "b";
+        return super.toString() + " b ";
     }
 }
