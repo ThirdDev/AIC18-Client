@@ -476,6 +476,10 @@ public class Game implements World {
 
         Event event = new Event("ct", new Object[]{"a", lvl, x, y});
         sender.accept(new Message(Event.EVENT, event));
+        Cell cell = getDefenceMap().getCell(x, y);
+        if (cell instanceof GrassCell) {
+            ((GrassCell) cell).setTower(new ArcherTower(x, y, Owner.ME, lvl, -1));
+        }
         Log.d(TAG, "Request: create ArcherTower @ x:" + x + " y:" + y + " Level:" + lvl);
     }
 
@@ -483,6 +487,10 @@ public class Game implements World {
 
         Event event = new Event("ct", new Object[]{"c", lvl, x, y});
         sender.accept(new Message(Event.EVENT, event));
+        Cell cell = getDefenceMap().getCell(x, y);
+        if (cell instanceof GrassCell) {
+            ((GrassCell) cell).setTower(new CannonTower(x, y, Owner.ME, lvl, -1));
+        }
         Log.d(TAG, "Request: create CannonTower @ x:" + x + " y:" + y + " Level:" + lvl);
 
     }
