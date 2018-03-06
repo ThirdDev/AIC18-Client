@@ -33,9 +33,22 @@ public class ahmadalli {
         }
     }
 
+    public static double cellUnitScore(RoadCell roadCell) {
+        int creepCount = (int) roadCell.getUnits().stream()
+                .filter(x -> x instanceof LightUnit)
+                .count();
+
+        int heroCount = (int) roadCell.getUnits().stream()
+                .filter(x -> x instanceof HeavyUnit)
+                .count();
+
+        return creepCount * 1.0 + heroCount * 2.5;
+
+    }
+
     public static double cellScore(Cell cell, Map map, ArrayList<Path> paths) {
-        int nearbyCellsScore = getNearbyRoadCells(cell, map).
-                mapToInt(x -> x.getUnits().size() + 1).sum();
+        double nearbyCellsScore = getNearbyRoadCells(cell, map).
+                mapToDouble(x -> cellUnitScore(x) + 1).sum();
 
         double towerScore = 0;
         if (cell instanceof GrassCell) {
