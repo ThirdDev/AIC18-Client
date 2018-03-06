@@ -71,21 +71,6 @@ public class AI {
         */
     }
 
-    private void InsertPathTower(World game, HashMap<Point, List<Path>> cellPaths, HashMap<Path, List<Tower>> pathTowers, Tower t, int x, int y) {
-        if (!Util.inRange(x, y, game.getAttackMap()))
-            return;
-
-        Point point = new Point(x, y);
-        if (cellPaths.containsKey(point)) {
-            for (Path p : cellPaths.get(point)) {
-                if (!pathTowers.containsKey(p))
-                    pathTowers.put(p, new ArrayList<>());
-
-                pathTowers.get(p).add(t);
-            }
-        }
-    }
-
     //This function will be called on both simple and complex turns
     private void commonTurnFunctions(World game) {
         if (defence == null) defence = new Defence(
