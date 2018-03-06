@@ -38,7 +38,7 @@ public class BankController {
     }
 
     @SuppressWarnings("Duplicates")
-    public static void setAttackPercentage(double percentage) throws AccountNotFoundException, InvalidArgumentException {
+    public static void setAttackPercentage(double percentage) {
         BankAccount attackAccout = Bank.getAccount(BANK_ACCOUNT_ATTACK);
         BankAccount defendAccount = Bank.getAccount(BANK_ACCOUNT_DEFENCE);
         double previousAttackPercentage = attackAccout.getPercent();
@@ -47,7 +47,7 @@ public class BankController {
     }
 
     @SuppressWarnings("Duplicates")
-    public static void setDefendPercentage(double percentage) throws AccountNotFoundException, InvalidArgumentException {
+    public static void setDefendPercentage(double percentage) {
         BankAccount attackAccout = Bank.getAccount(BANK_ACCOUNT_ATTACK);
         BankAccount defendAccount = Bank.getAccount(BANK_ACCOUNT_DEFENCE);
         double previousDefendPercentage = defendAccount.getPercent();
@@ -55,27 +55,31 @@ public class BankController {
         Bank.changeDistributionPercentage(defendAccount, attackAccout, delta);
     }
 
+    public static void setAccountsPercentage(double attackAccountPercentage, double defendAccountPercentage) {
+        if (attackAccountPercentage + defendAccountPercentage != 1) {
+            Logger.error("Lanati poola ro dorost taghsim kon!!");
+        }
+        setAttackPercentage(attackAccountPercentage);
+        setDefendPercentage(defendAccountPercentage);
+    }
+
     private static int budgetChangePhase = -1;
 
     public static void updateBudgetDistribution(World game) {
         if (game.getCurrentTurn() > 8 && budgetChangePhase == -1) {
-            Bank.changeDistributionPercentage(Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE),
-                    Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK), 0.5);
+            setAccountsPercentage(0.4, 0.6);
             budgetChangePhase = 0;
         }
         if (game.getCurrentTurn() > 100 && budgetChangePhase == 0) {
-            Bank.changeDistributionPercentage(Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK),
-                    Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE), 0.1);
+            setAccountsPercentage(0.5, 0.5);
             budgetChangePhase = 1;
         }
         if (game.getCurrentTurn() > 400 && budgetChangePhase == 1) {
-            Bank.changeDistributionPercentage(Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK),
-                    Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE), 0.15);
+            setAccountsPercentage(0.35, 0.65);
             budgetChangePhase = 2;
         }
         if (game.getCurrentTurn() > 600 && budgetChangePhase == 2) {
-            Bank.changeDistributionPercentage(Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK),
-                    Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE), 0.15);
+            setAccountsPercentage(0.2, 0.8);
             budgetChangePhase = 3;
         }
     }
