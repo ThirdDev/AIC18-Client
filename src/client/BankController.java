@@ -32,7 +32,7 @@ public class BankController {
     }
 
     public static void initBank() {
-        System.out.println("Initializing bank...");
+        Logger.println("Initializing bank...");
         Bank.registerAccount(BANK_ACCOUNT_ATTACK, 0.9);
         Bank.registerAccount(BANK_ACCOUNT_DEFENCE, 0.1);
     }

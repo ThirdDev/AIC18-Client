@@ -79,7 +79,7 @@ public class GeneCollections {
         UniformRandomDamage = new CountStateGeneCollection("UniformRandomTowers-DamagePolicyByTowerCount -1-pathLength 20-2018-23-2--14-49-51.sgdf");
 
         long delta = System.currentTimeMillis() - time;
-        System.out.println(delta + " ms");
+        Logger.println(delta + " ms");
     }
 
     private static GeneCollections instance = null;
