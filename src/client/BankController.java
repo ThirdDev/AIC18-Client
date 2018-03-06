@@ -14,14 +14,19 @@ public class BankController {
     private BankController() {
     } //Static class
 
+    private static int theftAmount = 0;
+
     public static void handleMoney(Player player) {
         if (!Bank.isInitialized())
             initBank();
 
         int income = player.getMoney() - lastTurnMoney;
 
-        if (income < 0)
+        if (income < 0) {
             Logger.error("!!! THEFT ALERT !!! Haji poola ro bordan!!!");
+            theftAmount += income;
+            Logger.error("current theft amount: " + income + ", total theft amount: " + theftAmount);
+        }
 
         Bank.income(income);
         lastTurnMoney = player.getMoney();
