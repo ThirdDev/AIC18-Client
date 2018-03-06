@@ -34,40 +34,10 @@ public class AI {
 
     void simpleTurn(World game) {
         commonTurnFunctions(game);
-
-        /*
-        Log.d(TAG,"lightTurn Called"+" Turn:"+game.getCurrentTurn());
-
-        int t=rnd.nextInt();
-        if(t%3==2){
-            game.createArcherTower(rnd.nextInt(4),rnd.nextInt(game.getDefenceMap().getWidth()),rnd.nextInt(game.getDefenceMap().getHeight()));
-
-        }else if(t%3==1){
-            game.createHeavyUnit(rnd.nextInt(game.getDefenceMapPaths().size()));
-
-        }else if(t%3==0){
-            game.createLightUnit(rnd.nextInt(game.getAttackMapPaths().size()));
-        }
-        */
     }
 
     void complexTurn(World game) {
         commonTurnFunctions(game);
-
-        /*
-        Log.d(TAG,"HeavyTurn Called"+" Turn:"+game.getCurrentTurn());
-
-        int t=rnd.nextInt();
-        if(t%3==2){
-            game.createStorm(rnd.nextInt(game.getDefenceMap().getWidth()),rnd.nextInt(game.getDefenceMap().getHeight()));
-        }else if(t%3==1){
-            game.plantBean(rnd.nextInt(game.getDefenceMap().getWidth()),rnd.nextInt(game.getDefenceMap().getHeight()));
-
-        }else if(t%3==0){
-            game.createCannonTower(rnd.nextInt(4),rnd.nextInt(game.getDefenceMap().getWidth()),rnd.nextInt(game.getDefenceMap().getHeight()));
-
-        }
-        */
     }
 
     //This function will be called on both simple and complex turns
@@ -101,34 +71,6 @@ public class AI {
         for (Tower t : game.getVisibleEnemyTowers()) {
             game.plantBean(t.getLocation().getX(), t.getLocation().getY());
             //beansCount++;
-        }
-    }
-
-
-    private void simpleStorm(World game) {
-        for (Path path : game.getDefenceMapPaths()) {
-            int damage = 0;
-            for (int i = Math.max(path.getRoad().size() - 5, 0); i < path.getRoad().size(); i++) {
-                for (Unit unit : path.getRoad().get(i).getUnits()) {
-                    if (unit instanceof HeavyUnit)
-                        damage += 5;
-                    else
-                        damage += 1;
-                }
-            }
-
-            if (damage >= 10) {
-                int index = path.getRoad().size() - 3;
-
-                if (index < 0)
-                    index = path.getRoad().size();
-
-                Point p = path.getRoad().get(index).getLocation();
-                game.createStorm(p.getX(), p.getY());
-
-                Logger.println("Created storm at " + p.getX() + ", " + p.getY());
-            }
-
         }
     }
 }
