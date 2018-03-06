@@ -41,7 +41,7 @@ public class ahmadalli {
         if (cell instanceof GrassCell) {
             Tower tower = ((GrassCell) cell).getTower();
             if (tower != null) {
-                towerScore = (-tower.getLevel() * 10);
+                towerScore = (-tower.getLevel() * 30);
             }
         }
 
