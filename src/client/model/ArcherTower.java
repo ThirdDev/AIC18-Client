@@ -20,6 +20,10 @@ public class ArcherTower extends Tower {
     }
 
     public int getDamage(int level) {
+        return getTowerDamage(level);
+    }
+
+    public static int getTowerDamage(int level) {
         return (int) (INITIAL_DAMAGE * Math.pow(DAMAGE_COEFF, level - 1));
     }
 

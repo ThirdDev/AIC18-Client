@@ -1,5 +1,8 @@
 package client.classes.simulator.units;
 
+import client.model.ArcherTower;
+import client.model.CannonTower;
+
 public class Hero extends Unit {
 
     @Override
@@ -21,12 +24,12 @@ public class Hero extends Unit {
 
     @Override
     public int getDamageByCannon() {
-        return 10;
+        return CannonTower.INITIAL_DAMAGE;
     }
 
     @Override
     public int getDamageByArcher() {
-        return 40;
+        return ArcherTower.INITIAL_DAMAGE;
     }
 
     @Override

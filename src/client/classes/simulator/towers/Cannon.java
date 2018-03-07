@@ -1,12 +1,14 @@
 package client.classes.simulator.towers;
 
+import client.model.CannonTower;
+
 public class Cannon extends Tower {
 
     int[] rangeDelta;
 
     @Override
     public int getRechargeTime() {
-        return 4;
+        return CannonTower.ATTACK_SPEED;
     }
 
     @Override

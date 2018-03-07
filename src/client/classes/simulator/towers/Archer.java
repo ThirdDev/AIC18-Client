@@ -1,12 +1,14 @@
 package client.classes.simulator.towers;
 
+import client.model.ArcherTower;
+
 public class Archer extends Tower {
 
     int[] rangeDelta;
 
     @Override
     public int getRechargeTime() {
-        return 3;
+        return ArcherTower.ATTACK_SPEED;
     }
 
     @Override
