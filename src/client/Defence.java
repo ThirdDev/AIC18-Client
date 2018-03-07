@@ -298,7 +298,7 @@ public class Defence {
                         Logger.println("Issuing order at" + order.getPoint());
                         Logger.println("For a archer tower (upgrade or build)");
                         Tower tower1 = new ArcherTower(me.getLocation().getX(),
-                                me.getLocation().getY(), Owner.ME, order.getLevel(), -1);
+                                me.getLocation().getY(), Owner.ME, order.getLevel(), -1 , Integer.MIN_VALUE +1);
                         me.setTower(tower1);
                         GrassCell grassCell = (GrassCell) map.getCell(me.getLocation().getX(), me.getLocation().getY());
                         grassCell.setTower(tower1);
@@ -376,7 +376,7 @@ public class Defence {
                         Logger.println("Issuing order at" + order.getPoint());
                         Logger.println("For a cannon tower (upgrade or build)");
                         Tower tower1 = new CannonTower(me.getLocation().getX(),
-                                me.getLocation().getY(), Owner.ME, order.getLevel(), -1);
+                                me.getLocation().getY(), Owner.ME, order.getLevel(), -1, Integer.MIN_VALUE +1 );
                         me.setTower(tower1);
                         GrassCell grassCell = (GrassCell) map.getCell(me.getLocation().getX(), me.getLocation().getY());
                         grassCell.setTower(tower1);
