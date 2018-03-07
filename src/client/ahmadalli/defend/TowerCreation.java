@@ -20,8 +20,11 @@ public class TowerCreation {
         Logger.println("-- starting to defend simply --");
 
         BankAccount defendAccount = Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE);
-        if (defendAccount == null || !Finance.canCreateBasicTower(defendAccount))
+        if (defendAccount == null || !Finance.canCreateBasicTower(defendAccount)) {
+            Logger.println("not enough money for creating basic tower or defend account is null");
+            Logger.println("-- simple defend ended, time passed: " + (System.currentTimeMillis() - startMills) + " --");
             return;
+        }
 
         GrassCell[] sidewayCells = world.getDefenceMapPaths().stream()
                 .flatMap(x -> x.getRoad().stream())
@@ -30,8 +33,11 @@ public class TowerCreation {
                 .filter(x -> x instanceof GrassCell)
                 .toArray(GrassCell[]::new);
 
-        if (sidewayCells.length == 0)
+        if (sidewayCells.length == 0) {
+            Logger.println("no sideway cell exists");
+            Logger.println("-- simple defend ended, time passed: " + (System.currentTimeMillis() - startMills) + " --");
             return;
+        }
 
         LinkedList<GrassCell> sidewayShuffle = new LinkedList<>(Arrays.asList(sidewayCells));
 
@@ -39,15 +45,27 @@ public class TowerCreation {
 
         while (Finance.canCreateBasicTower(defendAccount)) {
             if ((System.currentTimeMillis() - startMills) > 100) {
+                Logger.println("100ms time limit reached");
                 break;
             }
-            Logger.println("calculating grass cells score. time passed: " + (System.currentTimeMillis() - startMills));
-            GrassCell bestCell = sidewayShuffle.stream()
-                    .filter(x -> !Cell.hasTowerBesideOfIt(x, world))
-                    .sorted(client.ahmadalli.comparator.Cell.byDefendScore(
-                            world.getDefenceMap(), world.getDefenceMapPaths()))
-                    .findFirst()
-                    .get();
+            Logger.println("finding best cell. time passed: " + (System.currentTimeMillis() - startMills));
+
+            GrassCell bestCell = null;
+            double bestCellScore = Integer.MIN_VALUE;
+            for (GrassCell grassCell : sidewayShuffle) {
+                double newDefendScore = client.ahmadalli.scoring.Cell.defendScore(
+                        grassCell, world.getDefenceMap(), world.getDefenceMapPaths());
+                if (bestCellScore < newDefendScore) {
+                    bestCell = grassCell;
+                    bestCellScore = newDefendScore;
+                }
+            }
+
+            if (bestCell != null) {
+                Logger.println("best cell found in " + (System.currentTimeMillis() - startMills) + "ms");
+            } else {
+                break;
+            }
 
             GrassCell cellToBuild;
 
