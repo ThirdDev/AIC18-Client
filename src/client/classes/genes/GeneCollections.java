@@ -75,7 +75,18 @@ public class GeneCollections {
         SingleTowerDamage500 = new FullStateGeneCollection("SingleTower-DamagePolicy 500-pathLength 100-2018-21-2--22-03-37.sgdf");
         SingleTowerExplore150 = new FullStateGeneCollection("SingleTower-ExplorePolicy 150-pathLength 100-2018-21-2--19-20-24.sgdf");
 
-        UniformRandomExplore = new CountStateGeneCollection("UniformRandomTowers-ExplorePolicyByTowerCount -1-pathLength 20-2018-23-2--14-53-16.sgdf");
+        UniformRandomExplore = new CountStateGeneCollection(
+                "UniformRandomTowers-ExplorePolicyByTowerCount -1-pathLength 20-2018-23-2--14-53-16.sgdf",
+                "ahmadalli.sgdf",
+                "amirhossein.sgdf",
+                "de1.sgdf",
+                "de2.sgdf",
+                "pc1.sgdf",
+                "pc2.sgdf",
+                "surface1.sgdf",
+                "us1.sgdf",
+                "us2.sgdf"
+                );
         UniformRandomDamage = new CountStateGeneCollection("UniformRandomTowers-DamagePolicyByTowerCount -1-pathLength 20-2018-23-2--14-49-51.sgdf");
 
         long delta = System.currentTimeMillis() - time;

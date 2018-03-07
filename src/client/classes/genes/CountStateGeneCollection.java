@@ -21,39 +21,42 @@ public class CountStateGeneCollection implements GeneCollection {
     int creepLevel = 1;
     int heroLevel = 1;
 
-    public CountStateGeneCollection(String resourceName) {
+    public CountStateGeneCollection(String... resources) {
         try {
-            Logger.println(resourceName);
-            this.resourceName = resourceName;
-
+            this.resourceName = "";
             data = new HashMap<>();
 
-            InputStream inputStream = this.getClass().getResourceAsStream("/datafiles/" + resourceName);
-            InputStreamReader streamReader = new InputStreamReader(inputStream, "UTF-8");
-            String[] lines = new BufferedReader(streamReader).lines().toArray(String[]::new);
+            for (String resourceName : resources) {
+                Logger.println(resourceName);
+                this.resourceName = resourceName + ", ";
 
-            for (int i = 0; i < lines.length; i += 3) {
-                String key = lines[i];
-                String[] creepsString = lines[i + 1].split(",");
-                String[] herosString = lines[i + 2].split(",");
+                InputStream inputStream = this.getClass().getResourceAsStream("/datafiles/" + resourceName);
+                InputStreamReader streamReader = new InputStreamReader(inputStream, "UTF-8");
+                String[] lines = new BufferedReader(streamReader).lines().toArray(String[]::new);
 
-                byte[] creeps = new byte[creepsString.length];
-                byte[] heros = new byte[herosString.length];
+                for (int i = 0; i < lines.length; i += 3) {
+                    String key = lines[i];
+                    String[] creepsString = lines[i + 1].split(",");
+                    String[] herosString = lines[i + 2].split(",");
 
-                if (lines[i + 1].length() > 0)
-                    for (int j = 0; j < creepsString.length; j++)
-                        creeps[j] = Byte.parseByte(creepsString[j]);
-                if (lines[i + 2].length() > 0)
-                    for (int j = 0; j < herosString.length; j++)
-                        heros[j] = Byte.parseByte(herosString[j]);
+                    byte[] creeps = new byte[creepsString.length];
+                    byte[] heros = new byte[herosString.length];
 
-                byte[][] val = new byte[][] { creeps, heros };
+                    if (lines[i + 1].length() > 0)
+                        for (int j = 0; j < creepsString.length; j++)
+                            creeps[j] = Byte.parseByte(creepsString[j]);
+                    if (lines[i + 2].length() > 0)
+                        for (int j = 0; j < herosString.length; j++)
+                            heros[j] = Byte.parseByte(herosString[j]);
 
-                if (!data.containsKey(key))
-                    data.put(key, new ArrayList<>());
+                    byte[][] val = new byte[][]{creeps, heros};
 
-                data.get(key).add(val);
+                    if (!data.containsKey(key))
+                        data.put(key, new ArrayList<>());
 
+                    data.get(key).add(val);
+
+                }
             }
         } catch (UnsupportedEncodingException e) {
             Logger.println("Can't load resource " + resourceName);
