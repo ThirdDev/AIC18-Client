@@ -40,11 +40,9 @@ public class Bank {
         double accountToIncreaseNewPercentage = accountToIncrease.getPercent() + percentage;
         double accountToDecreaseNewPercentage = accountToDecrease.getPercent() - percentage;
 
-        if (percentage < 0 || percentage > 1)
+        if (accountToIncreaseNewPercentage > 1 || accountToIncreaseNewPercentage < 0)
             return false;
-        if (accountToIncreaseNewPercentage > 1)
-            return false;
-        if (accountToDecreaseNewPercentage < 0)
+        if (accountToDecreaseNewPercentage > 1 || accountToDecreaseNewPercentage < 0)
             return false;
 
         accountToIncrease.setPercent(accountToIncreaseNewPercentage);

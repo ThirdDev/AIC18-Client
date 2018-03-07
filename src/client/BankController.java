@@ -38,8 +38,8 @@ public class BankController {
 
     public static void initBank() {
         Logger.println("Initializing bank...");
-        Bank.registerAccount(BANK_ACCOUNT_ATTACK, 0.9);
-        Bank.registerAccount(BANK_ACCOUNT_DEFENCE, 0.1);
+        Bank.registerAccount(BANK_ACCOUNT_ATTACK, 1.0);
+        Bank.registerAccount(BANK_ACCOUNT_DEFENCE, 0.0);
     }
 
     @SuppressWarnings("Duplicates")
@@ -65,7 +65,7 @@ public class BankController {
             Logger.error("Lanati poola ro dorost taghsim kon!!");
         }
         setAttackPercentage(attackAccountPercentage);
-        setDefendPercentage(defendAccountPercentage);
+        //setDefendPercentage(defendAccountPercentage);
     }
 
     private static int budgetChangePhase = -1;
@@ -84,7 +84,7 @@ public class BankController {
             budgetChangePhase = 2;
         }
         if (game.getCurrentTurn() > 600 && budgetChangePhase == 2) {
-            setAccountsPercentage(0.2, 0.8);
+            setAccountsPercentage(0.7, 0.3);
             budgetChangePhase = 3;
         }
     }
