@@ -105,27 +105,13 @@ public class Attack {
 
         Logger.println("++++2 " + towerLevelAverage + ", " + LightUnit.getCurrentLevel() + ", " + HeavyUnit.getCurrentLevel());
 
-        Recipe recipe1 = GeneCollections.getCollections().getRecipe(enemyTowers,
+        Recipe recipe = GeneCollections.getCollections().getRecipe(enemyTowers,
                 bestPath,
                 GeneCollections.Strategy.Explore,
                 LightUnit.getCurrentLevel(),
                 HeavyUnit.getCurrentLevel(),
                 towerLevelAverage,
                 game.getCurrentTurn() < 300 ? 3.0 : 3.0);
-        Recipe recipe2 = GeneCollections.getCollections().getRecipe(enemyTowers,
-                bestPath,
-                GeneCollections.Strategy.DamageFullForce,
-                LightUnit.getCurrentLevel(),
-                HeavyUnit.getCurrentLevel(),
-                towerLevelAverage,
-                game.getCurrentTurn() < 200 ? 2.0 : 1.0);
-
-        Recipe recipe;
-
-        if (recipe1.getTotalCost() < recipe2.getTotalCost())
-            recipe = recipe1;
-        else
-            recipe = recipe2;
 
         int totalCost = recipe.getTotalCost();
 
