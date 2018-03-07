@@ -19,23 +19,24 @@ public class TowerCreation {
         Logger.println("-- starting to defend simply --");
 
         BankAccount defendAccount = Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE);
-        if (defendAccount == null)
+        if (defendAccount == null || !Finance.canCreateBasicTower(defendAccount))
             return;
 
+        GrassCell[] sidewayCells = world.getDefenceMapPaths().stream()
+                .flatMap(x -> x.getRoad().stream())
+                .flatMap(x -> Util.radialCells(x, 2, world.getDefenceMap()).stream())
+                .distinct()
+                .filter(x -> x instanceof GrassCell)
+                .toArray(GrassCell[]::new);
+
+        if (sidewayCells.length == 0)
+            return;
+
+        LinkedList<GrassCell> sidewayShuffle = new LinkedList<>(Arrays.asList(sidewayCells));
+
+        Collections.shuffle(sidewayShuffle);
+
         while (Finance.canCreateBasicTower(defendAccount)) {
-            GrassCell[] sidewayCells = world.getDefenceMapPaths().stream()
-                    .flatMap(x -> x.getRoad().stream())
-                    .flatMap(x -> Util.radialCells(x, 2, world.getDefenceMap()).stream())
-                    .distinct()
-                    .filter(x -> x instanceof GrassCell)
-                    .toArray(GrassCell[]::new);
-
-            if (sidewayCells.length == 0)
-                return;
-
-            LinkedList<GrassCell> sidewayShuffle = new LinkedList<>(Arrays.asList(sidewayCells));
-
-            Collections.shuffle(sidewayShuffle);
             GrassCell bestCell = sidewayShuffle.stream()
                     .filter(x -> !Cell.hasTowerBesideOfIt(x, world))
                     .sorted(client.ahmadalli.comparator.Cell.byDefendScore(
