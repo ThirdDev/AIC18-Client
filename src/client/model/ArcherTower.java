@@ -12,9 +12,10 @@ public class ArcherTower extends Tower {
     public static double DAMAGE_COEFF;
     public static int ATTACK_SPEED;
     public static int ATTACK_RANGE;
+    public static int INITIAL_PRICE_INCREASE;
 
-    public ArcherTower(int x, int y, Owner owner, int level, int id) {
-        super(x, y, owner, level, id);
+    public ArcherTower(int x, int y, Owner owner, int level, int id,int price) {
+        super(x, y, owner, level, id,price);
     }
 
     public int getDamage(int level) {
