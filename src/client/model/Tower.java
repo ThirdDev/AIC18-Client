@@ -9,10 +9,12 @@ import java.util.List;
 public class Tower extends Entity {
 
     private int level;
+    private int price;
 
-    public Tower(int x, int y, Owner owner, int level, int id) {
-        super(x, y, owner, id);
-        this.level = level;
+    public Tower(int x, int y, Owner owner,int level,int id,int price) {
+        super(x, y, owner,id);
+        this.level=level;
+        this.price=price;
 
     }
 
@@ -28,17 +30,9 @@ public class Tower extends Entity {
         return 0;
     }
 
-    public static int getPrice(int level) {
-        return 0;
-    }
+    public int getPrice(){return price;}
 
-    public int getPrice() {
-        return 0;
-    }
-
-    public int getAttackRange() {
-        return 0;
-    }
+    public int getAttackRange(){return 0;}
 
     public int getAttackSpeed() {
         return 0;

@@ -205,6 +205,11 @@ public class Game implements World {
         ArcherTower.DAMAGE_COEFF = archerDetails.get(4).getAsDouble();
         ArcherTower.ATTACK_SPEED = archerDetails.get(5).getAsInt();
         ArcherTower.ATTACK_RANGE = archerDetails.get(6).getAsInt();
+        try {
+            ArcherTower.INITIAL_PRICE_INCREASE=archerDetails.get(8).getAsInt();
+        }catch (Exception e){
+            ArcherTower.INITIAL_PRICE_INCREASE=5;
+        }
 
         CannonTower.INITIAL_PRICE = canonDetails.get(0).getAsInt();
         CannonTower.INITIAL_LEVEL_UP_PRICE = canonDetails.get(1).getAsInt();
@@ -213,6 +218,11 @@ public class Game implements World {
         CannonTower.DAMAGE_COEFF = canonDetails.get(4).getAsDouble();
         CannonTower.ATTACK_SPEED = canonDetails.get(5).getAsInt();
         CannonTower.ATTACK_RANGE = canonDetails.get(6).getAsInt();
+        try {
+            CannonTower.INITIAL_PRICE_INCREASE=canonDetails.get(8).getAsInt();
+        }catch (Exception e){
+            CannonTower.INITIAL_PRICE_INCREASE=5;
+        }
 
     }
 
@@ -313,9 +323,11 @@ public class Game implements World {
             int x = tmpMyTower.get(3).getAsJsonObject().get("x").getAsInt();
             int y = tmpMyTower.get(3).getAsJsonObject().get("y").getAsInt();
 
+            int initCost=tmpMyTower.get(4).getAsInt();
+
             if (tmpMyTower.get(1).getAsString().equals("a")) {
 
-                ArcherTower archerTower = new ArcherTower(x, y, Owner.ME, lvl, tid);
+                ArcherTower archerTower = new ArcherTower(x, y, Owner.ME, lvl, tid,initCost);
                 Cell tmpCell = myDefenceMap.getCellsGrid()[y][x];
 
                 if (tmpCell instanceof GrassCell) {
@@ -325,7 +337,7 @@ public class Game implements World {
 
             } else if (tmpMyTower.get(1).getAsString().equals("c")) {
 
-                CannonTower canonTower = new CannonTower(x, y, Owner.ME, lvl, tid);
+                CannonTower canonTower = new CannonTower(x, y, Owner.ME, lvl, tid,initCost);
                 Cell tmpCell = myDefenceMap.getCellsGrid()[y][x];
 
                 if (tmpCell instanceof GrassCell) {
@@ -349,7 +361,7 @@ public class Game implements World {
 
             if (tmpEnemyTower.get(1).getAsString().equals("a")) {
 
-                ArcherTower archerTower = new ArcherTower(x, y, Owner.ENEMY, lvl, tid);
+                ArcherTower archerTower = new ArcherTower(x, y, Owner.ENEMY, lvl, tid,0);
                 Cell tmpCell = myAttackMap.getCellsGrid()[y][x];
 
                 if (tmpCell instanceof GrassCell) {
@@ -359,7 +371,7 @@ public class Game implements World {
 
             } else if (tmpEnemyTower.get(1).getAsString().equals("c")) {
 
-                CannonTower canonTower = new CannonTower(x, y, Owner.ENEMY, lvl, tid);
+                CannonTower canonTower = new CannonTower(x, y, Owner.ENEMY, lvl, tid,0);
                 Cell tmpCell = myAttackMap.getCellsGrid()[y][x];
 
                 if (tmpCell instanceof GrassCell) {
@@ -379,12 +391,16 @@ public class Game implements World {
         int myIncome = myDetails.get(2).getAsInt();
         int myRemBeans = myDetails.get(3).getAsInt();
         int myRemStorms = myDetails.get(4).getAsInt();
+        int currentPriceForArcher=myDetails.get(5).getAsInt();
+        int currentPriceForCannon=myDetails.get(6).getAsInt();
 
         players[0] = new Player(myMoney, myIncome, myHealth, myRemBeans, myRemStorms);
         Log.d(TAG, "Me" + players[0]);
         int enemyHealth = enemyDetails.get(0).getAsInt();
         int enemyRemBeans = enemyDetails.get(1).getAsInt();
         int enemyRemStorms = enemyDetails.get(2).getAsInt();
+
+
 
         players[1] = new Player(0, 0, enemyHealth, enemyRemBeans, enemyRemStorms);
         Log.d(TAG, "Enemy" + players[1]);
@@ -446,7 +462,7 @@ public class Game implements World {
             boolean isMymap = tmpBean.get(0).getAsInt() == 1;
 
             Log.d(TAG, "Bean planted At x:" + x + ",y:" + y + " -> " + "isMyMap:" + isMymap);
-            if (!isMymap) {
+            if (isMymap) {
                 beansInThisCycle.add(new BeanEvent(Owner.ME, new Point(x, y)));
                 getAttackMap().getCellsGrid()[y][x] = new BlockCell(x, y);
             } else {
@@ -478,7 +494,8 @@ public class Game implements World {
         sender.accept(new Message(Event.EVENT, event));
         Cell cell = getDefenceMap().getCell(x, y);
         if (cell instanceof GrassCell) {
-            ((GrassCell) cell).setTower(new ArcherTower(x, y, Owner.ME, lvl, -1));
+            ((GrassCell) cell).setTower(new ArcherTower(x, y, Owner.ME, lvl, -1, Integer.MIN_VALUE));
+            ArcherTower.addTower();
         }
         Log.d(TAG, "Request: create ArcherTower @ x:" + x + " y:" + y + " Level:" + lvl);
     }
@@ -489,7 +506,8 @@ public class Game implements World {
         sender.accept(new Message(Event.EVENT, event));
         Cell cell = getDefenceMap().getCell(x, y);
         if (cell instanceof GrassCell) {
-            ((GrassCell) cell).setTower(new CannonTower(x, y, Owner.ME, lvl, -1));
+            ((GrassCell) cell).setTower(new CannonTower(x, y, Owner.ME, lvl, -1, Integer.MIN_VALUE));
+            CannonTower.addTower();
         }
         Log.d(TAG, "Request: create CannonTower @ x:" + x + " y:" + y + " Level:" + lvl);
 
