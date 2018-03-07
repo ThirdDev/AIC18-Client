@@ -16,6 +16,7 @@ public class TowerCreation {
     private static Random rnd = new Random();
 
     public static void simpleTowerCreation(World world) {
+        long startMills = System.currentTimeMillis();
         Logger.println("-- starting to defend simply --");
 
         BankAccount defendAccount = Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE);
@@ -37,6 +38,10 @@ public class TowerCreation {
         Collections.shuffle(sidewayShuffle);
 
         while (Finance.canCreateBasicTower(defendAccount)) {
+            if ((System.currentTimeMillis() - startMills) > 100) {
+                break;
+            }
+            Logger.println("calculating grass cells score. time passed: " + (System.currentTimeMillis() - startMills));
             GrassCell bestCell = sidewayShuffle.stream()
                     .filter(x -> !Cell.hasTowerBesideOfIt(x, world))
                     .sorted(client.ahmadalli.comparator.Cell.byDefendScore(
@@ -52,6 +57,8 @@ public class TowerCreation {
             cellToBuild = bestCell;
 
             Tower tower = cellToBuild.getTower();
+
+            Logger.println("deciding on build or upgrade on the best grass cell. time passed: " + (System.currentTimeMillis() - startMills));
 
             if (tower != null) {
                 int towerLevel = tower.getLevel();
@@ -71,6 +78,9 @@ public class TowerCreation {
                     Logger.println("upgrading a level " + towerLevel + " " + towerType + " tower @(" + x + ", " + y + ")");
                     world.upgradeTower(tower);
                 } else {
+                    int x = tower.getLocation().getX();
+                    int y = tower.getLocation().getY();
+                    Logger.println("not enough money fo upgrading a level " + towerLevel + " " + towerType + " tower @(" + x + ", " + y + ")");
                     break;
                 }
             } else {
@@ -102,6 +112,9 @@ public class TowerCreation {
                         Logger.println("creating a level " + level + " archer tower @(" + x + ", " + y + ")");
                         world.createArcherTower(level, x, y);
                     } else {
+                        int x = cellToBuild.getLocation().getX();
+                        int y = cellToBuild.getLocation().getY();
+                        Logger.println("not enough money for creating a level " + level + " archer tower @(" + x + ", " + y + ")");
                         break;
                     }
                 }
@@ -112,12 +125,15 @@ public class TowerCreation {
                         Logger.println("creating a level " + level + " cannon tower @(" + x + ", " + y + ")");
                         world.createCannonTower(level, x, y);
                     } else {
+                        int x = cellToBuild.getLocation().getX();
+                        int y = cellToBuild.getLocation().getY();
+                        Logger.println("not enough money for creating a level " + level + " cannon tower @(" + x + ", " + y + ")");
                         break;
                     }
                 }
             }
         }
 
-        Logger.println("-- simple defend ended --");
+        Logger.println("-- simple defend ended, time passed: " + (System.currentTimeMillis() - startMills) + " --");
     }
 }
