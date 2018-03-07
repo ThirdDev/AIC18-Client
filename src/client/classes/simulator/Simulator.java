@@ -28,7 +28,7 @@ public class Simulator {
         int pathLength = simulator.pathLength;
 
         byte[][] bestGene = null;
-        double score = Double.MIN_VALUE;
+        double score = -9999999.0;
 
         int counter = 0;
         for (byte[][] gene : genes) {

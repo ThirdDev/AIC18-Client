@@ -73,7 +73,13 @@ public class Attack {
         for (Path path : game.getAttackMapPaths()) {
             Set<TowerDetails> enemyTowers = AttackMapAnalyser.getVisibleTowerDetailsForPath(game, path);
 
-            double score = calculatePathAttackScore(path, enemyTowers);
+            double score;
+            if (isKhashmeEzhdehaStarted(game)) {
+                score = calculatePathAttackScore2(path);
+            }
+            else {
+                score = calculatePathAttackScore(path, enemyTowers);
+            }
 
             if (score > bestPathScore) {
                 bestPath = path;
@@ -81,7 +87,20 @@ public class Attack {
             }
         }
 
-        Set<TowerDetails> enemyTowers = AttackMapAnalyser.getVisibleTowerDetailsForPath(game, bestPath);
+        Set<TowerDetails> enemyTowers = null;
+        if (isKhashmeEzhdehaStarted(game)) {
+            Logger.println("--- Attacker is in KhashmeEzhdeha mode.");
+            for (Path p : game.getAttackMapPaths()) {
+                Set<TowerDetails> et = AttackMapAnalyser.getVisibleTowerDetailsForPath(game, p);
+
+                if (enemyTowers == null || et.size() > enemyTowers.size()) {
+                    enemyTowers = et;
+                }
+            }
+
+        } else {
+            enemyTowers = AttackMapAnalyser.getVisibleTowerDetailsForPath(game, bestPath);
+        }
         double towerLevelAverage = calculateTowerLevelAverage(enemyTowers, game.getVisibleEnemyTowers());
 
         Logger.println("++++2 " + towerLevelAverage + ", " + LightUnit.getCurrentLevel() + ", " + HeavyUnit.getCurrentLevel());
@@ -136,6 +155,14 @@ public class Attack {
         allowedToInitiateExplore = false;
         allowedToInitiateDamage = false;
         damageInProgress = true;
+    }
+
+    private static boolean isKhashmeEzhdehaStarted(World game) {
+        return ((double)game.getCurrentTurn()) > Math.min(Game.MAX_TURNS_IN_GAME / 2.0, 600.0);
+    }
+
+    private static double calculatePathAttackScore2(Path path) {
+        return (double)path.getRoad().size();
     }
 
     private static double calculateTowerLevelAverage(Set<TowerDetails> enemyTowers, ArrayList<Tower> visibleEnemyTowers) {
