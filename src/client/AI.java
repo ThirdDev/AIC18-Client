@@ -21,7 +21,6 @@ import java.util.*;
  */
 public class AI {
 
-    Random rnd = new Random();
     Defence defence;
 
     public AI() {
