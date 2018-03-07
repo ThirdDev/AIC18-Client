@@ -162,7 +162,7 @@ public class Defence {
                     }
                     if (order.getTowerType().equals(
                             TowerBuildOrder.TowerType.Archer)) {
-                        game.createCannonTower(order.getLevel(),
+                        game.createArcherTower(order.getLevel(),
                                 order.getPoint().getX(),
                                 order.getPoint().getY());
                         Logger.println("Archer at " + order.getPoint());
@@ -210,7 +210,7 @@ public class Defence {
                     mvpReport.getIndexOfFirstPassingHero() : mvpReport.getIndexOfFirstPassingCreep();
             if (startIndex == -1) break;
             ArrayList<RoadCell> roadCells = mvp.getRoad();
-            for (int i = startIndex + 1; i < mvp.getRoad().size(); i++) {
+            for (int i = startIndex + 1; i < Math.min(mvp.getRoad().size() , startIndex + 7); i++) {
                 RoadCell roadCell = roadCells.get(i);
                 ArrayList<Cell> cells = Util.radialCells(roadCell, 2, map);
                 for (Cell cell : cells) {
@@ -302,6 +302,7 @@ public class Defence {
                         me.setTower(tower1);
                         GrassCell grassCell = (GrassCell) map.getCell(me.getLocation().getX(), me.getLocation().getY());
                         grassCell.setTower(tower1);
+                        break;
                     }
                 }
             } else {
@@ -380,10 +381,10 @@ public class Defence {
                         me.setTower(tower1);
                         GrassCell grassCell = (GrassCell) map.getCell(me.getLocation().getX(), me.getLocation().getY());
                         grassCell.setTower(tower1);
+                        break;
                     }
                 }
             }
-
         }
         while (orders.keySet().size() > 0);
 
