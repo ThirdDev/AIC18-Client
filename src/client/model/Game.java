@@ -494,7 +494,7 @@ public class Game implements World {
         sender.accept(new Message(Event.EVENT, event));
         Cell cell = getDefenceMap().getCell(x, y);
         if (cell instanceof GrassCell) {
-            ((GrassCell) cell).setTower(new ArcherTower(x, y, Owner.ME, lvl, -1));
+            ((GrassCell) cell).setTower(new ArcherTower(x, y, Owner.ME, lvl, -1,Integer.MIN_VALUE));
         }
         Log.d(TAG, "Request: create ArcherTower @ x:" + x + " y:" + y + " Level:" + lvl);
     }
@@ -505,7 +505,7 @@ public class Game implements World {
         sender.accept(new Message(Event.EVENT, event));
         Cell cell = getDefenceMap().getCell(x, y);
         if (cell instanceof GrassCell) {
-            ((GrassCell) cell).setTower(new CannonTower(x, y, Owner.ME, lvl, -1));
+            ((GrassCell) cell).setTower(new CannonTower(x, y, Owner.ME, lvl, -1,Integer.MIN_VALUE));
         }
         Log.d(TAG, "Request: create CannonTower @ x:" + x + " y:" + y + " Level:" + lvl);
 
