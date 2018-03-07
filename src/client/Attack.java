@@ -216,9 +216,12 @@ public class Attack {
                 attackTurns.put(path, 0);
 
             if (attackTurns.get(path) == 0 && allowInitiate) {
-                InitiateDamage(game);
-                if (game.getCurrentTurn() < (Game.MAX_TURNS_IN_GAME * 0.2))
+                if (game.getCurrentTurn() < 150) // بهتره ضریب نباشه و عدد ثابت باشه، بعد از ۲۰۰ سیکل دیگه سخت شده کار بریم سراغ همون دمیج زدن
                     InitiateExplore(game, path);
+                else
+                    InitiateDamage(game);
+
+
             } else if (attackTurns.get(path) > 0) {
                 ProceedAttack(game, path);
             } else if (attackTurns.get(path) < 0) {
