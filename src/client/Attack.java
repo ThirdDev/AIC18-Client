@@ -81,12 +81,7 @@ public class Attack {
             Set<TowerDetails> enemyTowers = AttackMapAnalyser.getVisibleTowerDetailsForPath(game, path);
 
             double score;
-            if (isKhashmeEzhdehaStarted(game)) {
-                score = calculatePathAttackScore2(path);
-            }
-            else {
-                score = calculatePathAttackScore(path, enemyTowers);
-            }
+            score = calculatePathAttackScore(path, enemyTowers);
 
             if (score > bestPathScore) {
                 bestPath = path;
@@ -97,7 +92,8 @@ public class Attack {
         //Logger.println("xxx(4) -> " + (System.currentTimeMillis() - beginTime));
 
         Set<TowerDetails> enemyTowers = null;
-        if (isKhashmeEzhdehaStarted(game)) {
+        enemyTowers = AttackMapAnalyser.getVisibleTowerDetailsForPath(game, bestPath);
+       /* if (isKhashmeEzhdehaStarted(game)) {
             Logger.println("--- Attacker is in KhashmeEzhdeha mode.");
             for (Path p : game.getAttackMapPaths()) {
                 Set<TowerDetails> et = AttackMapAnalyser.getVisibleTowerDetailsForPath(game, p);
@@ -106,9 +102,7 @@ public class Attack {
                     enemyTowers = et;
                 }
             }
-        } else {
-            enemyTowers = AttackMapAnalyser.getVisibleTowerDetailsForPath(game, bestPath);
-        }
+        }*/
 
         //Logger.println("xxx(5) -> " + (System.currentTimeMillis() - beginTime));
         double towerLevelAverage = calculateTowerLevelAverage(enemyTowers, game.getVisibleEnemyTowers());
@@ -121,7 +115,11 @@ public class Attack {
                 LightUnit.getCurrentLevel(),
                 HeavyUnit.getCurrentLevel(),
                 towerLevelAverage,
-                isKhashmeEzhdehaStarted(game) ? 3.0 : 3.0);
+                isKhashmeEzhdehaStarted(game) ? 2.5 : 3.0);
+
+        if (isKhashmeEzhdehaStarted(game))
+            recipe.repeat(2);
+
         //Logger.println("xxx(7) -> " + (System.currentTimeMillis() - beginTime));
         int totalCost = recipe.getTotalCost();
         //Logger.println("xxx(8) -> " + (System.currentTimeMillis() - beginTime));
@@ -219,7 +217,7 @@ public class Attack {
 
             if (attackTurns.get(path) == 0 && allowInitiate) {
                 InitiateDamage(game);
-                if (game.getCurrentTurn() < 100)
+                if (game.getCurrentTurn() < (Game.MAX_TURNS_IN_GAME * 0.2))
                     InitiateExplore(game, path);
             } else if (attackTurns.get(path) > 0) {
                 ProceedAttack(game, path);
@@ -238,7 +236,7 @@ public class Attack {
             double towerLevelAverage = calculateTowerLevelAverage(enemyTowers, game.getVisibleEnemyTowers());
             Logger.println("++++1 " + towerLevelAverage + ", " + LightUnit.getCurrentLevel() + ", " + HeavyUnit.getCurrentLevel());
 
-            double multiplier = 2;
+            double multiplier = 3;
 
             Recipe recipe = GeneCollections.getCollections().getRecipe(enemyTowers,
                     path,
@@ -247,6 +245,7 @@ public class Attack {
                     HeavyUnit.getCurrentLevel(),
                     towerLevelAverage,
                     multiplier);
+            recipe.repeat(5);
 
             int totalCost = recipe.getTotalCost();
             if (!Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).canSpend(totalCost)) {

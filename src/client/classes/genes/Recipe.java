@@ -29,4 +29,20 @@ public class Recipe {
 
         return totalPrice;
     }
+
+    public void repeat(int times) {
+        byte[] newCreeps = new byte[creeps.length * times];
+        byte[] newHeros = new byte[heros.length * times];
+
+        for (int i = 0; i < creeps.length; i++)
+            for (int j = 0; j < times; j++)
+                newCreeps[i + j * creeps.length] = creeps[i];
+
+        for (int i = 0; i < heros.length; i++)
+            for (int j = 0; j < times; j++)
+                newHeros[i + j * heros.length] = heros[i];
+
+        creeps = newCreeps;
+        heros = newHeros;
+    }
 }
