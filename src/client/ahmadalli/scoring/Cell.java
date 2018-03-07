@@ -23,7 +23,7 @@ public class Cell {
 
         /**/
         pathScore = client.ahmadalli.utils.Cell.getNearbyPaths(cell, 2, paths, map)
-                .mapToDouble(path -> client.ahmadalli.scoring.Path.towerCoverageScore(path, map))
+                .mapToDouble(path -> client.ahmadalli.scoring.Path.towerCoverageScoreCached(path))
                 .sum();
         /**/
 

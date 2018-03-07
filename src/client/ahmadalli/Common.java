@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 public class Common {
     public static void initialize(World world) {
+        client.ahmadalli.scoring.Path.cacheTowerCoverageScore(world.getDefenceMapPaths(), world.getDefenceMap());
     }
 
     public static void beanCheck(World world) {

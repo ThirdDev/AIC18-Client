@@ -1,5 +1,6 @@
 package client;
 
+import client.ahmadalli.Common;
 import client.ahmadalli.defend.StormCreation;
 import client.ahmadalli.defend.TowerCreation;
 import client.classes.Bank;
@@ -44,6 +45,7 @@ public class AI {
         );
         Logger.println("Turn " + game.getCurrentTurn());
         BankController.handleMoney(game.getMyInformation());
+        Common.initialize(game);
 
         Logger.print("Attack budget: " + Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).getBalance());
         Logger.print(", Defence budget: " + Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE).getBalance());
