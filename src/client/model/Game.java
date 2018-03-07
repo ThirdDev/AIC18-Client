@@ -674,8 +674,45 @@ public class Game implements World {
             if (((GrassCell) cell).getTower() != null)
                 return false;
 
-            else
+            else {
+
+                int x = cell.getLocation().getX();
+                int y = cell.getLocation().getY();
+
+                ArrayList<Cell> adjnct = new ArrayList<>();
+
+                try {
+                    adjnct.add(myDefenceMap.getCellsGrid()[y - 1][x]);
+                } catch (Exception e) {
+                }
+
+                try {
+                    adjnct.add(myDefenceMap.getCellsGrid()[y + 1][x]);
+                } catch (Exception e) {
+                }
+
+                try {
+                    adjnct.add(myDefenceMap.getCellsGrid()[y][x + 1]);
+                } catch (Exception e) {
+                }
+
+                try {
+                    adjnct.add(myDefenceMap.getCellsGrid()[y][x - 1]);
+                } catch (Exception e) {
+                }
+
+
+                for (int i = 0; i < adjnct.size(); i++) {
+                    if (adjnct.get(i) instanceof GrassCell) {
+                        if (((GrassCell) adjnct.get(i)).getTower() != null)
+                            return false;
+                    }
+                }
+
                 return true;
+
+            }
+
         }
         return false;
     }
