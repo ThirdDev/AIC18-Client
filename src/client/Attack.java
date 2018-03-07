@@ -23,12 +23,17 @@ public class Attack {
     static long totalMoneySpentOnExplore = 0;
     static long totalExploreTimes = 0;
 
-    public static void Attack(World game) {
+    static long beginTime;
+
+    public static void Attack(World game, boolean isHeavyTurn) {
+        beginTime = System.currentTimeMillis();
+
         if (game.getCurrentTurn() < 8 ) {
             DawnAttack(game);
+            return;
         }
         Prepare(game);
-        ScheduledOperations(game);
+        ScheduledOperations(game, isHeavyTurn);
     }
 
     private static void DawnAttack(World game) {
@@ -66,6 +71,8 @@ public class Attack {
         if (!allowedToInitiateDamage)
             return;
 
+        //Logger.println("xxx(3) -> " + (System.currentTimeMillis() - beginTime));
+
         BankAccount attackerAccount = Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK);
         Path bestPath = null;
         double bestPathScore = -100000.0;
@@ -87,6 +94,8 @@ public class Attack {
             }
         }
 
+        //Logger.println("xxx(4) -> " + (System.currentTimeMillis() - beginTime));
+
         Set<TowerDetails> enemyTowers = null;
         if (isKhashmeEzhdehaStarted(game)) {
             Logger.println("--- Attacker is in KhashmeEzhdeha mode.");
@@ -97,12 +106,13 @@ public class Attack {
                     enemyTowers = et;
                 }
             }
-
         } else {
             enemyTowers = AttackMapAnalyser.getVisibleTowerDetailsForPath(game, bestPath);
         }
-        double towerLevelAverage = calculateTowerLevelAverage(enemyTowers, game.getVisibleEnemyTowers());
 
+        //Logger.println("xxx(5) -> " + (System.currentTimeMillis() - beginTime));
+        double towerLevelAverage = calculateTowerLevelAverage(enemyTowers, game.getVisibleEnemyTowers());
+        //Logger.println("xxx(6) -> " + (System.currentTimeMillis() - beginTime));
         Logger.println("++++2 " + towerLevelAverage + ", " + LightUnit.getCurrentLevel() + ", " + HeavyUnit.getCurrentLevel());
 
         Recipe recipe = GeneCollections.getCollections().getRecipe(enemyTowers,
@@ -111,10 +121,10 @@ public class Attack {
                 LightUnit.getCurrentLevel(),
                 HeavyUnit.getCurrentLevel(),
                 towerLevelAverage,
-                game.getCurrentTurn() < 300 ? 3.0 : 3.0);
-
+                isKhashmeEzhdehaStarted(game) ? 3.0 : 3.0);
+        //Logger.println("xxx(7) -> " + (System.currentTimeMillis() - beginTime));
         int totalCost = recipe.getTotalCost();
-
+        //Logger.println("xxx(8) -> " + (System.currentTimeMillis() - beginTime));
         if (!attackerAccount.canSpend(totalCost)) {
             attackerAccount.setGoal(totalCost - attackerAccount.getBalance());
             attackerAccount.setIsGoalExact(true);
@@ -128,7 +138,7 @@ public class Attack {
                 return;
             }
         }
-
+        //Logger.println("xxx(9) -> " + (System.currentTimeMillis() - beginTime));
         Logger.println("Damage initiated to " + bestPath.toString());
 
         currentAttackRecipe.put(bestPath, recipe);
@@ -141,6 +151,8 @@ public class Attack {
         allowedToInitiateExplore = false;
         allowedToInitiateDamage = false;
         damageInProgress = true;
+
+        //Logger.println("xxx(10) -> " + (System.currentTimeMillis() - beginTime));
     }
 
     private static boolean isKhashmeEzhdehaStarted(World game) {
@@ -189,7 +201,9 @@ public class Attack {
         return score;
     }
 
-    public static void ScheduledOperations(World game) {
+    public static void ScheduledOperations(World game, boolean allowInitiate) {
+        //Logger.println("xxx(1) -> " + (System.currentTimeMillis() - beginTime));
+
         List<Path> paths = new ArrayList<>();
 
         for (Path path : game.getAttackMapPaths())
@@ -199,10 +213,11 @@ public class Attack {
         //TODO: Sort?
 
         for (Path path : paths) {
+            //Logger.println("xxx(2+) -> " + (System.currentTimeMillis() - beginTime));
             if (!attackTurns.containsKey(path))
                 attackTurns.put(path, 0);
 
-            if (attackTurns.get(path) == 0) {
+            if (attackTurns.get(path) == 0 && allowInitiate) {
                 InitiateDamage(game);
                 if (game.getCurrentTurn() < 100)
                     InitiateExplore(game, path);
