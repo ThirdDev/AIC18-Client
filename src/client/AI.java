@@ -52,8 +52,8 @@ public class AI {
         Logger.println(", Total: " + game.getMyInformation().getMoney());
         Logger.println(Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).getPercent() + ", " + Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE).getPercent());
 
-        //defence.run(game);
-        TowerCreation.simpleTowerCreation(game);
+        defence.run(game);
+        //TowerCreation.simpleTowerCreation(game);
         StormCreation.stormIfNecessary(game);
 
         Attack.Attack(game);
