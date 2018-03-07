@@ -198,7 +198,7 @@ public class Attack {
 
     private static double calculatePathAttackScore(Path path, Set<TowerDetails> enemyTowers) {
         int pathLength = path.getRoad().size();
-        double score = 1.0 * pathLength - 2.0 * enemyTowers.size();
+        double score = 2.0 * pathLength - 1.0 * enemyTowers.size();
 
         return score;
     }
