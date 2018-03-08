@@ -85,7 +85,7 @@ public class BankController {
             setAccountsPercentage(0.5, 0.5);
             budgetChangePhase = 1;
         }
-        /**/
+        /**
         if (game.getCurrentTurn() > 400 && budgetChangePhase == 1) {
             setAccountsPercentage(0.35, 0.65);
             budgetChangePhase = 2;
@@ -95,12 +95,11 @@ public class BankController {
             budgetChangePhase = 3;
         }
         /**/
-        /**
-         if (game.getCurrentTurn() > 500 && budgetChangePhase == 1) {
-         setAccountsPercentage(0.7, 0.3);
-         budgetChangePhase = 2;
-         }
-         /**/
+        if (game.getCurrentTurn() > 500 && budgetChangePhase == 1) {
+            setAccountsPercentage(0.65, 0.35);
+            budgetChangePhase = 2;
+        }
+        /**/
     }
 
 }
