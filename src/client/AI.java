@@ -41,6 +41,7 @@ public class AI {
     //This function will be called on both simple and complex turns
     private void commonTurnFunctions(World game, boolean isHeavyTurn) {
         Logger.println("Turn " + game.getCurrentTurn());
+        Logger.println("My strength: " + game.getMyInformation().getStrength());
 
         long turnInitMilliseconds = System.currentTimeMillis();
         long taskInitMilliseconds = System.currentTimeMillis();
