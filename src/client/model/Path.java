@@ -1,6 +1,7 @@
 package client.model;
 
 import client.Util;
+import client.classes.Logger;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,6 +12,7 @@ import java.util.Collections;
  */
 public class Path {
 
+    private static final double trustFactor = 0.9d;
     private static final double sucsesiveCoff = 0.4d;
     private ArrayList<RoadCell> road;
     private ArrayList<SideWayCell> sideWayCells;
@@ -53,9 +55,11 @@ public class Path {
                     Tower tower = ((GrassCell) tempCell).getTower();
                     if (tower != null) {
                         if (tower instanceof ArcherTower) {
-                            archer += (double) tower.getDamage();
+                            //Logger.println("Archer damage " + tower.getDamage() + " at " + tempCell.getLocation());
+                            archer += (double) tower.getDamage() * trustFactor;
                         } else {
-                            cannon += tower.getDamage() / (double) tower.getAttackSpeed();
+                            //Logger.println("Cannon damage " + tower.getDamage() + " at " + tempCell.getLocation());
+                            cannon += tower.getDamage() * trustFactor / (double) tower.getAttackSpeed();
                         }
                     }
                 }
@@ -100,7 +104,9 @@ public class Path {
                     if (i != road.size() - 1 &&
                             road.get(i + 1).getUnits().size() > 0 &&
                             sumHealth > damageToHero * sucsesiveCoff) {
-                        heroDamageToBase += ((int) (sumHealth - (damageToHero * sucsesiveCoff) + maxHeroHealth - 1) / maxHeroHealth) * HeavyUnit.DAMAGE;
+                        heroDamageToBase +=
+                                ((int) (sumHealth - (damageToHero * sucsesiveCoff) + maxHeroHealth - 1)
+                                        / maxHeroHealth) * HeavyUnit.DAMAGE;
                         firstPassingHero = Math.max(firstPassingHero, i);
                     }
                 }
