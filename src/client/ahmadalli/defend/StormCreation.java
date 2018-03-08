@@ -25,7 +25,7 @@ public class StormCreation {
         int mostDangerousScore = client.ahmadalli.scoring.RoadCell.damageToBaseScore(mostDangerous);
         Logger.println("bestShotScore: " + bestShotScore + ", mostDangerousScore: " + mostDangerousScore +
                 ", current strength: " + world.getMyInformation().getStrength());
-        if ((bestShotScore >= 10) || (mostDangerousScore >= world.getMyInformation().getStrength())) {
+        if ((bestShotScore >= 5) || (mostDangerousScore >= world.getMyInformation().getStrength())) {
             Logger.println("storm is necessary. storming @(" + bestShot.getLocation().getX() + ", " + bestShot.getLocation().getY());
             world.createStorm(bestShot.getLocation().getX(), bestShot.getLocation().getY());
         }
