@@ -198,6 +198,7 @@ public class Defence {
                         }
                     }
                 }
+                path.updateDefendability(buildable,game.getAttackMap());
             }
             if (mvpReport.getCreepDamageToBase() == 0 &&
                     mvpReport.getHeroDamageToBase() == 0) {
