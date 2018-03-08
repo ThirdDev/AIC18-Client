@@ -60,18 +60,13 @@ public class AI {
         logTaskTime("handling money", taskInitMilliseconds, turnInitMilliseconds);
 
         taskInitMilliseconds = System.currentTimeMillis();
-        Common.initialize(game);
-        logTaskTime("ahmadalli's initialize", taskInitMilliseconds, turnInitMilliseconds);
-
-        Logger.print("Attack budget: " + Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).getBalance());
-        Logger.print(", Defence budget: " + Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE).getBalance());
-        Logger.println(", Total: " + game.getMyInformation().getMoney());
-        Logger.println(Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).getPercent() + ", " + Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE).getPercent());
-
-        taskInitMilliseconds = System.currentTimeMillis();
         defence.run(game);
         logTaskTime("amirhosein's defence", taskInitMilliseconds, turnInitMilliseconds);
 
+        // taskInitMilliseconds = System.currentTimeMillis();
+        // Common.initializeDefence(game);
+        // logTaskTime("ahmadalli's initialize defence", taskInitMilliseconds, turnInitMilliseconds);
+        //
         // taskInitMilliseconds = System.currentTimeMillis();
         // TowerCreation.simpleTowerCreation(game);
         // logTaskTime("ahmadalli's defence", taskInitMilliseconds, turnInitMilliseconds);
@@ -99,7 +94,7 @@ public class AI {
             Logger.error("golam leftesh dadi server bikhial shold. bi haya!");
         }
 
-        Logger.println("===== end of turn " + game.getCurrentTurn() + "=====");
+        Logger.println("===== end of turn " + game.getCurrentTurn() + " =====");
         Logger.println("");
     }
 

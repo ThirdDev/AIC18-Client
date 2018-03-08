@@ -22,15 +22,16 @@ public class RoadCell {
                 .get();
     }
 
-    public static client.model.RoadCell[] orderByDamageScoreAscending(ArrayList<Path> paths, double portion, int minCount, int maxCount) {
+    public static client.model.RoadCell[] orderByDamageScoreAscending(ArrayList<client.model.Path> paths, Map map, double portion, int minCount, int maxCount) {
         return paths.stream()
+                .filter(x -> Path.isPathVulnerable(x, map))
                 .flatMap(x -> endingRoadCells(x, portion, minCount, maxCount).stream())
                 .filter(x -> client.ahmadalli.scoring.RoadCell.damageToBaseScore(x) > 0)
                 .sorted(client.ahmadalli.comparator.RoadCell.byDamageToBaseScore())
                 .toArray(client.model.RoadCell[]::new);
     }
 
-    public static ArrayList<client.model.RoadCell> endingRoadCells(Path path, double portion, int minCount, int maxCount) {
+    public static ArrayList<client.model.RoadCell> endingRoadCells(client.model.Path path, double portion, int minCount, int maxCount) {
         ArrayList<client.model.RoadCell> roeadCells = path.getRoad();
 
         int portionCount = (int) (roeadCells.size() * portion);

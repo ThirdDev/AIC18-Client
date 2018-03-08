@@ -20,7 +20,7 @@ public class Cell {
                 .map(x -> (client.model.RoadCell) x);
     }
 
-    public static Stream<Path> getNearbyPaths(client.model.Cell cell, int range, ArrayList<Path> paths, Map map) {
+    public static Stream<client.model.Path> getNearbyPaths(client.model.Cell cell, int range, ArrayList<client.model.Path> paths, Map map) {
         return paths.stream()
                 .filter(x -> Stream.concat(x.getRoad().stream()
                                 .flatMap(y -> Util.radialCells(y, range, map).stream()),

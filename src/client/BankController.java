@@ -30,6 +30,12 @@ public class BankController {
 
         Bank.income(income);
         lastTurnMoney = player.getMoney();
+
+        Logger.print("Attack budget: " + Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).getBalance());
+        Logger.print(", Defence budget: " + Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE).getBalance());
+        Logger.println(", Total: " + player.getMoney());
+        Logger.println("attack percent: " + Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).getPercent() +
+                ", defence percent: " + Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE).getPercent());
     }
 
     public static void spentMoney(int amount) {
@@ -79,7 +85,7 @@ public class BankController {
             setAccountsPercentage(0.5, 0.5);
             budgetChangePhase = 1;
         }
-        /**/
+        /**
         if (game.getCurrentTurn() > 400 && budgetChangePhase == 1) {
             setAccountsPercentage(0.35, 0.65);
             budgetChangePhase = 2;
@@ -89,9 +95,8 @@ public class BankController {
             budgetChangePhase = 3;
         }
         /**/
-        /**
         if (game.getCurrentTurn() > 500 && budgetChangePhase == 1) {
-            setAccountsPercentage(0.7, 0.3);
+            setAccountsPercentage(0.65, 0.35);
             budgetChangePhase = 2;
         }
         /**/
