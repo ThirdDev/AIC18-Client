@@ -212,7 +212,7 @@ public class Defence {
                     mvpReport.getIndexOfFirstPassingHero() : mvpReport.getIndexOfFirstPassingCreep();
             if (startIndex == -1) break;
             ArrayList<RoadCell> roadCells = mvp.getRoad();
-            for (int i = Math.max(startIndex - 1 , 0) ; i < Math.min(mvp.getRoad().size() , startIndex + 8); i++) {
+            for (int i = Math.max(startIndex - 1 , 0) ; i < Math.min(mvp.getRoad().size() , startIndex + 6); i++) {
                 RoadCell roadCell = roadCells.get(i);
                 ArrayList<Cell> cells = Util.radialCells(roadCell, 2, map);
                 for (Cell cell : cells) {

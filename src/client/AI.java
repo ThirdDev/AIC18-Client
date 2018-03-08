@@ -26,7 +26,7 @@ public class AI {
     Defence defence;
 
     public AI() {
-        // Logger.disableLogging();
+        Logger.disableLogging();
         GeneCollections.getCollections();
     }
 

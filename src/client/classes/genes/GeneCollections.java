@@ -236,10 +236,10 @@ public class GeneCollections {
         Simulator simulator = new Simulator(maxPosition + 1, (maxPosition + 1) * 4, cannonsSimulationModel, archersSimulationModel);
 
         UniformRandomDamage.setSimulator(simulator);
-        UniformRandomDamage.setTimeout(30);
+        UniformRandomDamage.setTimeout(70);
 
         UniformRandomExplore.setSimulator(simulator);
-        UniformRandomExplore.setTimeout(30);
+        UniformRandomExplore.setTimeout(70);
 
         if (totalCount <= 1) {
             if (maxPosition < SingleTowerMaxLength) {
