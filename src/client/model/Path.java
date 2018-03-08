@@ -12,7 +12,7 @@ import java.util.Collections;
  */
 public class Path {
 
-    private static final double trustFactor = 0.9d;
+    private static final double trustFactor = 0.85d;
     private static final double sucsesiveCoff = 0.4d;
     private ArrayList<RoadCell> road;
     private ArrayList<SideWayCell> sideWayCells;
