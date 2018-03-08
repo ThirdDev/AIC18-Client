@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.stream.Stream;
 
 public class Common {
-    public static void initialize(World world) {
+    public static void initializeDefence(World world) {
         client.ahmadalli.scoring.Path.cacheTowerCoverageScore(world.getDefenceMapPaths(), world.getDefenceMap());
     }
 

@@ -59,10 +59,6 @@ public class AI {
         BankController.handleMoney(game.getMyInformation());
         logTaskTime("handling money", taskInitMilliseconds, turnInitMilliseconds);
 
-        taskInitMilliseconds = System.currentTimeMillis();
-        Common.initialize(game);
-        logTaskTime("ahmadalli's initialize", taskInitMilliseconds, turnInitMilliseconds);
-
         Logger.print("Attack budget: " + Bank.getAccount(BankController.BANK_ACCOUNT_ATTACK).getBalance());
         Logger.print(", Defence budget: " + Bank.getAccount(BankController.BANK_ACCOUNT_DEFENCE).getBalance());
         Logger.println(", Total: " + game.getMyInformation().getMoney());
@@ -72,6 +68,10 @@ public class AI {
         defence.run(game);
         logTaskTime("amirhosein's defence", taskInitMilliseconds, turnInitMilliseconds);
 
+        // taskInitMilliseconds = System.currentTimeMillis();
+        // Common.initializeDefence(game);
+        // logTaskTime("ahmadalli's initialize defence", taskInitMilliseconds, turnInitMilliseconds);
+        //
         // taskInitMilliseconds = System.currentTimeMillis();
         // TowerCreation.simpleTowerCreation(game);
         // logTaskTime("ahmadalli's defence", taskInitMilliseconds, turnInitMilliseconds);
