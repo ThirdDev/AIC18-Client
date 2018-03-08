@@ -115,7 +115,7 @@ public class Attack {
                 LightUnit.getCurrentLevel(),
                 HeavyUnit.getCurrentLevel(),
                 towerLevelAverage,
-                isKhashmeEzhdehaStarted(game) ? 2.5 : 3.0);
+                isKhashmeEzhdehaStarted(game) ? 1.5 : 1.9);
 
         if (isKhashmeEzhdehaStarted(game))
             recipe.repeat(2);
