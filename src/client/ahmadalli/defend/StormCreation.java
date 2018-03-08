@@ -12,7 +12,7 @@ public class StormCreation {
         Logger.println("starting storm if necessary");
 
         RoadCell[] dangerousInRange3Ordered = client.ahmadalli.utils.RoadCell.orderByDamageScoreAscending(
-                world.getDefenceMapPaths(),
+                world.getDefenceMapPaths(), world.getDefenceMap(),
                 0.2, 3, 3);
         if (dangerousInRange3Ordered.length == 0) {
             Logger.println("no dangerous cell found in range 3 of the end of the map");
