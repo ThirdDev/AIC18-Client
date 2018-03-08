@@ -31,16 +31,17 @@ public class AI {
     }
 
     void simpleTurn(World game) {
-        commonTurnFunctions(game);
+        commonTurnFunctions(game, false);
     }
 
     void complexTurn(World game) {
-        commonTurnFunctions(game);
+        commonTurnFunctions(game, true);
     }
 
     //This function will be called on both simple and complex turns
-    private void commonTurnFunctions(World game) {
+    private void commonTurnFunctions(World game, boolean isHeavyTurn) {
         Logger.println("Turn " + game.getCurrentTurn());
+        Logger.println("My strength: " + game.getMyInformation().getStrength());
 
         long turnInitMilliseconds = System.currentTimeMillis();
         long taskInitMilliseconds = System.currentTimeMillis();
@@ -80,7 +81,7 @@ public class AI {
         logTaskTime("ahmadalli's storm", taskInitMilliseconds, turnInitMilliseconds);
 
         taskInitMilliseconds = System.currentTimeMillis();
-        Attack.Attack(game);
+        Attack.Attack(game, isHeavyTurn);
         logTaskTime("attack", taskInitMilliseconds, turnInitMilliseconds);
 
         taskInitMilliseconds = System.currentTimeMillis();
