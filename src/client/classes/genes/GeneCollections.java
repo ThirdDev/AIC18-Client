@@ -132,7 +132,14 @@ public class GeneCollections {
         collection.setCreepLevel(creepLevel);
         collection.setHeroLevel(heroLevel);
         collection.setTowerLevelAverage(towerLevelAverage);
-        return collection.getRecipe(cannonsModel.stream().mapToInt(Integer::intValue).toArray(), archersModel.stream().mapToInt(Integer::intValue).toArray());
+        Recipe recipe = collection.getRecipe(cannonsModel.stream().mapToInt(Integer::intValue).toArray(), archersModel.stream().mapToInt(Integer::intValue).toArray());
+
+        //Sorry for the hack.
+        if (collection instanceof FullStateGeneCollection) {
+            recipe.repeat(3);
+        }
+
+        return recipe;
     }
 
     private void CreatePathModel(Set<TowerDetails> towers, Path path, List<Integer> cannons, List<Integer> archers, List<Cannon> cannonsSimu, List<Archer> archersSimu) {
