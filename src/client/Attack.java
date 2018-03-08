@@ -81,7 +81,8 @@ public class Attack {
             Set<TowerDetails> enemyTowers = AttackMapAnalyser.getVisibleTowerDetailsForPath(game, path);
 
             double score;
-            score = calculatePathAttackScore(path, enemyTowers);
+            //score = calculatePathAttackScore(path, enemyTowers);
+            score = (double)path.getDefendablity();
 
             if (score > bestPathScore) {
                 bestPath = path;
