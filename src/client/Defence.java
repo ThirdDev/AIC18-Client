@@ -14,7 +14,7 @@ import java.util.*;
 
 public class Defence {
 
-    private final int levelDeference = 1;
+    private final int levelDeference = 2;
 
     private BankAccount bankAccount;
     private World game;
