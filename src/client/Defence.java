@@ -14,7 +14,7 @@ import java.util.*;
 
 public class Defence {
 
-    private final int levelDeference = 1;
+    private final int levelDeference = 2;
 
     private BankAccount bankAccount;
     private World game;
@@ -24,7 +24,7 @@ public class Defence {
     private ArrayList<SideWayCell> buildable;
     private ArrayList<SideWayCell> tempArray0;
     private ArrayList<SideWayCell> tempArray1;
-    private int[] tempColorPoint;
+    private double[] tempColorPoint;
 
     Defence(BankAccount bankAccount, World game) {
         this.bankAccount = bankAccount;
@@ -32,7 +32,7 @@ public class Defence {
         map = game.getDefenceMap();
         paths = game.getDefenceMapPaths();
         sideWayCells = new HashMap<>();
-        tempColorPoint = new int[2];
+        tempColorPoint = new double[2];
         tempArray0 = new ArrayList<>();
         tempArray1 = new ArrayList<>();
         buildable = new ArrayList<>();
@@ -84,8 +84,8 @@ public class Defence {
         while (iterator.hasNext()) {
             Point nextPoint = iterator.next();
             if (sideWayCells.get(nextPoint).getColor() == -1) {
-                tempColorPoint[0] = 0;
-                tempColorPoint[1] = 0;
+                tempColorPoint[0] = 0.0d;
+                tempColorPoint[1] = 0.0d;
                 tempArray0.clear();
                 tempArray1.clear();
                 color(nextPoint, 0);
@@ -104,7 +104,8 @@ public class Defence {
         if (sideWayCell == null || sideWayCell.getColor() != -1) return;
         sideWayCell.setColor(cl);
         if (game.isTowerConstructable(sideWayCell)) {
-            tempColorPoint[cl] += sideWayCell.getRoadCells().size();
+            tempColorPoint[cl] += sideWayCell.getRoadCells().size() > 2 ?
+                    sideWayCell.getRoadCells().size() + 0.000001 : sideWayCell.getRoadCells().size();
         }
         if (cl == 0) {
             tempArray0.add(sideWayCell);
@@ -210,7 +211,7 @@ public class Defence {
                     mvpReport.getIndexOfFirstPassingHero() : mvpReport.getIndexOfFirstPassingCreep();
             if (startIndex == -1) break;
             ArrayList<RoadCell> roadCells = mvp.getRoad();
-            for (int i = startIndex + 1; i < Math.min(mvp.getRoad().size() , startIndex + 7); i++) {
+            for (int i = Math.max(startIndex - 1 , 0) ; i < Math.min(mvp.getRoad().size() , startIndex + 8); i++) {
                 RoadCell roadCell = roadCells.get(i);
                 ArrayList<Cell> cells = Util.radialCells(roadCell, 2, map);
                 for (Cell cell : cells) {

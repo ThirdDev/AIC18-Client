@@ -85,7 +85,19 @@ public class GeneCollections {
                 "pc2.sgdf",
                 "surface1.sgdf",
                 "us1.sgdf",
-                "us2.sgdf"
+                "us2.sgdf",
+                "UniformRandomTowers-ExplorePolicyByTowerCount -1-pathLength 25-2018-07-3--13-09-53.sgdf",
+                "UniformRandomTowers-ExplorePolicyByTowerCount -1-pathLength 25-2018-07-3--13-20-57.sgdf",
+                "UniformRandomTowers-ExplorePolicyByTowerCount -1-pathLength 25-2018-07-3--13-21-19.sgdf",
+                "UniformRandomTowers-ExplorePolicyByTowerCount -1-pathLength 25-2018-07-3--13-22-12.sgdf",
+                "UniformRandomTowers-ExplorePolicyByTowerCount -1-pathLength 25-2018-07-3--19-04-06.sgdf",
+                "UniformRandomTowers-ExplorePolicyByTowerCount -1-pathLength 25-2018-07-3--19-05-14.sgdf",
+                "UniformRandomTowers-ExplorePolicyByTowerCount -1-pathLength 25-2018-07-3--19-06-41.sgdf",
+                "UniformRandomTowers-ExplorePolicyByTowerCount -1-pathLength 25-2018-07-3--19-08-17.sgdf",
+                "UniformRandomTowers-ExplorePolicyByTowerCount -1-pathLength 25-2018-07-3--19-09-10.sgdf",
+                "UniformRandomTowers-ExplorePolicyByTowerCount -1-pathLength 25-2018-07-3--22-27-28.sgdf",
+                "UniformRandomTowers-ExplorePolicyByTowerCount -1-pathLength 25-2018-08-3--04-51-08.sgdf",
+                "UniformRandomTowers-ExplorePolicyByTowerCount -1-pathLength 25-2018-08-3--04-52-08.sgdf"
                 );
         UniformRandomDamage = new CountStateGeneCollection("UniformRandomTowers-DamagePolicyByTowerCount -1-pathLength 20-2018-23-2--14-49-51.sgdf");
 
