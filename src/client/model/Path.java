@@ -5,6 +5,7 @@ import client.classes.Logger;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 /**
  * Created by Parsa on 1/22/2018 AD.
@@ -19,12 +20,38 @@ public class Path {
     private ArrayList<Double> archerData;
     private ArrayList<Double> cannonData;
     private int updateDataTurn = -1;
+    private int defendablity;
+
 
     public Path(ArrayList<RoadCell> road) {
         this.road = road;
         sideWayCells = new ArrayList<>();
         archerData = new ArrayList<>();
         cannonData = new ArrayList<>();
+        defendablity = 0;
+    }
+
+    public int getDefendablity() {
+        return defendablity;
+    }
+
+    public void updateDefendability(ArrayList<SideWayCell> buildable , Map map){
+        ArrayList<RoadCell> roadCells = this.getRoad();
+        HashMap<Point,SideWayCell> hashMap = new HashMap<>();
+        for(SideWayCell swc: sideWayCells){
+            hashMap.put(swc.getLocation(),swc);
+        }
+        for (int i = 0 ; i < this.getRoad().size(); i++) {
+            RoadCell roadCell = roadCells.get(i);
+            ArrayList<Cell> cells = Util.radialCells(roadCell, 2, map);
+            for (Cell cell : cells) {
+
+                SideWayCell candidateCell = hashMap.get(cell.getLocation());
+                if (candidateCell != null && buildable.contains(candidateCell)) {
+                    defendablity++;
+                }
+            }
+        }
     }
 
     public ArrayList<RoadCell> getRoad() {
@@ -39,7 +66,9 @@ public class Path {
         this.sideWayCells.add(sideWayCell);
     }
 
-    private void updateDates(Map map) {
+
+
+    public void updateDates(Map map) {
         archerData.clear();
         cannonData.clear();
         for (int i = road.size() - 1; i >= 0; i--) {
